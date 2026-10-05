@@ -10,16 +10,22 @@ import { getDBStatus } from '../config/db.js';
 import { successResponse } from '../utils/response.js';
 
 export function configureRoutes(app) {
-  // Public Health & System Status Endpoint
+  // Root & Public Health Status Endpoints
+  const healthPayload = () => ({
+    service: 'AeroSense Environmental Intelligence API',
+    status: 'healthy',
+    version: 'v1',
+    environment: process.env.NODE_ENV || 'development',
+    timestamp: new Date().toISOString(),
+    database: getDBStatus()
+  });
+
+  app.get('/', (req, res) => {
+    return successResponse(res, healthPayload());
+  });
+
   app.get('/api/health', (req, res) => {
-    return successResponse(res, {
-      service: 'AeroSense Environmental Intelligence API',
-      status: 'healthy',
-      version: 'v1',
-      environment: process.env.NODE_ENV || 'development',
-      timestamp: new Date().toISOString(),
-      database: getDBStatus()
-    });
+    return successResponse(res, healthPayload());
   });
 
   // Version 1 API Routes
