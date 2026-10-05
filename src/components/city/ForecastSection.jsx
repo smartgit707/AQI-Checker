@@ -50,12 +50,26 @@ export default function ForecastSection({ citySlug, cityName = 'City' }) {
     };
   }, [citySlug, horizon]);
 
+  if (isLoading && !forecastData) {
+    return (
+      <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/80 shadow-xs space-y-4 animate-pulse">
+        <div className="flex items-center gap-2 text-slate-700 font-bold">
+          <Activity className="w-5 h-5 text-emerald-600 animate-spin" />
+          <span>AQI Atmospheric Forecast — {cityName}</span>
+        </div>
+        <div className="h-44 bg-slate-100 rounded-2xl w-full flex items-center justify-center text-xs text-slate-400 font-medium">
+          Calculating statistical time-series trajectory and uncertainty bounds...
+        </div>
+      </div>
+    );
+  }
+
   if (error && !forecastData) {
     return (
       <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/80 shadow-xs space-y-4">
         <div className="flex items-center gap-2 text-slate-700 font-bold">
           <Activity className="w-5 h-5 text-emerald-600" />
-          <span>AQI Atmospheric Forecast</span>
+          <span>AQI Atmospheric Forecast — {cityName}</span>
         </div>
         <div className="p-6 rounded-2xl bg-amber-50 border border-amber-200 text-amber-800 text-sm">
           <p className="font-semibold">Forecast temporarily unavailable</p>

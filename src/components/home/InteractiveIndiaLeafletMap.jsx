@@ -88,7 +88,11 @@ export default function InteractiveIndiaLeafletMap({
                 weight: isSelected ? 3 : 2,
               }}
               eventHandlers={{
-                click: () => onSelectStation(st),
+                click: () => {
+                  if (typeof onSelectStation === 'function') {
+                    onSelectStation(st);
+                  }
+                },
               }}
             >
               <Tooltip direction="top" offset={[0, -10]} opacity={0.98} permanent={isSelected}>

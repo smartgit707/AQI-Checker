@@ -134,8 +134,8 @@ export default function HistoricalAQISection({ history, onPeriodChange, currentP
               const barColor = selectedPollutant === 'aqi' ? aqiLvl.color : '#059669';
 
               const label = currentPeriod === '24h' 
-                ? pt.time 
-                : new Date(pt.date).toLocaleDateString([], { month: 'short', day: 'numeric' });
+                ? (pt.time || pt.label || '00:00')
+                : (pt.label || (!isNaN(Date.parse(pt.date)) ? new Date(pt.date).toLocaleDateString([], { month: 'short', day: 'numeric' }) : (pt.date || '')));
 
               return (
                 <div 

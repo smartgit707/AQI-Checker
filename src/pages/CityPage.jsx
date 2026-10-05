@@ -302,10 +302,10 @@ export default function CityPage() {
           <CurrentAirQuality city={adaptedCity} />
 
           {/* Part 7: Factual Atmospheric Insights */}
-          <InsightsCard insights={airQuality?.insights} cityName={city.name} />
+          <InsightsCard insights={airQuality?.insights} cityName={city?.name || 'City'} />
 
           {/* 4. Chemical Pollutant Breakdown Cards */}
-          <PollutantBreakdown pollutants={airQuality.pollutants} cityName={city.name} />
+          <PollutantBreakdown pollutants={adaptedCity.pollutants} cityName={city?.name || 'City'} />
 
           {/* 5. Historical AQI & Pollutant Timeline Chart */}
           <HistoricalAQISection
@@ -315,7 +315,7 @@ export default function CityPage() {
           />
 
           {/* Part 7: Time-Series Statistical Forecasting (AeroCast) */}
-          <ForecastSection citySlug={city.slug || slug} cityName={city.name} />
+          <ForecastSection citySlug={city?.slug || slug} cityName={city?.name || 'City'} />
 
           {/* 6. Synoptic Meteorology Layer */}
           <WeatherEnvironment city={adaptedCity} />
@@ -329,18 +329,19 @@ export default function CityPage() {
               <div>
                 <h3 className="text-xl font-bold font-display text-slate-900 flex items-center gap-2">
                   <Compass className="w-5 h-5 text-emerald-600" />
-                  <span>Geospatial Proximity Map — {city.name}</span>
+                  <span>Geospatial Proximity Map — {city?.name || 'City'}</span>
                 </h3>
                 <p className="text-xs text-slate-500 mt-1">
                   Station pin localized with surrounding pan-India CAAQMS monitoring network.
                 </p>
               </div>
               <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
-                Centered on {city.name}
+                Centered on {city?.name || 'City'}
               </span>
             </div>
 
             <InteractiveIndiaLeafletMap
+              key={city?.slug || slug || 'city-map'}
               stations={mapStations}
               selectedCity={adaptedCity}
               onSelectStation={(st) => navigate(`/city/${st.id || st.slug}`)}
@@ -360,9 +361,9 @@ export default function CityPage() {
       <AlertModal
         isOpen={isAlertModalOpen}
         onClose={() => setIsAlertModalOpen(false)}
-        citySlug={city.slug || slug}
-        cityName={city.name}
-        currentAqi={airQuality?.aqi || 100}
+        citySlug={city?.slug || slug}
+        cityName={city?.name || 'City'}
+        currentAqi={airQuality?.aqi || adaptedCity.aqi || 100}
       />
 
       <Footer />

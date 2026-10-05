@@ -2,14 +2,14 @@ import React, { lazy, Suspense } from 'react';
 import ReactDOM from 'react-dom/client';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import App from './App.jsx';
+import CityPage from './pages/CityPage.jsx';
 import ProtectedRoute from './components/auth/ProtectedRoute.jsx';
 import ErrorBoundary from './components/common/ErrorBoundary.jsx';
 import LoadingFallback from './components/common/LoadingFallback.jsx';
 import { AuthProvider } from './context/AuthContext.jsx';
 import './index.css';
 
-// Route-level code-splitting for performance & smaller initial bundle size
-const CityPage = lazy(() => import('./pages/CityPage.jsx'));
+// Route-level code-splitting for secondary views
 const AnalyticsPage = lazy(() => import('./pages/AnalyticsPage.jsx'));
 const ComparePage = lazy(() => import('./pages/ComparePage.jsx'));
 const RankingsPage = lazy(() => import('./pages/RankingsPage.jsx'));
