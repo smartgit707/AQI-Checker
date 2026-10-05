@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="none">
+  <rect width="32" height="32" rx="8" fill="#047857"/>
+  <!-- Stylized leaf + atmospheric wind swirl -->
+  <path d="M7 16C12 16 15 13 18 10C21 7 25 7 25 7C25 7 25 11 22 14C19 17 16 20 16 25C13 25 11 23 10 21C8.5 18 7.5 17 7 16Z" fill="#34D399"/>
+  <circle cx="21" cy="11" r="2.5" fill="#FFFFFF"/>
+  <path d="M11 22C13 18 17 15 23 15" stroke="#FFFFFF" stroke-width="1.75" stroke-linecap="round"/>
+</svg>

@@ -1,0 +1,213 @@
+import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
+import {
+  getAuthToken,
+  clearAuthToken,
+  loginApi,
+  registerApi,
+  logoutApi,
+  getMeApi,
+  updateUserProfileApi,
+  changeUserPasswordApi,
+  deleteUserAccountApi,
+  addUserFavoriteApi,
+  removeUserFavoriteApi,
+  recordUserRecentApi
+} from '../services/api';
+
+const AuthContext = createContext(null);
+
+export function AuthProvider({ children }) {
+  const [user, setUser] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [authError, setAuthError] = useState(null);
+
+  // Validate active session on initial load
+  const verifySession = useCallback(async () => {
+    const token = getAuthToken();
+    if (!token) {
+      setUser(null);
+      setIsLoading(false);
+      return;
+    }
+
+    try {
+      const res = await getMeApi();
+      if (res.success && res.user) {
+        setUser(res.user);
+      } else {
+        clearAuthToken();
+        setUser(null);
+      }
+    } catch (err) {
+      console.warn('[AeroSense Auth] Session validation failed:', err.message);
+      clearAuthToken();
+      setUser(null);
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    verifySession();
+  }, [verifySession]);
+
+  const login = async (email, password) => {
+    setAuthError(null);
+    try {
+      const res = await loginApi({ email, password });
+      if (res.success && res.user) {
+        setUser(res.user);
+        return { success: true, user: res.user };
+      }
+      throw new Error(res.message || 'Login failed');
+    } catch (err) {
+      const message = err.message || 'Failed to authenticate';
+      setAuthError(message);
+      return { success: false, error: message };
+    }
+  };
+
+  const register = async (name, email, password) => {
+    setAuthError(null);
+    try {
+      const res = await registerApi({ name, email, password });
+      if (res.success && res.user) {
+        setUser(res.user);
+        return { success: true, user: res.user };
+      }
+      throw new Error(res.message || 'Registration failed');
+    } catch (err) {
+      const message = err.message || 'Failed to create account';
+      setAuthError(message);
+      return { success: false, error: message };
+    }
+  };
+
+  const logout = async () => {
+    try {
+      await logoutApi();
+    } catch (err) {
+      console.warn('[AeroSense Auth] Logout warning:', err.message);
+    } finally {
+      clearAuthToken();
+      setUser(null);
+    }
+  };
+
+  const updateProfile = async (data) => {
+    try {
+      const res = await updateUserProfileApi(data);
+      if (res.success && res.user) {
+        setUser(res.user);
+        return { success: true, user: res.user };
+      }
+      throw new Error(res.message || 'Failed to update profile');
+    } catch (err) {
+      return { success: false, error: err.message };
+    }
+  };
+
+  const changePassword = async ({ currentPassword, newPassword }) => {
+    try {
+      const res = await changeUserPasswordApi({ currentPassword, newPassword });
+      return { success: true, message: res.message };
+    } catch (err) {
+      return { success: false, error: err.message };
+    }
+  };
+
+  const deleteAccount = async () => {
+    try {
+      await deleteUserAccountApi();
+      setUser(null);
+      return { success: true };
+    } catch (err) {
+      return { success: false, error: err.message };
+    }
+  };
+
+  const isFavorite = useCallback(
+    (slug) => {
+      if (!user || !user.favoriteCities) return false;
+      return user.favoriteCities.includes(slug.toLowerCase());
+    },
+    [user]
+  );
+
+  const toggleFavorite = async (slug) => {
+    if (!user) {
+      return { success: false, requiresAuth: true };
+    }
+
+    const cleanSlug = slug.toLowerCase();
+    const currentlyFav = isFavorite(cleanSlug);
+
+    // Optimistic state update
+    const previousFavorites = user.favoriteCities || [];
+    const newFavorites = currentlyFav
+      ? previousFavorites.filter((s) => s !== cleanSlug)
+      : [...previousFavorites, cleanSlug];
+
+    if (!currentlyFav && previousFavorites.length >= 10) {
+      return {
+        success: false,
+        error: 'Maximum of 10 favorite cities allowed. Remove one to add another.'
+      };
+    }
+
+    setUser((prev) => ({ ...prev, favoriteCities: newFavorites }));
+
+    try {
+      if (currentlyFav) {
+        await removeUserFavoriteApi(cleanSlug);
+      } else {
+        await addUserFavoriteApi(cleanSlug);
+      }
+      return { success: true, isFavorite: !currentlyFav };
+    } catch (err) {
+      // Revert optimistic update on failure
+      setUser((prev) => ({ ...prev, favoriteCities: previousFavorites }));
+      return { success: false, error: err.message };
+    }
+  };
+
+  const recordRecentCity = useCallback(
+    async (slug) => {
+      if (!user || !slug) return;
+      try {
+        await recordUserRecentApi(slug.toLowerCase());
+      } catch (err) {
+        // Asynchronous non-blocking recording, ignore transient error
+      }
+    },
+    [user]
+  );
+
+  const value = {
+    user,
+    isAuthenticated: !!user,
+    isLoading,
+    authError,
+    clearAuthError: () => setAuthError(null),
+    login,
+    register,
+    logout,
+    updateProfile,
+    changePassword,
+    deleteAccount,
+    isFavorite,
+    toggleFavorite,
+    recordRecentCity,
+    reloadUser: verifySession
+  };
+
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+}
+
+export function useAuth() {
+  const context = useContext(AuthContext);
+  if (!context) {
+    throw new Error('useAuth must be used within an AuthProvider');
+  }
+  return context;
+}
