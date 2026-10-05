@@ -49,7 +49,9 @@ export default function EnvironmentalInsightsSection({ insights = [] }) {
                   </span>
                 </div>
                 <span className="text-xs font-mono font-extrabold px-2.5 py-1 rounded-lg bg-white border border-slate-200 text-slate-800 shadow-xs">
-                  {item.metric}
+                  {typeof item.metric === 'object' && item.metric !== null
+                    ? (item.metric.pollutant ? `${item.metric.pollutant}: ${item.metric.concentration ?? ''}` : Object.values(item.metric).join(' | '))
+                    : String(item.metric || '')}
                 </span>
               </div>
 

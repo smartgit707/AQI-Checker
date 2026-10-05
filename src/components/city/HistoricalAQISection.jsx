@@ -90,7 +90,9 @@ export default function HistoricalAQISection({ history, onPeriodChange, currentP
               <span className="text-sm font-extrabold text-slate-900">{trend.direction}</span>
               {trend.changePercent !== 0 && (
                 <span className="text-xs font-bold px-2 py-0.5 rounded-full bg-slate-100 text-slate-700">
-                  {trend.changePercent > 0 ? `+${trend.changePercent}%` : `${trend.changePercent}%`}
+                  {typeof trend.changePercent === 'string'
+                    ? (trend.changePercent.endsWith('%') ? trend.changePercent : `${trend.changePercent}%`)
+                    : (trend.changePercent > 0 ? `+${trend.changePercent}%` : `${trend.changePercent}%`)}
                 </span>
               )}
             </div>

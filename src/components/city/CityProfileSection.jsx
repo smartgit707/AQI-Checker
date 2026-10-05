@@ -80,16 +80,16 @@ export default function CityProfileSection({ city, relatedCities = [] }) {
           </div>
         </div>
 
-        {/* Part 5 Comparison Entry Point */}
+        {/* Comparison Entry Point */}
         <div className="mt-8 pt-4 border-t border-slate-100 flex items-center justify-between">
           <span className="text-xs text-slate-500">Need comparative analytics against other cities?</span>
-          <button
-            onClick={() => alert(`Comparison Mode: Comparative analytics with ${city.name} will be available in Part 5.`)}
+          <Link
+            to={`/compare?cities=${city.slug || city.id},delhi`}
             className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-semibold transition-colors"
           >
             <GitCompare className="w-3.5 h-3.5" />
             <span>Compare {city.name}</span>
-          </button>
+          </Link>
         </div>
       </div>
 
