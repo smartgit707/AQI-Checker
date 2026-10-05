@@ -1,0 +1,22 @@
+User-agent: *
+Allow: /
+Allow: /city/
+Allow: /analytics
+Allow: /compare
+Allow: /rankings
+Allow: /methodology
+Allow: /data-sources
+
+# Disallow private user and administrative paths
+Disallow: /dashboard
+Disallow: /favorites
+Disallow: /alerts
+Disallow: /notifications
+Disallow: /profile
+Disallow: /settings
+Disallow: /admin
+Disallow: /login
+Disallow: /register
+Disallow: /api/
+
+Sitemap: https://aerosense.vercel.app/sitemap.xml

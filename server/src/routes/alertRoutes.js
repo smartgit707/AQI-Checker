@@ -7,6 +7,7 @@ import {
   runEvaluation
 } from '../controllers/alertController.js';
 import { authenticateUser } from '../middleware/authMiddleware.js';
+import { alertRateLimiter } from '../middleware/rateLimiter.js';
 
 const router = Router();
 
@@ -14,9 +15,9 @@ const router = Router();
 router.use(authenticateUser);
 
 router.get('/', getAlerts);
-router.post('/', addAlert);
-router.put('/:id', editAlert);
+router.post('/', alertRateLimiter, addAlert);
+router.put('/:id', alertRateLimiter, editAlert);
 router.delete('/:id', removeAlert);
-router.post('/evaluate', runEvaluation);
+router.post('/evaluate', alertRateLimiter, runEvaluation);
 
 export default router;

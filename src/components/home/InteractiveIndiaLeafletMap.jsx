@@ -122,13 +122,42 @@ export default function InteractiveIndiaLeafletMap({
         })}
       </MapContainer>
 
+      {/* Accessible Floating AQI Category Legend */}
+      <div className="absolute top-3 right-3 hidden md:flex items-center gap-1.5 bg-white/95 backdrop-blur-md rounded-xl p-2 shadow-lg border border-slate-200/90 text-[10px] z-20 pointer-events-auto">
+        <span className="font-bold text-slate-700 mr-1">India NAQI:</span>
+        <span className="flex items-center gap-1 px-1.5 py-0.5 rounded bg-emerald-50 text-emerald-800 font-semibold border border-emerald-200">
+          <span className="w-2 h-2 rounded-full bg-emerald-500" />
+          Good (0–50)
+        </span>
+        <span className="flex items-center gap-1 px-1.5 py-0.5 rounded bg-lime-50 text-lime-800 font-semibold border border-lime-200">
+          <span className="w-2 h-2 rounded-full bg-lime-500" />
+          Satisfactory (51–100)
+        </span>
+        <span className="flex items-center gap-1 px-1.5 py-0.5 rounded bg-amber-50 text-amber-800 font-semibold border border-amber-200">
+          <span className="w-2 h-2 rounded-full bg-amber-500" />
+          Moderate (101–200)
+        </span>
+        <span className="flex items-center gap-1 px-1.5 py-0.5 rounded bg-orange-50 text-orange-800 font-semibold border border-orange-200">
+          <span className="w-2 h-2 rounded-full bg-orange-500" />
+          Poor (201–300)
+        </span>
+        <span className="flex items-center gap-1 px-1.5 py-0.5 rounded bg-rose-50 text-rose-800 font-semibold border border-rose-200">
+          <span className="w-2 h-2 rounded-full bg-rose-500" />
+          Very Poor (301–400)
+        </span>
+        <span className="flex items-center gap-1 px-1.5 py-0.5 rounded bg-purple-50 text-purple-800 font-semibold border border-purple-200">
+          <span className="w-2 h-2 rounded-full bg-purple-700" />
+          Severe (401–500)
+        </span>
+      </div>
+
       {/* Floating Selected Station Summary Banner */}
       {selectedCity && (
         <div className="absolute bottom-4 left-4 right-4 sm:right-auto sm:max-w-sm bg-white/95 backdrop-blur-md rounded-2xl p-4 shadow-xl border border-slate-200 text-xs z-20 pointer-events-auto">
           <div className="flex items-center justify-between font-bold text-slate-900 pb-1 mb-1 border-b border-slate-100">
             <span>Selected Station: {selectedCity.name}</span>
             <span className="font-extrabold text-sm" style={{ color: getAQILevel(selectedCity.aqi).color }}>
-              AQI {selectedCity.aqi}
+              AQI {selectedCity.aqi} • {getAQILevel(selectedCity.aqi).category}
             </span>
           </div>
           <p className="text-slate-500 mt-1">

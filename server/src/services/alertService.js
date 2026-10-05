@@ -35,6 +35,8 @@ export async function createAlert(userId, data = {}) {
   const city = await getCityBySlug(cleanSlug);
   const cityName = city?.name || cleanSlug.toUpperCase();
 
+  const normalizedOp = ['below', 'lt', 'lte'].includes(operator) ? 'below' : (operator === 'gte' ? 'gte' : 'above');
+
   if (isDBConnected()) {
     // Check if duplicate alert exists
     const existing = await Alert.findOne({
@@ -52,7 +54,7 @@ export async function createAlert(userId, data = {}) {
       citySlug: cleanSlug,
       cityName,
       threshold: numericThreshold,
-      operator: operator === 'gte' ? 'gte' : 'gt',
+      operator: normalizedOp,
       enabled: true,
       cooldownHours: Math.min(48, Math.max(1, Number(cooldownHours) || 6))
     });
@@ -76,7 +78,7 @@ export async function createAlert(userId, data = {}) {
     cityName,
     type: 'threshold',
     threshold: numericThreshold,
-    operator: operator === 'gte' ? 'gte' : 'gt',
+    operator: normalizedOp,
     enabled: true,
     cooldownHours: Math.min(48, Math.max(1, Number(cooldownHours) || 6)),
     lastTriggeredAt: null,

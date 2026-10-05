@@ -6,13 +6,31 @@ import cookieParser from 'cookie-parser';
 import dotenv from 'dotenv';
 import { configureRoutes } from './routes/index.js';
 import { notFoundHandler, errorHandler } from './middleware/errorHandler.js';
+import { sanitizeInput } from './middleware/sanitizeInput.js';
+import { apiRateLimiter } from './middleware/rateLimiter.js';
 
 dotenv.config();
 
 const app = express();
 
-// Security HTTP headers
-app.use(helmet());
+// Security HTTP headers with proper policies for Leaflet and images
+app.use(
+  helmet({
+    contentSecurityPolicy: {
+      directives: {
+        defaultSrc: ["'self'"],
+        connectSrc: ["'self'", "https:", "http:"],
+        imgSrc: ["'self'", "data:", "blob:", "https:", "http:", "*"],
+        scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'"],
+        styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com", "https://unpkg.com"],
+        fontSrc: ["'self'", "https://fonts.gstatic.com", "data:"],
+        objectSrc: ["'none'"]
+      }
+    },
+    crossOriginResourcePolicy: { policy: 'cross-origin' },
+    crossOriginEmbedderPolicy: false
+  })
+);
 
 // Cross-Origin Resource Sharing
 const allowedOrigins = [
@@ -24,11 +42,11 @@ const allowedOrigins = [
 app.use(
   cors({
     origin: (origin, callback) => {
-      // Allow requests with no origin (like mobile apps, curl, postman)
-      if (!origin || allowedOrigins.includes(origin)) {
+      // In production, allow same-origin, Vercel deployments, and configured client URLs
+      if (!origin || allowedOrigins.includes(origin) || origin.endsWith('.vercel.app')) {
         return callback(null, true);
       }
-      return callback(null, true); // Permissive in dev, origin-checked in prod
+      return callback(null, true); // Permissive in dev/serverless
     },
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization'],
@@ -36,10 +54,16 @@ app.use(
   })
 );
 
-// Request body parsers with payload limits
-app.use(express.json({ limit: '10mb' }));
-app.use(express.urlencoded({ extended: true, limit: '10mb' }));
+// Request body parsers with reasonable size limits
+app.use(express.json({ limit: '2mb' }));
+app.use(express.urlencoded({ extended: true, limit: '2mb' }));
 app.use(cookieParser());
+
+// NoSQL Query Injection Sanitizer
+app.use(sanitizeInput);
+
+// General API Rate Limiting
+app.use('/api', apiRateLimiter);
 
 // Development request logger
 if (process.env.NODE_ENV !== 'test') {

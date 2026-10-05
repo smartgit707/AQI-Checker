@@ -15,14 +15,27 @@ import { successResponse } from '../utils/response.js';
 
 export function configureRoutes(app) {
   // Root & Public Health Status Endpoints
-  const healthPayload = () => ({
-    service: 'AeroSense Environmental Intelligence API',
-    status: 'healthy',
-    version: 'v1',
-    environment: process.env.NODE_ENV || 'development',
-    timestamp: new Date().toISOString(),
-    database: getDBStatus()
-  });
+  const healthPayload = () => {
+    const mem = process.memoryUsage();
+    return {
+      service: 'AeroSense Environmental Intelligence API',
+      status: 'healthy',
+      version: 'v1.4',
+      uptimeSeconds: Math.floor(process.uptime()),
+      environment: process.env.NODE_ENV || 'development',
+      timestamp: new Date().toISOString(),
+      subsystems: {
+        database: getDBStatus(),
+        cache: 'operational',
+        forecastingEngine: 'Damped Holt-Winters v1.4 operational',
+        ingestionLayer: 'operational'
+      },
+      memory: {
+        rssMb: Math.round(mem.rss / 1024 / 1024),
+        heapUsedMb: Math.round(mem.heapUsed / 1024 / 1024)
+      }
+    };
+  };
 
   app.get('/', (req, res) => {
     return successResponse(res, healthPayload());

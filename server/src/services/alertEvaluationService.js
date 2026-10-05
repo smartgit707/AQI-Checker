@@ -20,7 +20,10 @@ export async function evaluateAlertsForCity(citySlug, currentAqi) {
   const now = Date.now();
 
   for (const alert of activeAlerts) {
-    const isTriggered = alert.operator === 'gte' ? aqi >= alert.threshold : aqi > alert.threshold;
+    const isBelow = ['below', 'lt', 'lte'].includes(alert.operator);
+    const isTriggered = isBelow
+      ? (alert.operator === 'lte' ? aqi <= alert.threshold : aqi < alert.threshold)
+      : (alert.operator === 'gte' ? aqi >= alert.threshold : aqi > alert.threshold);
 
     if (isTriggered) {
       // Evaluate Cooldown (default 6 hours)
@@ -87,6 +90,8 @@ export async function evaluateAllActiveAlerts() {
 
   return {
     evaluatedCities: uniqueCities.length,
+    evaluatedCount: allAlerts.length,
+    triggeredCount: results.reduce((acc, r) => acc + (r.triggeredCount || 0), 0),
     summary: results
   };
 }

@@ -62,6 +62,7 @@ export default function Navbar({ onSelectCity, selectedCity }) {
     { name: 'Analytics', href: '/analytics' },
     { name: 'Compare', href: '/compare' },
     { name: 'Rankings', href: '/rankings' },
+    { name: 'Methodology', href: '/methodology' },
     { name: 'Live Map', href: '/#live-map' },
   ];
 

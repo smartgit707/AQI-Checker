@@ -32,8 +32,8 @@ const AlertSchema = new mongoose.Schema(
     },
     operator: {
       type: String,
-      enum: ['gt', 'gte'],
-      default: 'gt'
+      enum: ['gt', 'gte', 'above', 'below', 'lt', 'lte'],
+      default: 'above'
     },
     enabled: {
       type: Boolean,
