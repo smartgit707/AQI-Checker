@@ -12,6 +12,9 @@ import DashboardPage from './pages/DashboardPage.jsx';
 import FavoritesPage from './pages/FavoritesPage.jsx';
 import ProfilePage from './pages/ProfilePage.jsx';
 import SettingsPage from './pages/SettingsPage.jsx';
+import NotificationsPage from './pages/NotificationsPage.jsx';
+import AlertsPage from './pages/AlertsPage.jsx';
+import AdminDashboardPage from './pages/admin/AdminDashboardPage.jsx';
 import ProtectedRoute from './components/auth/ProtectedRoute.jsx';
 import { AuthProvider } from './context/AuthContext.jsx';
 import './index.css';
@@ -62,6 +65,32 @@ ReactDOM.createRoot(document.getElementById('root')).render(
             element={
               <ProtectedRoute>
                 <SettingsPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/notifications"
+            element={
+              <ProtectedRoute>
+                <NotificationsPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/alerts"
+            element={
+              <ProtectedRoute>
+                <AlertsPage />
+              </ProtectedRoute>
+            }
+          />
+
+          {/* Protected Admin Platform Route */}
+          <Route
+            path="/admin"
+            element={
+              <ProtectedRoute requireAdmin={true}>
+                <AdminDashboardPage />
               </ProtectedRoute>
             }
           />

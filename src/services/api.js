@@ -246,4 +246,153 @@ export async function recordUserRecentApi(slug) {
   });
 }
 
+/**
+ * Part 7: AQI Forecasting API
+ */
+export async function getCityForecastApi(citySlug, hours = 24) {
+  return await request(`/forecast/${encodeURIComponent(citySlug)}?hours=${hours}`);
+}
+
+/**
+ * Part 7: User Alert Thresholds API
+ */
+export async function getUserAlertsApi() {
+  return await request('/alerts');
+}
+
+export const getAlertsApi = getUserAlertsApi;
+
+export async function evaluateAlertsApi() {
+  return await request('/alerts/evaluate', {
+    method: 'POST'
+  });
+}
+
+export async function createAlertApi(data) {
+  return await request('/alerts', {
+    method: 'POST',
+    body: JSON.stringify(data)
+  });
+}
+
+export async function updateAlertApi(id, data) {
+  return await request(`/alerts/${id}`, {
+    method: 'PUT',
+    body: JSON.stringify(data)
+  });
+}
+
+export async function deleteAlertApi(id) {
+  return await request(`/alerts/${id}`, {
+    method: 'DELETE'
+  });
+}
+
+/**
+ * Part 7: In-App Notifications API
+ */
+export async function getUserNotificationsApi(params = {}) {
+  const query = new URLSearchParams();
+  if (params.unreadOnly) query.append('unreadOnly', 'true');
+  if (params.limit) query.append('limit', params.limit);
+  const qs = query.toString() ? `?${query.toString()}` : '';
+  return await request(`/notifications${qs}`);
+}
+
+export const getNotificationsApi = getUserNotificationsApi;
+
+export async function getUnreadNotificationCountApi() {
+  return await request('/notifications/unread-count');
+}
+
+export async function markNotificationReadApi(id) {
+  return await request(`/notifications/${id}/read`, {
+    method: 'PUT'
+  });
+}
+
+export async function markAllNotificationsReadApi() {
+  return await request('/notifications/read-all', {
+    method: 'PUT'
+  });
+}
+
+export async function deleteNotificationApi(id) {
+  return await request(`/notifications/${id}`, {
+    method: 'DELETE'
+  });
+}
+
+/**
+ * Part 7: Protected Admin Platform API
+ */
+export async function getAdminOverviewApi() {
+  return await request('/admin/overview');
+}
+
+export async function getAdminUsersApi(params = {}) {
+  const query = new URLSearchParams();
+  if (params.page) query.append('page', params.page);
+  if (params.limit) query.append('limit', params.limit);
+  if (params.search) query.append('search', params.search);
+  const qs = query.toString() ? `?${query.toString()}` : '';
+  return await request(`/admin/users${qs}`);
+}
+
+export async function setUserStatusApi(id, isActive) {
+  return await request(`/admin/users/${id}/status`, {
+    method: 'PUT',
+    body: JSON.stringify({ isActive })
+  });
+}
+
+export async function toggleUserStatusApi(id) {
+  return await request(`/admin/users/${id}/status`, {
+    method: 'PUT',
+    body: JSON.stringify({})
+  });
+}
+
+export async function getAdminCitiesApi() {
+  return await request('/admin/cities');
+}
+
+export async function setCityMonitoringApi(slug, isActive) {
+  return await request(`/admin/cities/${encodeURIComponent(slug)}/status`, {
+    method: 'PUT',
+    body: JSON.stringify({ isActive })
+  });
+}
+
+export async function toggleCityMonitoringApi(slug) {
+  return await request(`/admin/cities/${encodeURIComponent(slug)}/status`, {
+    method: 'PUT',
+    body: JSON.stringify({})
+  });
+}
+
+export async function getAdminDataSourcesApi() {
+  return await request('/admin/data-sources');
+}
+
+export async function getAdminSystemHealthApi() {
+  return await request('/admin/system-health');
+}
+
+export async function getAdminForecastMonitorApi() {
+  return await request('/admin/forecasts');
+}
+
+export const getAdminForecastStatsApi = getAdminForecastMonitorApi;
+
+export async function getAdminAuditLogsApi(params = {}) {
+  const query = new URLSearchParams();
+  if (params.page) query.append('page', params.page);
+  if (params.limit) query.append('limit', params.limit);
+  if (params.action) query.append('action', params.action);
+  const qs = query.toString() ? `?${query.toString()}` : '';
+  return await request(`/admin/audit${qs}`);
+}
+
+
 

@@ -23,7 +23,9 @@ import {
   Droplets,
   CloudSun,
   AlertTriangle,
-  Compass
+  Compass,
+  Bell,
+  ShieldAlert
 } from 'lucide-react';
 
 export default function DashboardPage() {
@@ -101,24 +103,54 @@ export default function DashboardPage() {
             </p>
           </div>
 
-          <div className="flex items-center gap-3">
+          <div className="flex flex-wrap items-center gap-2.5">
+            <Link
+              to="/alerts"
+              className="px-3.5 py-2.5 rounded-xl border border-slate-200 text-slate-700 bg-white hover:bg-slate-50 font-semibold text-xs sm:text-sm transition-colors shadow-2xs flex items-center gap-1.5"
+            >
+              <Bell className="w-4 h-4 text-amber-500" />
+              <span>Alert Rules</span>
+            </Link>
             <Link
               to="/favorites"
-              className="px-4 py-2.5 rounded-xl border border-slate-200 text-slate-700 bg-white hover:bg-slate-50 font-semibold text-sm transition-colors shadow-2xs"
+              className="px-3.5 py-2.5 rounded-xl border border-slate-200 text-slate-700 bg-white hover:bg-slate-50 font-semibold text-xs sm:text-sm transition-colors shadow-2xs"
             >
               Manage Favorites
             </Link>
             {favorites.length >= 2 && (
               <Link
                 to={compareUrl}
-                className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-sm transition-colors shadow-xs"
+                className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-xs sm:text-sm transition-colors shadow-xs"
               >
                 <Layers className="w-4 h-4" />
-                <span>Compare Favorites</span>
+                <span>Compare</span>
               </Link>
             )}
           </div>
         </div>
+
+        {/* Admin Console Shortcut Banner for Admin Users */}
+        {user?.role === 'admin' && (
+          <div className="bg-purple-900 text-white rounded-2xl p-4 sm:p-5 flex items-center justify-between gap-4 border border-purple-800 shadow-sm animate-fadeIn">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-purple-800 text-purple-200 flex items-center justify-center shrink-0">
+                <ShieldAlert className="w-5 h-5 text-purple-300" />
+              </div>
+              <div>
+                <h4 className="text-sm font-bold">AeroSense Administrative Control Plane Active</h4>
+                <p className="text-2xs sm:text-xs text-purple-200">
+                  You are logged in with system administrator privileges. Access telemetry operations, user management, and forecast engine benchmarks.
+                </p>
+              </div>
+            </div>
+            <Link
+              to="/admin"
+              className="px-4 py-2 rounded-xl bg-white text-purple-900 hover:bg-purple-50 font-bold text-xs whitespace-nowrap transition-colors shadow-xs"
+            >
+              Open Console →
+            </Link>
+          </div>
+        )}
 
         {/* Top Metric Summary Cards */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">

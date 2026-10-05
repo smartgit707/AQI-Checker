@@ -10,6 +10,7 @@ import { fetchWeatherFromProvider } from '../providers/weatherProvider.js';
 import { envCache } from '../utils/cache.js';
 import { calculateAqiTrend } from '../utils/trendCalculator.js';
 import { INITIAL_AIR_QUALITY } from '../utils/seedData.js';
+import { generateCityInsights } from './insights/environmentalInsightService.js';
 
 export async function getAllAirQuality() {
   if (isDBConnected()) {
@@ -287,10 +288,20 @@ export async function getCityDashboard(slug) {
       pollutants: airQuality.pollutants,
       hourlyForecast: airQuality.hourlyForecast,
       source: airQuality.source,
-      isLive: airQuality.isLive
+      isLive: airQuality.isLive,
+      insights: generateCityInsights({
+        airQuality,
+        weather: airQuality.weather,
+        historyPoints: history7d?.points || []
+      })
     },
     weather: airQuality.weather,
     history: history7d,
+    insights: generateCityInsights({
+      airQuality,
+      weather: airQuality.weather,
+      historyPoints: history7d?.points || []
+    }),
     relatedCities: related,
     dataSources: [
       {

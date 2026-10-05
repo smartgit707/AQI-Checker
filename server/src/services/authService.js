@@ -19,12 +19,35 @@ IN_MEMORY_USERS.set('demo@aerosense.air', {
   name: 'Dr. Aarav Sharma',
   email: 'demo@aerosense.air',
   passwordHash: demoPasswordHash,
+  role: 'user',
+  isActive: true,
   avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80',
   favoriteCities: ['delhi', 'mumbai', 'bengaluru'],
   recentCities: [
     { slug: 'delhi', visitedAt: new Date(Date.now() - 1000 * 60 * 30) },
     { slug: 'varanasi', visitedAt: new Date(Date.now() - 1000 * 60 * 120) }
   ],
+  settings: {
+    temperatureUnit: 'C',
+    defaultDashboardView: 'detailed'
+  },
+  lastLoginAt: new Date(),
+  createdAt: new Date('2026-01-01T00:00:00Z'),
+  updatedAt: new Date()
+});
+
+// Initialize Admin Account in In-Memory Store
+const adminPasswordHash = bcrypt.hashSync('AdminPass2026!', 10);
+IN_MEMORY_USERS.set('admin@aerosense.air', {
+  _id: 'user_admin_001',
+  name: 'Director Environmental Operations',
+  email: 'admin@aerosense.air',
+  passwordHash: adminPasswordHash,
+  role: 'admin',
+  isActive: true,
+  avatar: '',
+  favoriteCities: ['delhi', 'mumbai', 'kolkata', 'chennai', 'bengaluru'],
+  recentCities: [],
   settings: {
     temperatureUnit: 'C',
     defaultDashboardView: 'detailed'
@@ -50,7 +73,8 @@ export function generateToken(user) {
   const payload = {
     id: user._id ? user._id.toString() : user.id,
     email: user.email,
-    name: user.name
+    name: user.name,
+    role: user.role || 'user'
   };
   return jwt.sign(payload, JWT_SECRET, { expiresIn: JWT_EXPIRES_IN });
 }
@@ -70,6 +94,8 @@ export function sanitizeUser(user) {
   delete userObj.__v;
   // Ensure string id
   userObj.id = (userObj._id || userObj.id || '').toString();
+  userObj.role = userObj.role || 'user';
+  userObj.isActive = userObj.isActive !== false;
   return userObj;
 }
 
@@ -104,6 +130,8 @@ export async function registerUser({ name, email, password }) {
       name: cleanName,
       email: cleanEmail,
       passwordHash,
+      role: 'user', // Always user, no privilege escalation
+      isActive: true,
       favoriteCities: [],
       recentCities: []
     });
@@ -124,6 +152,8 @@ export async function registerUser({ name, email, password }) {
     name: cleanName,
     email: cleanEmail,
     passwordHash,
+    role: 'user', // Always user, no privilege escalation
+    isActive: true,
     avatar: '',
     favoriteCities: [],
     recentCities: [],

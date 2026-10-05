@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
+import NotificationBell from '../notifications/NotificationBell';
 import { 
   Wind, 
   Search, 
@@ -17,7 +18,8 @@ import {
   LayoutDashboard,
   Settings,
   LogOut,
-  Sparkles
+  Sparkles,
+  ShieldAlert
 } from 'lucide-react';
 
 export default function Navbar({ onSelectCity, selectedCity }) {
@@ -129,6 +131,15 @@ export default function Navbar({ onSelectCity, selectedCity }) {
                   <Heart className="w-3.5 h-3.5 text-rose-500" />
                   <span>Favorites</span>
                 </Link>
+                {user?.role === 'admin' && (
+                  <Link
+                    to="/admin"
+                    className="px-3.5 py-2 rounded-lg text-sm font-bold text-purple-700 bg-purple-50/80 hover:bg-purple-100/80 transition-colors flex items-center gap-1.5"
+                  >
+                    <ShieldAlert className="w-3.5 h-3.5 text-purple-600" />
+                    <span>Admin</span>
+                  </Link>
+                )}
               </>
             )}
           </nav>
@@ -137,83 +148,124 @@ export default function Navbar({ onSelectCity, selectedCity }) {
           <div className="hidden md:flex items-center gap-3">
             {isAuthenticated ? (
               /* Authenticated User Menu */
-              <div className="relative" ref={dropdownRef}>
-                <button
-                  type="button"
-                  onClick={() => setUserDropdownOpen(!userDropdownOpen)}
-                  className="flex items-center gap-2.5 p-1.5 pr-3 rounded-full hover:bg-slate-100 border border-slate-200/80 transition-all text-left"
-                >
-                  <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-emerald-600 to-teal-500 text-white font-bold text-xs flex items-center justify-center shadow-xs">
-                    {user?.name ? user.name.charAt(0).toUpperCase() : 'U'}
-                  </div>
-                  <div className="hidden xl:block">
-                    <div className="text-xs font-bold text-slate-900 leading-tight max-w-[100px] truncate">
-                      {user?.name || 'Account'}
+              <div className="flex items-center gap-2">
+                {/* Part 7: Notification Bell with Badge & Dropdown */}
+                <NotificationBell />
+
+                <div className="relative" ref={dropdownRef}>
+                  <button
+                    type="button"
+                    onClick={() => setUserDropdownOpen(!userDropdownOpen)}
+                    className="flex items-center gap-2.5 p-1.5 pr-3 rounded-full hover:bg-slate-100 border border-slate-200/80 transition-all text-left"
+                  >
+                    <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-emerald-600 to-teal-500 text-white font-bold text-xs flex items-center justify-center shadow-xs">
+                      {user?.name ? user.name.charAt(0).toUpperCase() : 'U'}
                     </div>
-                    <div className="text-2xs text-slate-400 leading-tight">Environmentalist</div>
-                  </div>
-                  <ChevronDown className="w-3.5 h-3.5 text-slate-400" />
-                </button>
-
-                {/* Dropdown Menu */}
-                {userDropdownOpen && (
-                  <div className="absolute right-0 mt-2 w-64 rounded-2xl bg-white border border-slate-200/80 shadow-xl py-2 z-50 animate-fadeIn">
-                    <div className="px-4 py-3 border-b border-slate-100">
-                      <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Signed in as</p>
-                      <p className="text-sm font-bold text-slate-900 truncate mt-0.5">{user?.name}</p>
-                      <p className="text-xs text-slate-500 truncate">{user?.email}</p>
+                    <div className="hidden xl:block">
+                      <div className="text-xs font-bold text-slate-900 leading-tight max-w-[100px] truncate">
+                        {user?.name || 'Account'}
+                      </div>
+                      <div className="text-2xs text-slate-400 leading-tight">
+                        {user?.role === 'admin' ? 'Administrator' : 'Environmentalist'}
+                      </div>
                     </div>
+                    <ChevronDown className="w-3.5 h-3.5 text-slate-400" />
+                  </button>
 
-                    <div className="py-1">
-                      <Link
-                        to="/dashboard"
-                        onClick={() => setUserDropdownOpen(false)}
-                        className="flex items-center gap-2.5 px-4 py-2 text-xs font-medium text-slate-700 hover:bg-emerald-50 hover:text-emerald-700 transition-colors"
-                      >
-                        <LayoutDashboard className="w-4 h-4 text-emerald-600" />
-                        <span>Personal Dashboard</span>
-                      </Link>
+                  {/* Dropdown Menu */}
+                  {userDropdownOpen && (
+                    <div className="absolute right-0 mt-2 w-64 rounded-2xl bg-white border border-slate-200/80 shadow-xl py-2 z-50 animate-fadeIn">
+                      <div className="px-4 py-3 border-b border-slate-100">
+                        <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Signed in as</p>
+                        <p className="text-sm font-bold text-slate-900 truncate mt-0.5">{user?.name}</p>
+                        <p className="text-xs text-slate-500 truncate">{user?.email}</p>
+                        {user?.role === 'admin' && (
+                          <span className="inline-block mt-1 px-2 py-0.5 rounded text-2xs font-bold bg-purple-100 text-purple-800">
+                            System Administrator
+                          </span>
+                        )}
+                      </div>
 
-                      <Link
-                        to="/favorites"
-                        onClick={() => setUserDropdownOpen(false)}
-                        className="flex items-center gap-2.5 px-4 py-2 text-xs font-medium text-slate-700 hover:bg-emerald-50 hover:text-emerald-700 transition-colors"
-                      >
-                        <Heart className="w-4 h-4 text-rose-500" />
-                        <span>Monitored Favorites ({user?.favoriteCities?.length || 0})</span>
-                      </Link>
+                      <div className="py-1">
+                        {user?.role === 'admin' && (
+                          <Link
+                            to="/admin"
+                            onClick={() => setUserDropdownOpen(false)}
+                            className="flex items-center gap-2.5 px-4 py-2 text-xs font-bold text-purple-700 bg-purple-50/50 hover:bg-purple-100/70 transition-colors"
+                          >
+                            <ShieldAlert className="w-4 h-4 text-purple-600" />
+                            <span>Administrative Console</span>
+                          </Link>
+                        )}
 
-                      <Link
-                        to="/profile"
-                        onClick={() => setUserDropdownOpen(false)}
-                        className="flex items-center gap-2.5 px-4 py-2 text-xs font-medium text-slate-700 hover:bg-emerald-50 hover:text-emerald-700 transition-colors"
-                      >
-                        <User className="w-4 h-4 text-slate-400" />
-                        <span>Profile Overview</span>
-                      </Link>
+                        <Link
+                          to="/dashboard"
+                          onClick={() => setUserDropdownOpen(false)}
+                          className="flex items-center gap-2.5 px-4 py-2 text-xs font-medium text-slate-700 hover:bg-emerald-50 hover:text-emerald-700 transition-colors"
+                        >
+                          <LayoutDashboard className="w-4 h-4 text-emerald-600" />
+                          <span>Personal Dashboard</span>
+                        </Link>
 
-                      <Link
-                        to="/settings"
-                        onClick={() => setUserDropdownOpen(false)}
-                        className="flex items-center gap-2.5 px-4 py-2 text-xs font-medium text-slate-700 hover:bg-emerald-50 hover:text-emerald-700 transition-colors"
-                      >
-                        <Settings className="w-4 h-4 text-slate-400" />
-                        <span>Settings & Security</span>
-                      </Link>
+                        <Link
+                          to="/favorites"
+                          onClick={() => setUserDropdownOpen(false)}
+                          className="flex items-center gap-2.5 px-4 py-2 text-xs font-medium text-slate-700 hover:bg-emerald-50 hover:text-emerald-700 transition-colors"
+                        >
+                          <Heart className="w-4 h-4 text-rose-500" />
+                          <span>Monitored Favorites ({user?.favoriteCities?.length || 0})</span>
+                        </Link>
+
+                        <Link
+                          to="/alerts"
+                          onClick={() => setUserDropdownOpen(false)}
+                          className="flex items-center gap-2.5 px-4 py-2 text-xs font-medium text-slate-700 hover:bg-emerald-50 hover:text-emerald-700 transition-colors"
+                        >
+                          <Bell className="w-4 h-4 text-amber-500" />
+                          <span>Threshold Alert Rules</span>
+                        </Link>
+
+                        <Link
+                          to="/notifications"
+                          onClick={() => setUserDropdownOpen(false)}
+                          className="flex items-center gap-2.5 px-4 py-2 text-xs font-medium text-slate-700 hover:bg-emerald-50 hover:text-emerald-700 transition-colors"
+                        >
+                          <Sparkles className="w-4 h-4 text-teal-500" />
+                          <span>Notifications Inbox</span>
+                        </Link>
+
+                        <Link
+                          to="/profile"
+                          onClick={() => setUserDropdownOpen(false)}
+                          className="flex items-center gap-2.5 px-4 py-2 text-xs font-medium text-slate-700 hover:bg-emerald-50 hover:text-emerald-700 transition-colors"
+                        >
+                          <User className="w-4 h-4 text-slate-400" />
+                          <span>Profile Overview</span>
+                        </Link>
+
+                        <Link
+                          to="/settings"
+                          onClick={() => setUserDropdownOpen(false)}
+                          className="flex items-center gap-2.5 px-4 py-2 text-xs font-medium text-slate-700 hover:bg-emerald-50 hover:text-emerald-700 transition-colors"
+                        >
+                          <Settings className="w-4 h-4 text-slate-400" />
+                          <span>Settings & Security</span>
+                        </Link>
+                      </div>
+
+                      <div className="pt-1 border-t border-slate-100">
+                        <button
+                          type="button"
+                          onClick={handleLogout}
+                          className="w-full flex items-center gap-2.5 px-4 py-2 text-xs font-medium text-rose-600 hover:bg-rose-50 transition-colors text-left"
+                        >
+                          <LogOut className="w-4 h-4" />
+                          <span>Sign Out</span>
+                        </button>
+                      </div>
                     </div>
-
-                    <div className="pt-1 border-t border-slate-100">
-                      <button
-                        type="button"
-                        onClick={handleLogout}
-                        className="w-full flex items-center gap-2.5 px-4 py-2 text-xs font-medium text-rose-600 hover:bg-rose-50 transition-colors text-left"
-                      >
-                        <LogOut className="w-4 h-4" />
-                        <span>Sign Out</span>
-                      </button>
-                    </div>
-                  </div>
-                )}
+                  )}
+                </div>
               </div>
             ) : (
               /* Public Visitor Actions */
@@ -236,6 +288,7 @@ export default function Navbar({ onSelectCity, selectedCity }) {
 
           {/* Mobile Menu Button */}
           <div className="flex items-center gap-2 lg:hidden">
+            {isAuthenticated && <NotificationBell />}
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               className="p-2 rounded-lg text-slate-600 hover:text-slate-900 hover:bg-slate-100 focus:outline-none"
@@ -297,6 +350,16 @@ export default function Navbar({ onSelectCity, selectedCity }) {
 
             {isAuthenticated ? (
               <>
+                {user?.role === 'admin' && (
+                  <Link
+                    to="/admin"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="px-3 py-2.5 rounded-lg text-base font-bold text-purple-700 hover:bg-purple-50 transition-colors flex items-center gap-2"
+                  >
+                    <ShieldAlert className="w-4 h-4 text-purple-600" />
+                    <span>Administrative Console</span>
+                  </Link>
+                )}
                 <Link
                   to="/favorites"
                   onClick={() => setMobileMenuOpen(false)}
@@ -304,6 +367,22 @@ export default function Navbar({ onSelectCity, selectedCity }) {
                 >
                   <Heart className="w-4 h-4 text-rose-500" />
                   <span>Monitored Favorites</span>
+                </Link>
+                <Link
+                  to="/alerts"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="px-3 py-2.5 rounded-lg text-base font-medium text-slate-700 hover:text-emerald-700 hover:bg-emerald-50/60 transition-colors flex items-center gap-2"
+                >
+                  <Bell className="w-4 h-4 text-amber-500" />
+                  <span>Threshold Alert Rules</span>
+                </Link>
+                <Link
+                  to="/notifications"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="px-3 py-2.5 rounded-lg text-base font-medium text-slate-700 hover:text-emerald-700 hover:bg-emerald-50/60 transition-colors flex items-center gap-2"
+                >
+                  <Sparkles className="w-4 h-4 text-teal-500" />
+                  <span>Notifications Inbox</span>
                 </Link>
                 <Link
                   to="/profile"

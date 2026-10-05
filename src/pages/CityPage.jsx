@@ -14,6 +14,9 @@ import Footer from '../components/layout/Footer';
 import CityHero from '../components/city/CityHero';
 import HistoricalAQISection from '../components/city/HistoricalAQISection';
 import CityProfileSection from '../components/city/CityProfileSection';
+import ForecastSection from '../components/city/ForecastSection';
+import InsightsCard from '../components/city/InsightsCard';
+import AlertModal from '../components/city/AlertModal';
 import CurrentAirQuality from '../components/home/CurrentAirQuality';
 import PollutantBreakdown from '../components/home/PollutantBreakdown';
 import WeatherEnvironment from '../components/home/WeatherEnvironment';
@@ -120,6 +123,7 @@ export default function CityPage() {
   const [period, setPeriod] = useState('7d');
   const [historyData, setHistoryData] = useState(() => buildFallbackDashboard(slug)?.history || null);
   const [mapStations, setMapStations] = useState([]);
+  const [isAlertModalOpen, setIsAlertModalOpen] = useState(false);
 
   // Record visited city in recent history asynchronously
   useEffect(() => {
@@ -285,12 +289,20 @@ export default function CityPage() {
 
       <main className="flex-1">
         {/* 2. City Visual Hero */}
-        <CityHero city={city} airQuality={airQuality} weather={weather} />
+        <CityHero 
+          city={city} 
+          airQuality={airQuality} 
+          weather={weather} 
+          onOpenAlertModal={() => setIsAlertModalOpen(true)} 
+        />
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           
           {/* 3. Real-Time Condition & SVG Gauge */}
           <CurrentAirQuality city={adaptedCity} />
+
+          {/* Part 7: Factual Atmospheric Insights */}
+          <InsightsCard insights={airQuality?.insights} cityName={city.name} />
 
           {/* 4. Chemical Pollutant Breakdown Cards */}
           <PollutantBreakdown pollutants={airQuality.pollutants} cityName={city.name} />
@@ -301,6 +313,9 @@ export default function CityPage() {
             currentPeriod={period}
             onPeriodChange={handlePeriodChange}
           />
+
+          {/* Part 7: Time-Series Statistical Forecasting (AeroCast) */}
+          <ForecastSection citySlug={city.slug || slug} cityName={city.name} />
 
           {/* 6. Synoptic Meteorology Layer */}
           <WeatherEnvironment city={adaptedCity} />
@@ -340,6 +355,15 @@ export default function CityPage() {
 
         </div>
       </main>
+
+      {/* Part 7: Real-time AQI Alert Configuration Modal */}
+      <AlertModal
+        isOpen={isAlertModalOpen}
+        onClose={() => setIsAlertModalOpen(false)}
+        citySlug={city.slug || slug}
+        cityName={city.name}
+        currentAqi={airQuality?.aqi || 100}
+      />
 
       <Footer />
     </div>

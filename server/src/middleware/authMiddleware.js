@@ -45,7 +45,17 @@ export async function authenticateUser(req, res, next) {
       });
     }
 
-    req.user = decoded;
+    if (user.isActive === false) {
+      return res.status(403).json({
+        success: false,
+        message: 'Your account has been deactivated by an administrator.'
+      });
+    }
+
+    req.user = {
+      ...decoded,
+      role: user.role || decoded.role || 'user'
+    };
     next();
   } catch (error) {
     return res.status(401).json({
@@ -53,6 +63,20 @@ export async function authenticateUser(req, res, next) {
       message: 'Authentication failed.'
     });
   }
+}
+
+/**
+ * Strict Administrative Authorization Middleware.
+ * Rejects requests from non-admin users with 403 Forbidden.
+ */
+export function requireAdmin(req, res, next) {
+  if (!req.user || req.user.role !== 'admin') {
+    return res.status(403).json({
+      success: false,
+      message: 'Access denied. Administrative privileges are required.'
+    });
+  }
+  next();
 }
 
 /**
@@ -66,8 +90,11 @@ export async function optionalAuth(req, res, next) {
       const decoded = verifyToken(token);
       if (decoded) {
         const user = await findUserById(decoded.id);
-        if (user) {
-          req.user = decoded;
+        if (user && user.isActive !== false) {
+          req.user = {
+            ...decoded,
+            role: user.role || decoded.role || 'user'
+          };
         }
       }
     }

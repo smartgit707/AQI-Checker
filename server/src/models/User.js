@@ -58,6 +58,16 @@ const UserSchema = new mongoose.Schema(
         default: 'detailed'
       }
     },
+    role: {
+      type: String,
+      enum: ['user', 'admin'],
+      default: 'user',
+      index: true
+    },
+    isActive: {
+      type: Boolean,
+      default: true
+    },
     lastLoginAt: {
       type: Date,
       default: Date.now

@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
-import { MapPin, Clock, Radio, ShieldCheck, Share2, ArrowLeft, GitCompare, Heart } from 'lucide-react';
+import { MapPin, Clock, Radio, ShieldCheck, Share2, ArrowLeft, GitCompare, Heart, Bell } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import OptimizedImage from '../common/OptimizedImage';
 import { getAQILevel } from '../../design-system/aqiTokens';
 import { useAuth } from '../../context/AuthContext';
 
-export default function CityHero({ city, airQuality, weather }) {
+export default function CityHero({ city, airQuality, weather, onOpenAlertModal }) {
   const level = getAQILevel(airQuality?.aqi || 50);
   const { isAuthenticated, isFavorite, toggleFavorite } = useAuth();
   const navigate = useNavigate();
@@ -26,6 +26,16 @@ export default function CityHero({ city, airQuality, weather }) {
     } else if (res.error) {
       setFavoriteNotice(res.error);
       setTimeout(() => setFavoriteNotice(''), 3500);
+    }
+  };
+
+  const handleAlertClick = () => {
+    if (!isAuthenticated) {
+      navigate(`/login?redirect=/city/${citySlug}`);
+      return;
+    }
+    if (onOpenAlertModal) {
+      onOpenAlertModal();
     }
   };
 
@@ -95,6 +105,16 @@ export default function CityHero({ city, airQuality, weather }) {
                 }`}
               />
               <span>{favorited ? 'Favorited ♥' : 'Save to Favorites'}</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={handleAlertClick}
+              title="Set AQI threshold alert"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-amber-500/20 hover:bg-amber-500/30 text-amber-200 border border-amber-500/40 text-xs font-bold transition-all shadow-xs"
+            >
+              <Bell className="w-3.5 h-3.5 text-amber-400" />
+              <span>Set Alert</span>
             </button>
 
             <Link
