@@ -8,6 +8,7 @@
     "start": "node src/server.js",
     "dev": "node --watch src/server.js",
     "seed": "node src/scripts/seed.js",
+    "db:dump": "node scripts/generate_sql_dump.js",
     "db:init": "node -e \"import('./src/config/db.js').then(m => m.connectDB()).then(() => process.exit(0)).catch(() => process.exit(1))\""
   },
   "dependencies": {
