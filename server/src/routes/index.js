@@ -60,4 +60,5 @@ export function configureRoutes(app) {
   apiV1.use('/compare', compareRoutes);
 
   app.use('/api/v1', apiV1);
+  app.use('/v1', apiV1);
 }
