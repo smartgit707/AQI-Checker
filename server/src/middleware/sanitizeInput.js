@@ -1,46 +1,52 @@
 /**
- * NoSQL Injection Protection Middleware
+ * Input Sanitization Middleware
  * Recursively inspects incoming request body, parameters, and query strings.
- * Removes MongoDB query operators ($gt, $ne, $where, etc.) and dot notation keys.
+ * Safely mutates objects in-place to avoid Express 5 / Node getter-only property errors.
  */
 
-function cleanObject(obj) {
+function cleanObjectInPlace(obj) {
   if (!obj || typeof obj !== 'object') {
-    return obj;
+    return;
   }
 
   if (Array.isArray(obj)) {
-    return obj.map(cleanObject);
+    for (let i = 0; i < obj.length; i++) {
+      if (obj[i] && typeof obj[i] === 'object') {
+        cleanObjectInPlace(obj[i]);
+      }
+    }
+    return;
   }
 
-  const cleaned = {};
-  for (const [key, value] of Object.entries(obj)) {
-    // Prohibit keys starting with $ (MongoDB operators) or containing dots
+  for (const key of Object.keys(obj)) {
+    // Prohibit keys starting with $ (injection operators) or containing dots
     if (key.startsWith('$') || key.includes('.')) {
+      delete obj[key];
       continue;
     }
 
-    if (value && typeof value === 'object') {
-      cleaned[key] = cleanObject(value);
-    } else {
-      cleaned[key] = value;
+    if (obj[key] && typeof obj[key] === 'object') {
+      cleanObjectInPlace(obj[key]);
     }
   }
-
-  return cleaned;
 }
 
 export function sanitizeInput(req, res, next) {
-  if (req.body) {
-    req.body = cleanObject(req.body);
-  }
+  try {
+    if (req.body && typeof req.body === 'object') {
+      cleanObjectInPlace(req.body);
+    }
 
-  if (req.query) {
-    req.query = cleanObject(req.query);
-  }
+    if (req.query && typeof req.query === 'object') {
+      cleanObjectInPlace(req.query);
+    }
 
-  if (req.params) {
-    req.params = cleanObject(req.params);
+    if (req.params && typeof req.params === 'object') {
+      cleanObjectInPlace(req.params);
+    }
+  } catch (err) {
+    // Non-blocking fail-safe
+    console.warn('[SanitizeInput Warning]', err.message);
   }
 
   next();
