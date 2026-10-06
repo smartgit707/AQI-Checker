@@ -1,4 +1,4 @@
-import Alert from '../models/Alert.js';
+import * as alertRepository from '../db/repositories/alertRepository.js';
 import { isDBConnected } from '../config/db.js';
 import { getCityBySlug } from './cityService.js';
 
@@ -13,7 +13,7 @@ export function getInMemoryAlerts() {
 
 export async function getUserAlerts(userId) {
   if (isDBConnected()) {
-    return await Alert.find({ userId }).sort({ createdAt: -1 });
+    return await alertRepository.findAlertsByUserId(userId);
   }
 
   return IN_MEMORY_ALERTS.filter((a) => a.userId === userId);
@@ -38,18 +38,12 @@ export async function createAlert(userId, data = {}) {
   const normalizedOp = ['below', 'lt', 'lte'].includes(operator) ? 'below' : (operator === 'gte' ? 'gte' : 'above');
 
   if (isDBConnected()) {
-    // Check if duplicate alert exists
-    const existing = await Alert.findOne({
-      userId,
-      citySlug: cleanSlug,
-      threshold: numericThreshold
-    });
-
+    const existing = await alertRepository.findAlertByUserCityThreshold(userId, cleanSlug, numericThreshold);
     if (existing) {
       throw new Error(`An alert for ${cityName} with threshold ${numericThreshold} already exists.`);
     }
 
-    const alert = new Alert({
+    return await alertRepository.insertAlert({
       userId,
       citySlug: cleanSlug,
       cityName,
@@ -58,8 +52,6 @@ export async function createAlert(userId, data = {}) {
       enabled: true,
       cooldownHours: Math.min(48, Math.max(1, Number(cooldownHours) || 6))
     });
-
-    return await alert.save();
   }
 
   // Fallback in-memory
@@ -99,15 +91,9 @@ export async function updateAlert(userId, alertId, updates = {}) {
   }
 
   if (isDBConnected()) {
-    const alert = await Alert.findOne({ _id: alertId, userId });
-    if (!alert) throw new Error('Alert not found');
-
-    if (updates.threshold !== undefined) alert.threshold = Number(updates.threshold);
-    if (updates.operator !== undefined) alert.operator = updates.operator;
-    if (updates.enabled !== undefined) alert.enabled = Boolean(updates.enabled);
-    if (updates.cooldownHours !== undefined) alert.cooldownHours = Number(updates.cooldownHours);
-
-    return await alert.save();
+    const updated = await alertRepository.updateAlertById(alertId, userId, updates);
+    if (!updated) throw new Error('Alert not found');
+    return updated;
   }
 
   const idx = IN_MEMORY_ALERTS.findIndex((a) => a._id === alertId && a.userId === userId);
@@ -125,7 +111,7 @@ export async function updateAlert(userId, alertId, updates = {}) {
 
 export async function deleteAlert(userId, alertId) {
   if (isDBConnected()) {
-    const result = await Alert.findOneAndDelete({ _id: alertId, userId });
+    const result = await alertRepository.deleteAlertById(alertId, userId);
     if (!result) throw new Error('Alert not found');
     return true;
   }

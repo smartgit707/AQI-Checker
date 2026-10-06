@@ -1,4 +1,4 @@
-import User from '../models/User.js';
+import * as userRepository from '../db/repositories/userRepository.js';
 import { isDBConnected } from '../config/db.js';
 import { getInMemoryUsers, sanitizeUser, hashPassword, comparePassword } from './authService.js';
 import { getLatestAirQualityForCity } from './airQualityService.js';
@@ -9,7 +9,7 @@ import { getCityBySlug } from './cityService.js';
  */
 export async function findUserById(userId) {
   if (isDBConnected()) {
-    return await User.findById(userId);
+    return await userRepository.findUserById(userId);
   }
 
   const users = getInMemoryUsers();
@@ -37,17 +37,9 @@ export async function getUserProfile(userId) {
  */
 export async function updateUserProfile(userId, { name, avatar, settings }) {
   if (isDBConnected()) {
-    const user = await User.findById(userId);
-    if (!user) throw new Error('User not found');
-
-    if (name) user.name = name.trim();
-    if (avatar !== undefined) user.avatar = avatar;
-    if (settings) {
-      user.settings = { ...user.settings, ...settings };
-    }
-
-    await user.save();
-    return sanitizeUser(user);
+    const updated = await userRepository.updateUser(userId, { name, avatar, settings });
+    if (!updated) throw new Error('User not found');
+    return sanitizeUser(updated);
   }
 
   const user = await findUserById(userId);
@@ -71,20 +63,6 @@ export async function changePassword(userId, { currentPassword, newPassword }) {
     throw new Error('New password must be at least 6 characters long');
   }
 
-  if (isDBConnected()) {
-    const user = await User.findById(userId).select('+passwordHash');
-    if (!user) throw new Error('User not found');
-
-    const isMatch = await comparePassword(currentPassword, user.passwordHash);
-    if (!isMatch) {
-      throw new Error('Current password is incorrect');
-    }
-
-    user.passwordHash = await hashPassword(newPassword);
-    await user.save();
-    return true;
-  }
-
   const user = await findUserById(userId);
   if (!user) throw new Error('User not found');
 
@@ -93,7 +71,14 @@ export async function changePassword(userId, { currentPassword, newPassword }) {
     throw new Error('Current password is incorrect');
   }
 
-  user.passwordHash = await hashPassword(newPassword);
+  const newHash = await hashPassword(newPassword);
+
+  if (isDBConnected()) {
+    await userRepository.updatePassword(userId, newHash);
+    return true;
+  }
+
+  user.passwordHash = newHash;
   user.updatedAt = new Date();
   return true;
 }
@@ -103,8 +88,7 @@ export async function changePassword(userId, { currentPassword, newPassword }) {
  */
 export async function deleteUserAccount(userId) {
   if (isDBConnected()) {
-    const result = await User.findByIdAndDelete(userId);
-    return !!result;
+    return await userRepository.deleteUser(userId);
   }
 
   const users = getInMemoryUsers();
@@ -187,9 +171,7 @@ export async function addFavoriteCity(userId, citySlug) {
   }
 
   if (isDBConnected()) {
-    user.favoriteCities.push(cleanSlug);
-    await user.save();
-    return user.favoriteCities;
+    return await userRepository.addUserFavorite(userId, cleanSlug);
   }
 
   user.favoriteCities = [...favorites, cleanSlug];
@@ -206,9 +188,7 @@ export async function removeFavoriteCity(userId, citySlug) {
   if (!user) throw new Error('User not found');
 
   if (isDBConnected()) {
-    user.favoriteCities = (user.favoriteCities || []).filter((s) => s !== cleanSlug);
-    await user.save();
-    return user.favoriteCities;
+    return await userRepository.removeUserFavorite(userId, cleanSlug);
   }
 
   user.favoriteCities = (user.favoriteCities || []).filter((s) => s !== cleanSlug);
@@ -224,15 +204,14 @@ export async function addRecentCity(userId, citySlug) {
   const user = await findUserById(userId);
   if (!user) return [];
 
+  if (isDBConnected()) {
+    const list = await userRepository.addUserRecentCity(userId, cleanSlug);
+    return list;
+  }
+
   const existing = user.recentCities || [];
   const filtered = existing.filter((item) => item.slug !== cleanSlug);
   const updated = [{ slug: cleanSlug, visitedAt: new Date() }, ...filtered].slice(0, 10);
-
-  if (isDBConnected()) {
-    user.recentCities = updated;
-    await user.save();
-    return user.recentCities;
-  }
 
   user.recentCities = updated;
   user.updatedAt = new Date();

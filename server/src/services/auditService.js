@@ -1,4 +1,4 @@
-import AuditLog from '../models/AuditLog.js';
+import * as auditRepository from '../db/repositories/auditRepository.js';
 import { isDBConnected } from '../config/db.js';
 
 /**
@@ -22,7 +22,7 @@ export async function logAdminAction(entry = {}) {
   const { actorUserId, actorEmail, action, resourceType, resourceId = '', details = {}, ipAddress = '' } = entry;
 
   if (isDBConnected()) {
-    const log = new AuditLog({
+    return await auditRepository.insertAuditLog({
       actorUserId,
       actorEmail,
       action,
@@ -31,7 +31,6 @@ export async function logAdminAction(entry = {}) {
       details,
       ipAddress
     });
-    return await log.save();
   }
 
   const logEntry = {
@@ -53,29 +52,12 @@ export async function logAdminAction(entry = {}) {
 export async function getAuditLogs(options = {}) {
   const page = Math.max(1, Number(options.page) || 1);
   const limit = Math.min(50, Math.max(1, Number(options.limit) || 20));
-  const skip = (page - 1) * limit;
 
   if (isDBConnected()) {
-    const query = {};
-    if (options.action) query.action = options.action;
-    if (options.resourceType) query.resourceType = options.resourceType;
-
-    const [logs, total] = await Promise.all([
-      AuditLog.find(query).sort({ createdAt: -1 }).skip(skip).limit(limit),
-      AuditLog.countDocuments(query)
-    ]);
-
-    return {
-      logs,
-      pagination: {
-        page,
-        limit,
-        total,
-        totalPages: Math.ceil(total / limit)
-      }
-    };
+    return await auditRepository.findAuditLogs(options);
   }
 
+  const skip = (page - 1) * limit;
   let filtered = [...IN_MEMORY_AUDIT_LOGS];
   if (options.action) {
     filtered = filtered.filter((l) => l.action === options.action);

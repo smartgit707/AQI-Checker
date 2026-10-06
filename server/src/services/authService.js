@@ -1,6 +1,6 @@
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
-import User from '../models/User.js';
+import * as userRepository from '../db/repositories/userRepository.js';
 import { isDBConnected } from '../config/db.js';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'aerosense_jwt_secure_secret_production_2026_xyz!';
@@ -120,22 +120,19 @@ export async function registerUser({ name, email, password }) {
   }
 
   if (isDBConnected()) {
-    const existing = await User.findOne({ email: cleanEmail });
+    const existing = await userRepository.findUserByEmail(cleanEmail);
     if (existing) {
       throw new Error('An account with this email already exists');
     }
 
     const passwordHash = await hashPassword(password);
-    const user = new User({
+    const user = await userRepository.insertUser({
       name: cleanName,
       email: cleanEmail,
       passwordHash,
-      role: 'user', // Always user, no privilege escalation
-      isActive: true,
-      favoriteCities: [],
-      recentCities: []
+      role: 'user',
+      avatar: ''
     });
-    await user.save();
 
     const token = generateToken(user);
     return { user: sanitizeUser(user), token };
@@ -182,7 +179,7 @@ export async function loginUser({ email, password }) {
   const cleanEmail = email.trim().toLowerCase();
 
   if (isDBConnected()) {
-    const user = await User.findOne({ email: cleanEmail }).select('+passwordHash');
+    const user = await userRepository.findUserByEmail(cleanEmail);
     if (!user) {
       throw new Error('Invalid email or password');
     }
@@ -192,8 +189,8 @@ export async function loginUser({ email, password }) {
       throw new Error('Invalid email or password');
     }
 
+    await userRepository.updateLastLogin(user.id);
     user.lastLoginAt = new Date();
-    await user.save();
 
     const token = generateToken(user);
     return { user: sanitizeUser(user), token };

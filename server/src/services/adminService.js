@@ -1,7 +1,6 @@
-import User from '../models/User.js';
-import City from '../models/City.js';
-import Alert from '../models/Alert.js';
-import Notification from '../models/Notification.js';
+import * as userRepository from '../db/repositories/userRepository.js';
+import * as alertRepository from '../db/repositories/alertRepository.js';
+import * as notificationRepository from '../db/repositories/notificationRepository.js';
 import { isDBConnected, getDBStatus } from '../config/db.js';
 import { getInMemoryUsers, sanitizeUser } from './authService.js';
 import { getAllCities, getCityBySlug, updateCity } from './cityService.js';
@@ -18,10 +17,10 @@ export async function getAdminOverview() {
 
   if (isDBConnected()) {
     [totalUsers, activeUsers, activeAlerts, totalNotifications] = await Promise.all([
-      User.countDocuments(),
-      User.countDocuments({ isActive: true }),
-      Alert.countDocuments({ enabled: true }),
-      Notification.countDocuments()
+      userRepository.countUsers(),
+      userRepository.countUsers({ isActive: true }),
+      alertRepository.countAlerts({ enabled: true }),
+      notificationRepository.countTotalNotifications()
     ]);
   } else {
     const users = Array.from(getInMemoryUsers().values());
@@ -59,19 +58,14 @@ export async function getAdminUsers(options = {}) {
   const skip = (page - 1) * limit;
 
   if (isDBConnected()) {
-    const query = {};
-    if (options.search) {
-      const regex = new RegExp(options.search, 'i');
-      query.$or = [{ name: regex }, { email: regex }];
-    }
-
-    const [rawUsers, total] = await Promise.all([
-      User.find(query).sort({ createdAt: -1 }).skip(skip).limit(limit),
-      User.countDocuments(query)
-    ]);
+    const { users, total } = await userRepository.findAllUsers({
+      search: options.search || '',
+      limit,
+      offset: skip
+    });
 
     return {
-      users: rawUsers.map(sanitizeUser),
+      users: users.map(sanitizeUser),
       pagination: {
         page,
         limit,
@@ -103,10 +97,11 @@ export async function getAdminUsers(options = {}) {
 
 export async function toggleUserStatus(targetUserId, isActive, adminActor = {}) {
   if (isDBConnected()) {
-    const user = await User.findById(targetUserId);
+    const user = await userRepository.findUserById(targetUserId);
     if (!user) throw new Error('Target user not found');
-    user.isActive = Boolean(isActive);
-    await user.save();
+    
+    await userRepository.updateUser(targetUserId, { isActive: Boolean(isActive) });
+    const updatedUser = await userRepository.findUserById(targetUserId);
 
     await logAdminAction({
       actorUserId: adminActor.id || 'admin',
@@ -117,7 +112,7 @@ export async function toggleUserStatus(targetUserId, isActive, adminActor = {}) 
       details: { previousStatus: !isActive, newStatus: isActive, targetEmail: user.email }
     });
 
-    return sanitizeUser(user);
+    return sanitizeUser(updatedUser);
   }
 
   const users = getInMemoryUsers();
@@ -223,7 +218,7 @@ export async function getAdminSystemHealth() {
       },
       database: {
         status: getDBStatus() === 'connected' ? 'connected' : 'disconnected-in-memory-fallback',
-        mode: isDBConnected() ? 'MongoDB Cluster' : 'In-Memory Resilient Registry'
+        mode: isDBConnected() ? 'MySQL Relational Cluster' : 'In-Memory Resilient Registry'
       },
       caching: {
         status: 'active',

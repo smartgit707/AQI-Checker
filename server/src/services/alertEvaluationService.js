@@ -1,4 +1,4 @@
-import Alert from '../models/Alert.js';
+import * as alertRepository from '../db/repositories/alertRepository.js';
 import { isDBConnected } from '../config/db.js';
 import { getInMemoryAlerts } from './alertService.js';
 import { createNotification } from './notificationService.js';
@@ -11,7 +11,7 @@ export async function evaluateAlertsForCity(citySlug, currentAqi) {
   let activeAlerts = [];
 
   if (isDBConnected()) {
-    activeAlerts = await Alert.find({ citySlug: cleanSlug, enabled: true });
+    activeAlerts = await alertRepository.findActiveAlertsByCity(cleanSlug);
   } else {
     activeAlerts = getInMemoryAlerts().filter((a) => a.citySlug === cleanSlug && a.enabled);
   }
@@ -33,8 +33,8 @@ export async function evaluateAlertsForCity(citySlug, currentAqi) {
       if (now - lastTriggered > cooldownMs) {
         // Cooldown passed, trigger notification!
         alert.lastTriggeredAt = new Date();
-        if (isDBConnected() && typeof alert.save === 'function') {
-          await alert.save();
+        if (isDBConnected()) {
+          await alertRepository.updateAlertLastTriggered(alert.id || alert._id);
         }
 
         await createNotification({

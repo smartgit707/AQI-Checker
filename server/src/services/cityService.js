@@ -1,42 +1,24 @@
-import City from '../models/City.js';
+import * as cityRepository from '../db/repositories/cityRepository.js';
 import { isDBConnected } from '../config/db.js';
 import { INITIAL_CITIES } from '../utils/seedData.js';
 
 /**
  * City Service Layer
- * Abstracts database interactions. Automatically falls back to in-memory mock catalog if MongoDB is unavailable.
+ * Abstracts database interactions. Automatically falls back to in-memory mock catalog if MySQL is unavailable.
  */
 
 export async function getAllCities(options = {}) {
   const { search = '', state = '', limit = 20, page = 1 } = options;
 
   if (isDBConnected()) {
-    const query = { isActive: true };
-
-    if (search) {
-      query.$or = [
-        { name: { $regex: search, $options: 'i' } },
-        { state: { $regex: search, $options: 'i' } }
-      ];
-    }
-
-    if (state) {
-      query.state = { $regex: state, $options: 'i' };
-    }
-
-    const skip = (Math.max(1, page) - 1) * Math.max(1, limit);
-    const [cities, total] = await Promise.all([
-      City.find(query).skip(skip).limit(Number(limit)).sort({ name: 1 }),
-      City.countDocuments(query)
-    ]);
-
+    const result = await cityRepository.findAllCities({ search, state, limit, page });
     return {
-      cities,
+      cities: result.cities,
       pagination: {
-        page: Number(page),
-        limit: Number(limit),
-        total,
-        totalPages: Math.ceil(total / limit)
+        page: result.page,
+        limit: result.limit,
+        total: result.total,
+        totalPages: result.totalPages
       }
     };
   }
@@ -69,7 +51,7 @@ export async function getAllCities(options = {}) {
 
 export async function getCityBySlug(slug) {
   if (isDBConnected()) {
-    return await City.findOne({ slug: slug.toLowerCase(), isActive: true });
+    return await cityRepository.findCityBySlug(slug);
   }
 
   return INITIAL_CITIES.find(c => c.slug === slug.toLowerCase()) || null;
@@ -77,7 +59,7 @@ export async function getCityBySlug(slug) {
 
 export async function getCityById(id) {
   if (isDBConnected()) {
-    return await City.findById(id);
+    return await cityRepository.findCityById(id);
   }
 
   return INITIAL_CITIES.find(c => c._id === id || c.slug === id) || null;
@@ -96,8 +78,7 @@ export async function createCity(data) {
     return newCity;
   }
 
-  const city = new City(data);
-  return await city.save();
+  return await cityRepository.insertCity(data);
 }
 
 export async function updateCity(id, updateData) {
@@ -108,7 +89,7 @@ export async function updateCity(id, updateData) {
     return INITIAL_CITIES[idx];
   }
 
-  return await City.findByIdAndUpdate(id, updateData, { new: true, runValidators: true });
+  return await cityRepository.updateCityById(id, updateData);
 }
 
 export async function deleteCity(id) {
@@ -119,6 +100,5 @@ export async function deleteCity(id) {
     return true;
   }
 
-  const res = await City.findByIdAndDelete(id);
-  return !!res;
+  return await cityRepository.deleteCityById(id);
 }

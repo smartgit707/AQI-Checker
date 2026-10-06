@@ -1,4 +1,4 @@
-import DataSource from '../models/DataSource.js';
+import * as dataSourceRepository from '../db/repositories/dataSourceRepository.js';
 import { isDBConnected } from '../config/db.js';
 import { INITIAL_DATA_SOURCES } from '../utils/seedData.js';
 
@@ -9,7 +9,7 @@ import { INITIAL_DATA_SOURCES } from '../utils/seedData.js';
 
 export async function getAllDataSources() {
   if (isDBConnected()) {
-    return await DataSource.find({ active: true }).sort({ name: 1 });
+    return await dataSourceRepository.findAllDataSources();
   }
 
   return INITIAL_DATA_SOURCES;
@@ -17,8 +17,8 @@ export async function getAllDataSources() {
 
 export async function getDataSourceById(id) {
   if (isDBConnected()) {
-    return await DataSource.findById(id);
+    return await dataSourceRepository.findDataSourceById(id);
   }
 
-  return INITIAL_DATA_SOURCES.find(s => s._id === id) || null;
+  return INITIAL_DATA_SOURCES.find(s => s._id === id || String(s.id) === String(id)) || null;
 }

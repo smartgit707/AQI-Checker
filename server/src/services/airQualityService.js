@@ -1,5 +1,4 @@
-import AirQuality from '../models/AirQuality.js';
-import City from '../models/City.js';
+import * as airQualityRepository from '../db/repositories/airQualityRepository.js';
 import { isDBConnected } from '../config/db.js';
 import { getCityBySlug, getCityById } from './cityService.js';
 import { 
@@ -14,7 +13,7 @@ import { generateCityInsights } from './insights/environmentalInsightService.js'
 
 export async function getAllAirQuality() {
   if (isDBConnected()) {
-    return await AirQuality.find().sort({ timestamp: -1 }).limit(50);
+    return await airQualityRepository.findAllAirQuality(50);
   }
   return INITIAL_AIR_QUALITY;
 }
@@ -78,8 +77,8 @@ export async function getLatestAirQualityForCity(cityIdentifier) {
       envCache.set(cacheKey, result, 900); // 15 mins cache
 
       if (isDBConnected()) {
-        AirQuality.create({
-          cityId: city._id,
+        airQualityRepository.insertAirQuality({
+          cityId: city._id || city.id,
           citySlug: city.slug,
           timestamp: new Date(),
           aqi: result.aqi,
@@ -107,11 +106,8 @@ export async function getLatestAirQualityForCity(cityIdentifier) {
   }
 
   if (isDBConnected()) {
-    let query = { citySlug: cityIdentifier.toLowerCase() };
-    if (cityIdentifier.match(/^[0-9a-fA-F]{24}$/)) {
-      query = { $or: [{ _id: cityIdentifier }, { cityId: cityIdentifier }, { citySlug: cityIdentifier }] };
-    }
-    const dbRecord = await AirQuality.findOne(query).sort({ timestamp: -1 });
+    const slug = city ? city.slug : cityIdentifier.toLowerCase();
+    const dbRecord = await airQualityRepository.findLatestAirQualityForCity(slug);
     if (dbRecord) return dbRecord;
   }
 
@@ -334,6 +330,5 @@ export async function recordAirQualityTelemetry(telemetryData) {
     return newRecord;
   }
 
-  const record = new AirQuality(telemetryData);
-  return await record.save();
+  return await airQualityRepository.insertAirQuality(telemetryData);
 }

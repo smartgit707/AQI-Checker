@@ -1,4 +1,4 @@
-import Notification from '../models/Notification.js';
+import * as notificationRepository from '../db/repositories/notificationRepository.js';
 import { isDBConnected } from '../config/db.js';
 
 /**
@@ -31,17 +31,16 @@ export async function createNotification(data = {}) {
   }
 
   if (isDBConnected()) {
-    const notif = new Notification({
+    return await notificationRepository.insertNotification({
       userId,
       alertId,
-      citySlug: citySlug ? citySlug.toLowerCase() : 'national',
+      citySlug,
       type,
       title,
       message,
       read: false,
       metadata
     });
-    return await notif.save();
   }
 
   const newNotif = {
@@ -65,9 +64,7 @@ export async function getUserNotifications(userId, options = {}) {
   const limit = Math.min(50, Math.max(1, Number(options.limit) || 20));
 
   if (isDBConnected()) {
-    const query = { userId };
-    if (options.unreadOnly) query.read = false;
-    return await Notification.find(query).sort({ createdAt: -1 }).limit(limit);
+    return await notificationRepository.findUserNotifications(userId, options);
   }
 
   return IN_MEMORY_NOTIFICATIONS
@@ -77,7 +74,7 @@ export async function getUserNotifications(userId, options = {}) {
 
 export async function getUnreadNotificationCount(userId) {
   if (isDBConnected()) {
-    return await Notification.countDocuments({ userId, read: false });
+    return await notificationRepository.countUnreadNotifications(userId);
   }
 
   return IN_MEMORY_NOTIFICATIONS.filter((n) => n.userId === userId && !n.read).length;
@@ -85,11 +82,7 @@ export async function getUnreadNotificationCount(userId) {
 
 export async function markNotificationRead(userId, notificationId) {
   if (isDBConnected()) {
-    const notif = await Notification.findOneAndUpdate(
-      { _id: notificationId, userId },
-      { read: true },
-      { new: true }
-    );
+    const notif = await notificationRepository.markNotificationRead(notificationId, userId);
     if (!notif) throw new Error('Notification not found');
     return notif;
   }
@@ -102,7 +95,7 @@ export async function markNotificationRead(userId, notificationId) {
 
 export async function markAllNotificationsRead(userId) {
   if (isDBConnected()) {
-    await Notification.updateMany({ userId, read: false }, { read: true });
+    await notificationRepository.markAllNotificationsRead(userId);
     return true;
   }
 
@@ -114,7 +107,7 @@ export async function markAllNotificationsRead(userId) {
 
 export async function deleteNotification(userId, notificationId) {
   if (isDBConnected()) {
-    const res = await Notification.findOneAndDelete({ _id: notificationId, userId });
+    const res = await notificationRepository.deleteNotificationById(notificationId, userId);
     if (!res) throw new Error('Notification not found');
     return true;
   }
