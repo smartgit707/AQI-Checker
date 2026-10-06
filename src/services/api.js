@@ -44,10 +44,21 @@ async function request(endpoint, options = {}) {
       ...options
     });
 
-    const result = await response.json();
+    let result = null;
+    const contentType = response.headers.get('content-type') || '';
+    if (contentType.includes('application/json')) {
+      try {
+        result = await response.json();
+      } catch (parseError) {
+        result = { message: 'Failed to parse JSON response from server' };
+      }
+    } else {
+      const text = await response.text();
+      result = { message: text.length > 100 ? `Server returned status ${response.status}` : text || `Server returned status ${response.status}` };
+    }
 
     if (!response.ok) {
-      throw new Error(result.message || `API error (${response.status})`);
+      throw new Error(result?.message || `API error (${response.status})`);
     }
 
     return result;

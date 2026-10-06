@@ -12,26 +12,37 @@ const __dirname = path.dirname(__filename);
 let pool = null;
 let isConnected = false;
 
+let connectionAttempted = false;
+
 /**
  * Resolve MySQL configuration from environment variables
  */
 export function getMySQLConfig() {
   if (process.env.DATABASE_URL || process.env.MYSQL_URL) {
     const connStr = process.env.DATABASE_URL || process.env.MYSQL_URL;
-    return { uri: connStr };
+    return { uri: connStr, connectTimeout: 3000 };
+  }
+
+  // If in cloud serverless environment (e.g., Vercel) and no remote host is provided,
+  // do NOT attempt connecting to localhost:3306 (which doesn't exist and causes timeouts)
+  const isServerless = Boolean(process.env.VERCEL || process.env.AWS_LAMBDA_FUNCTION_NAME || process.env.NETLIFY);
+  const host = process.env.DB_HOST;
+  if (isServerless && (!host || host === 'localhost' || host === '127.0.0.1')) {
+    return null;
   }
 
   return {
-    host: process.env.DB_HOST || 'localhost',
+    host: host || 'localhost',
     port: parseInt(process.env.DB_PORT || '3306', 10),
     user: process.env.DB_USER || 'root',
     password: process.env.DB_PASSWORD || '',
     database: process.env.DB_NAME || 'aerosense',
     waitForConnections: true,
-    connectionLimit: parseInt(process.env.DB_CONNECTION_LIMIT || '10', 10),
+    connectionLimit: parseInt(process.env.DB_CONNECTION_LIMIT || '5', 10),
     queueLimit: 0,
     enableKeepAlive: true,
-    keepAliveInitialDelay: 10000
+    keepAliveInitialDelay: 10000,
+    connectTimeout: 1500
   };
 }
 
@@ -39,26 +50,39 @@ export function getMySQLConfig() {
  * Initialize MySQL Connection Pool and verify connectivity
  */
 export async function connectDB() {
+  if (connectionAttempted && !isConnected) {
+    return null;
+  }
+  connectionAttempted = true;
+
   const config = getMySQLConfig();
+
+  if (!config) {
+    isConnected = false;
+    console.log('[Database] Cloud serverless environment without external database URL detected. Operating in resilient standalone fallback mode.');
+    return null;
+  }
 
   try {
     if (!pool) {
       if (config.uri) {
         pool = mysql.createPool(config.uri);
       } else {
-        // If the database might not exist yet, first connect without database to ensure it exists
-        try {
-          const rootConn = await mysql.createConnection({
-            host: config.host,
-            port: config.port,
-            user: config.user,
-            password: config.password,
-            connectTimeout: 4000
-          });
-          await rootConn.query(`CREATE DATABASE IF NOT EXISTS \`${config.database}\` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci`);
-          await rootConn.end();
-        } catch (dbCreateErr) {
-          // May not have privileges to create DB or DB already exists; proceed to pool
+        // If connecting to non-local host, attempt creation if needed
+        if (config.host !== 'localhost' && config.host !== '127.0.0.1') {
+          try {
+            const rootConn = await mysql.createConnection({
+              host: config.host,
+              port: config.port,
+              user: config.user,
+              password: config.password,
+              connectTimeout: 1500
+            });
+            await rootConn.query(`CREATE DATABASE IF NOT EXISTS \`${config.database}\` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci`);
+            await rootConn.end();
+          } catch (dbCreateErr) {
+            // May not have privileges to create DB or DB already exists; proceed to pool
+          }
         }
 
         pool = mysql.createPool(config);
