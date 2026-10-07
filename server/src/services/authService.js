@@ -3,8 +3,14 @@ import jwt from 'jsonwebtoken';
 import * as userRepository from '../db/repositories/userRepository.js';
 import { isDBConnected } from '../config/db.js';
 
+import fs from 'fs';
+import path from 'path';
+import os from 'os';
+
 const JWT_SECRET = process.env.JWT_SECRET || 'aerosense_jwt_secure_secret_production_2026_xyz!';
 const JWT_EXPIRES_IN = '7d';
+
+const FALLBACK_USERS_FILE = path.join(os.tmpdir(), 'aerosense_users_fallback.json');
 
 /**
  * Resilient In-Memory User Store
@@ -57,7 +63,38 @@ IN_MEMORY_USERS.set('admin@aerosense.air', {
   updatedAt: new Date()
 });
 
+function loadPersistedUsers() {
+  try {
+    if (fs.existsSync(FALLBACK_USERS_FILE)) {
+      const data = JSON.parse(fs.readFileSync(FALLBACK_USERS_FILE, 'utf8'));
+      for (const [email, user] of Object.entries(data)) {
+        if (!IN_MEMORY_USERS.has(email)) {
+          IN_MEMORY_USERS.set(email, user);
+        }
+      }
+    }
+  } catch (err) {
+    // Ignore load errors
+  }
+}
+
+function persistUsers() {
+  try {
+    const obj = {};
+    for (const [email, user] of IN_MEMORY_USERS.entries()) {
+      obj[email] = user;
+    }
+    fs.writeFileSync(FALLBACK_USERS_FILE, JSON.stringify(obj), 'utf8');
+  } catch (err) {
+    // Ignore write errors
+  }
+}
+
+// Load any previously persisted fallback users
+loadPersistedUsers();
+
 export function getInMemoryUsers() {
+  loadPersistedUsers();
   return IN_MEMORY_USERS;
 }
 
@@ -139,6 +176,7 @@ export async function registerUser({ name, email, password }) {
   }
 
   // Fallback in-memory
+  loadPersistedUsers();
   if (IN_MEMORY_USERS.has(cleanEmail)) {
     throw new Error('An account with this email already exists');
   }
@@ -164,6 +202,7 @@ export async function registerUser({ name, email, password }) {
   };
 
   IN_MEMORY_USERS.set(cleanEmail, newUser);
+  persistUsers();
   const token = generateToken(newUser);
   return { user: sanitizeUser(newUser), token };
 }
@@ -197,6 +236,7 @@ export async function loginUser({ email, password }) {
   }
 
   // Fallback in-memory
+  loadPersistedUsers();
   const user = IN_MEMORY_USERS.get(cleanEmail);
   if (!user) {
     throw new Error('Invalid email or password');
@@ -209,6 +249,7 @@ export async function loginUser({ email, password }) {
 
   user.lastLoginAt = new Date();
   user.updatedAt = new Date();
+  persistUsers();
 
   const token = generateToken(user);
   return { user: sanitizeUser(user), token };
