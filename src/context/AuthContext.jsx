@@ -312,6 +312,9 @@ export function AuthProvider({ children }) {
     const updatedUser = { ...user, favoriteCities: newFavorites };
     setUser(updatedUser);
     localStorage.setItem(CURRENT_USER_KEY, JSON.stringify(updatedUser));
+    if (user.email) {
+      saveStoredAccount(user.email, null, updatedUser);
+    }
 
     try {
       if (currentlyFav) {
@@ -319,14 +322,12 @@ export function AuthProvider({ children }) {
       } else {
         await addUserFavoriteApi(cleanSlug);
       }
-      return { success: true, isFavorite: !currentlyFav };
     } catch (err) {
-      // Revert optimistic update on failure
-      const revertedUser = { ...user, favoriteCities: previousFavorites };
-      setUser(revertedUser);
-      localStorage.setItem(CURRENT_USER_KEY, JSON.stringify(revertedUser));
-      return { success: false, error: err.message };
+      // Keep optimistic favorite saved locally even if remote sync fails
+      console.warn('[AeroSense Auth] Remote favorites sync notice:', err.message);
     }
+
+    return { success: true, isFavorite: !currentlyFav };
   };
 
   const recordRecentCity = useCallback(

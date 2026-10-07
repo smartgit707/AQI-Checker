@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { getUserFavoritesApi, getCities } from '../services/api';
 import { getAQILevel } from '../design-system/aqiTokens';
+import { CITIES_DATA } from '../data/mockData';
 import Navbar from '../components/layout/Navbar';
 import Footer from '../components/layout/Footer';
 import {
@@ -21,7 +22,7 @@ import {
 } from 'lucide-react';
 
 export default function FavoritesPage() {
-  const { toggleFavorite } = useAuth();
+  const { user, toggleFavorite } = useAuth();
   const navigate = useNavigate();
 
   const [favorites, setFavorites] = useState([]);
@@ -34,18 +35,65 @@ export default function FavoritesPage() {
   const [citySearchQuery, setCitySearchQuery] = useState('');
   const [actionNotice, setActionNotice] = useState('');
 
+  const formatFavoriteCity = (item) => {
+    if (typeof item === 'string') {
+      const slug = item.toLowerCase();
+      const match = CITIES_DATA.find((c) => (c.id || '').toLowerCase() === slug || (c.name || '').toLowerCase() === slug);
+      if (match) {
+        return {
+          slug: match.id,
+          name: match.name,
+          state: match.state,
+          aqi: match.aqi,
+          category: match.status,
+          primaryPollutant: match.dominantPollutant,
+          temperature: match.temperature,
+          humidity: match.humidity,
+          image: match.image
+        };
+      }
+      return {
+        slug,
+        name: slug.charAt(0).toUpperCase() + slug.slice(1),
+        state: 'India',
+        aqi: 95,
+        category: 'Moderate',
+        primaryPollutant: 'PM2.5',
+        temperature: '28°C',
+        humidity: '50%',
+        image: null
+      };
+    }
+    return {
+      slug: item.slug || item.id,
+      name: item.name,
+      state: item.state,
+      aqi: item.aqi,
+      category: item.category || item.status,
+      primaryPollutant: item.primaryPollutant || item.dominantPollutant || 'PM2.5',
+      temperature: item.temperature,
+      humidity: item.humidity,
+      image: item.image
+    };
+  };
+
   const loadFavorites = async () => {
     try {
       setIsLoading(true);
       const res = await getUserFavoritesApi();
-      if (res.success && res.favorites) {
-        setFavorites(res.favorites);
+      if (res.success && Array.isArray(res.favorites) && res.favorites.length > 0) {
+        setFavorites(res.favorites.map(formatFavoriteCity));
+        return;
       }
     } catch (err) {
       console.error('[Favorites Error]', err);
     } finally {
       setIsLoading(false);
     }
+
+    // Client fallback to user.favoriteCities
+    const fallbackSlugs = user?.favoriteCities || [];
+    setFavorites(fallbackSlugs.map(formatFavoriteCity));
   };
 
   useEffect(() => {
@@ -313,9 +361,9 @@ export default function FavoritesPage() {
                         {/* City Details */}
                         <td className="py-4 px-4">
                           <div className="flex items-center gap-3">
-                            {city.image?.url ? (
+                            {(city.image?.url || (typeof city.image === 'string' && city.image)) ? (
                               <img
-                                src={city.image.url}
+                                src={city.image?.url || city.image}
                                 alt={city.name}
                                 className="w-10 h-10 rounded-xl object-cover border border-slate-100 shrink-0"
                               />

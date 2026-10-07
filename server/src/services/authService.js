@@ -78,7 +78,7 @@ function loadPersistedUsers() {
   }
 }
 
-function persistUsers() {
+export function persistUsers() {
   try {
     const obj = {};
     for (const [email, user] of IN_MEMORY_USERS.entries()) {

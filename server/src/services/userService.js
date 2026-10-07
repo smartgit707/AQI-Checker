@@ -1,6 +1,6 @@
 import * as userRepository from '../db/repositories/userRepository.js';
 import { isDBConnected } from '../config/db.js';
-import { getInMemoryUsers, sanitizeUser, hashPassword, comparePassword } from './authService.js';
+import { getInMemoryUsers, sanitizeUser, hashPassword, comparePassword, persistUsers } from './authService.js';
 import { getLatestAirQualityForCity } from './airQualityService.js';
 import { getCityBySlug } from './cityService.js';
 
@@ -176,6 +176,7 @@ export async function addFavoriteCity(userId, citySlug) {
 
   user.favoriteCities = [...favorites, cleanSlug];
   user.updatedAt = new Date();
+  persistUsers();
   return user.favoriteCities;
 }
 
@@ -193,6 +194,7 @@ export async function removeFavoriteCity(userId, citySlug) {
 
   user.favoriteCities = (user.favoriteCities || []).filter((s) => s !== cleanSlug);
   user.updatedAt = new Date();
+  persistUsers();
   return user.favoriteCities;
 }
 
