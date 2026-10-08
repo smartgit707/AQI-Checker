@@ -7,10 +7,12 @@ import {
   Sparkles, 
   RefreshCw,
   Radio,
-  Map as MapIcon
+  Map as MapIcon,
+  Globe
 } from 'lucide-react';
 import SectionHeader from '../common/SectionHeader';
 import InteractiveIndiaLeafletMap from './InteractiveIndiaLeafletMap';
+import AtmosphericGlobe3D from './AtmosphericGlobe3D';
 import { getMapAirQuality } from '../../services/api';
 import { CITIES_DATA, TOP_POLLUTED, CLEANEST_CITIES } from '../../data/mockData';
 import { getAQILevel, AQI_LEVELS } from '../../design-system/aqiTokens';
@@ -18,6 +20,7 @@ import { useLanguage } from '../../context/LanguageContext';
 
 export default function IndiaMapSection({ onSelectCity, selectedCity }) {
   const { t, currentLang } = useLanguage();
+  const [viewMode, setViewMode] = useState('3d'); // '3d' (Atmospheric Globe) or '2d' (Leaflet Map)
   const [activeFilter, setActiveFilter] = useState('all'); // all, unhealthy, good
   const [stations, setStations] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -83,36 +86,67 @@ export default function IndiaMapSection({ onSelectCity, selectedCity }) {
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
           
-          {/* Main Interactive Map Canvas (8 cols) */}
+          {/* Main Interactive Map & 3D Globe Canvas (8 cols) */}
           <div className="lg:col-span-8 bg-white rounded-3xl p-6 sm:p-8 shadow-card border border-slate-200/90 relative overflow-hidden">
             
             {/* Map Controls Header */}
             <div className="flex flex-wrap items-center justify-between gap-4 pb-4 border-b border-slate-100">
+              
+              {/* 3D Globe vs 2D Map Mode Pill */}
               <div className="flex items-center gap-2">
-                <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">
-                  {t('map.filterStations', 'Filter Stations:')}
-                </span>
-                <div className="inline-flex p-1 bg-slate-100 rounded-xl text-xs font-semibold">
+                <div className="inline-flex p-1 bg-slate-900 rounded-xl text-xs font-bold text-white shadow-sm">
                   <button
-                    onClick={() => setActiveFilter('all')}
-                    className={`px-3 py-1 rounded-lg transition-all ${activeFilter === 'all' ? 'bg-white text-slate-900 shadow-xs' : 'text-slate-600 hover:text-slate-900'}`}
+                    type="button"
+                    onClick={() => setViewMode('3d')}
+                    className={`px-3 py-1.5 rounded-lg flex items-center gap-1.5 transition-all ${
+                      viewMode === '3d'
+                        ? 'bg-gradient-to-r from-emerald-600 to-teal-500 text-white shadow-xs'
+                        : 'text-slate-400 hover:text-white'
+                    }`}
                   >
-                    {t('map.allMonitored', 'All Monitored')} ({stations.length})
+                    <Globe className="w-3.5 h-3.5" />
+                    <span>{currentLang === 'hi' ? '3D ग्लोब दृश्य' : '3D Globe Mode'}</span>
                   </button>
                   <button
-                    onClick={() => setActiveFilter('unhealthy')}
-                    className={`px-3 py-1 rounded-lg transition-all ${activeFilter === 'unhealthy' ? 'bg-white text-rose-700 shadow-xs' : 'text-slate-600 hover:text-slate-900'}`}
+                    type="button"
+                    onClick={() => setViewMode('2d')}
+                    className={`px-3 py-1.5 rounded-lg flex items-center gap-1.5 transition-all ${
+                      viewMode === '2d'
+                        ? 'bg-emerald-600 text-white shadow-xs'
+                        : 'text-slate-400 hover:text-white'
+                    }`}
                   >
-                    {t('map.critical', 'Critical (>150)')}
-                  </button>
-                  <button
-                    onClick={() => setActiveFilter('good')}
-                    className={`px-3 py-1 rounded-lg transition-all ${activeFilter === 'good' ? 'bg-white text-emerald-700 shadow-xs' : 'text-slate-600 hover:text-slate-900'}`}
-                  >
-                    {t('map.cleanAir', 'Clean Air (≤50)')}
+                    <MapIcon className="w-3.5 h-3.5" />
+                    <span>{currentLang === 'hi' ? '2D मानचित्र' : '2D Map'}</span>
                   </button>
                 </div>
               </div>
+
+              {/* Station Filter (Visible in 2D mode) */}
+              {viewMode === '2d' && (
+                <div className="flex items-center gap-2">
+                  <div className="inline-flex p-1 bg-slate-100 rounded-xl text-xs font-semibold">
+                    <button
+                      onClick={() => setActiveFilter('all')}
+                      className={`px-3 py-1 rounded-lg transition-all ${activeFilter === 'all' ? 'bg-white text-slate-900 shadow-xs' : 'text-slate-600 hover:text-slate-900'}`}
+                    >
+                      {t('map.allMonitored', 'All Monitored')} ({stations.length})
+                    </button>
+                    <button
+                      onClick={() => setActiveFilter('unhealthy')}
+                      className={`px-3 py-1 rounded-lg transition-all ${activeFilter === 'unhealthy' ? 'bg-white text-rose-700 shadow-xs' : 'text-slate-600 hover:text-slate-900'}`}
+                    >
+                      {t('map.critical', 'Critical (>150)')}
+                    </button>
+                    <button
+                      onClick={() => setActiveFilter('good')}
+                      className={`px-3 py-1 rounded-lg transition-all ${activeFilter === 'good' ? 'bg-white text-emerald-700 shadow-xs' : 'text-slate-600 hover:text-slate-900'}`}
+                    >
+                      {t('map.cleanAir', 'Clean Air (≤50)')}
+                    </button>
+                  </div>
+                </div>
+              )}
 
               <div className="text-xs text-slate-500 flex items-center gap-1.5">
                 <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
@@ -120,17 +154,28 @@ export default function IndiaMapSection({ onSelectCity, selectedCity }) {
               </div>
             </div>
 
-            {/* Real Interactive Leaflet Map */}
+            {/* View Mode Canvas */}
             <div className="my-4">
-              <InteractiveIndiaLeafletMap
-                stations={filteredStations}
-                selectedCity={selectedCity}
-                onSelectStation={(st) => {
-                  onSelectCity(st);
-                  const el = document.getElementById('current-aqi');
-                  if (el) el.scrollIntoView({ behavior: 'smooth' });
-                }}
-              />
+              {viewMode === '3d' ? (
+                <AtmosphericGlobe3D
+                  selectedCity={selectedCity}
+                  onSelectCity={(st) => {
+                    onSelectCity(st);
+                    const el = document.getElementById('current-aqi');
+                    if (el) el.scrollIntoView({ behavior: 'smooth' });
+                  }}
+                />
+              ) : (
+                <InteractiveIndiaLeafletMap
+                  stations={filteredStations}
+                  selectedCity={selectedCity}
+                  onSelectStation={(st) => {
+                    onSelectCity(st);
+                    const el = document.getElementById('current-aqi');
+                    if (el) el.scrollIntoView({ behavior: 'smooth' });
+                  }}
+                />
+              )}
             </div>
 
             {/* Standard NAQI Legend Scale Bar */}
