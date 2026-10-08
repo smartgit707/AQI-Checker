@@ -5,6 +5,7 @@ import { useLanguage } from '../context/LanguageContext';
 import { CITIES_DATA } from '../data/mockData';
 import { getAQILevel } from '../design-system/aqiTokens';
 import AudioBriefingPlayer from '../components/common/AudioBriefingPlayer';
+import AiAssistantWidget from '../components/common/AiAssistantWidget';
 import Navbar from '../components/layout/Navbar';
 import Footer from '../components/layout/Footer';
 import {
@@ -934,6 +935,9 @@ export default function CitizenFamilyDashboardPage() {
       )}
 
       <Footer />
+
+      {/* Floating AI Assistant */}
+      <AiAssistantWidget currentCity={currentCity} />
     </div>
   );
 }

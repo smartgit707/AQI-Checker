@@ -11,6 +11,7 @@ import {
 import { getAQILevel } from '../design-system/aqiTokens';
 import { CITIES_DATA } from '../data/mockData';
 import AlertModal from '../components/city/AlertModal';
+import AiAssistantWidget from '../components/common/AiAssistantWidget';
 import Navbar from '../components/layout/Navbar';
 import Footer from '../components/layout/Footer';
 import {
@@ -1027,6 +1028,9 @@ export default function DashboardPage() {
       />
 
       <Footer />
+
+      {/* Floating AI Assistant */}
+      <AiAssistantWidget currentCity={activeCityData} />
     </div>
   );
 }

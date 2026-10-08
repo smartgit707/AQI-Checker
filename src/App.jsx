@@ -12,6 +12,7 @@ import WeatherEnvironment from './components/home/WeatherEnvironment';
 import PollutionInsights from './components/home/PollutionInsights';
 import DataSources from './components/home/DataSources';
 import ErrorBoundary from './components/common/ErrorBoundary';
+import AiAssistantWidget from './components/common/AiAssistantWidget';
 import { getLatestAirQuality } from './services/api';
 import { CITIES_DATA } from './data/mockData';
 
@@ -216,6 +217,9 @@ export default function App() {
 
       {/* 12. Complete Product Footer */}
       <Footer />
+
+      {/* 13. Floating Environmental AI Assistant */}
+      <AiAssistantWidget currentCity={activeCityView} />
 
     </div>
   );
