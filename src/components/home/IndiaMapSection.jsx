@@ -20,7 +20,7 @@ import { useLanguage } from '../../context/LanguageContext';
 
 export default function IndiaMapSection({ onSelectCity, selectedCity }) {
   const { t, currentLang } = useLanguage();
-  const [viewMode, setViewMode] = useState('3d'); // '3d' (Atmospheric Globe) or '2d' (Leaflet Map)
+  const [viewMode, setViewMode] = useState('2d'); // '2d' (Interactive Leaflet Map - Default) or '3d' (Atmospheric Globe)
   const [activeFilter, setActiveFilter] = useState('all'); // all, unhealthy, good
   const [stations, setStations] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -92,32 +92,32 @@ export default function IndiaMapSection({ onSelectCity, selectedCity }) {
             {/* Map Controls Header */}
             <div className="flex flex-wrap items-center justify-between gap-4 pb-4 border-b border-slate-100">
               
-              {/* 3D Globe vs 2D Map Mode Pill */}
+              {/* 2D Interactive Map vs 3D Globe Mode Pill */}
               <div className="flex items-center gap-2">
                 <div className="inline-flex p-1 bg-slate-900 rounded-xl text-xs font-bold text-white shadow-sm">
-                  <button
-                    type="button"
-                    onClick={() => setViewMode('3d')}
-                    className={`px-3 py-1.5 rounded-lg flex items-center gap-1.5 transition-all ${
-                      viewMode === '3d'
-                        ? 'bg-gradient-to-r from-emerald-600 to-teal-500 text-white shadow-xs'
-                        : 'text-slate-400 hover:text-white'
-                    }`}
-                  >
-                    <Globe className="w-3.5 h-3.5" />
-                    <span>{currentLang === 'hi' ? '3D ग्लोब दृश्य' : '3D Globe Mode'}</span>
-                  </button>
                   <button
                     type="button"
                     onClick={() => setViewMode('2d')}
                     className={`px-3 py-1.5 rounded-lg flex items-center gap-1.5 transition-all ${
                       viewMode === '2d'
-                        ? 'bg-emerald-600 text-white shadow-xs'
+                        ? 'bg-emerald-600 text-white shadow-xs font-semibold'
                         : 'text-slate-400 hover:text-white'
                     }`}
                   >
                     <MapIcon className="w-3.5 h-3.5" />
-                    <span>{currentLang === 'hi' ? '2D मानचित्र' : '2D Map'}</span>
+                    <span>{currentLang === 'hi' ? '2D लाइव मानचित्र' : '2D Interactive Map'}</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setViewMode('3d')}
+                    className={`px-3 py-1.5 rounded-lg flex items-center gap-1.5 transition-all ${
+                      viewMode === '3d'
+                        ? 'bg-gradient-to-r from-emerald-600 to-teal-500 text-white shadow-xs font-semibold'
+                        : 'text-slate-400 hover:text-white'
+                    }`}
+                  >
+                    <Globe className="w-3.5 h-3.5" />
+                    <span>{currentLang === 'hi' ? '3D ग्लोब दृश्य' : '3D Atmospheric Globe'}</span>
                   </button>
                 </div>
               </div>
@@ -158,6 +158,7 @@ export default function IndiaMapSection({ onSelectCity, selectedCity }) {
             <div className="my-4">
               {viewMode === '3d' ? (
                 <AtmosphericGlobe3D
+                  stations={filteredStations}
                   selectedCity={selectedCity}
                   onSelectCity={(st) => {
                     onSelectCity(st);

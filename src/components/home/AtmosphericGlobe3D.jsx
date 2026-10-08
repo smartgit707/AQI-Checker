@@ -33,7 +33,139 @@ function latLngToVector3(lat, lng, radius) {
   return new THREE.Vector3(x, y, z);
 }
 
-export default function AtmosphericGlobe3D({ onSelectCity, selectedCity }) {
+/**
+ * Procedural Earth Canvas Texture generator
+ * Renders continent outlines and highlighted India peninsula on equirectangular projection
+ */
+function createEarthCanvasTexture() {
+  const canvas = document.createElement('canvas');
+  canvas.width = 2048;
+  canvas.height = 1024;
+  const ctx = canvas.getContext('2d');
+  if (!ctx) return null;
+
+  // 1. Deep ocean backdrop
+  ctx.fillStyle = '#0a1120';
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+  const toXY = (lat, lng) => {
+    const x = ((lng + 180) / 360) * canvas.width;
+    const y = ((90 - lat) / 180) * canvas.height;
+    return [x, y];
+  };
+
+  // 2. Graticule Lat/Long subtle grid lines
+  ctx.strokeStyle = 'rgba(51, 65, 85, 0.4)';
+  ctx.lineWidth = 1;
+  for (let lat = -80; lat <= 80; lat += 20) {
+    const [, y] = toXY(lat, 0);
+    ctx.beginPath();
+    ctx.moveTo(0, y);
+    ctx.lineTo(canvas.width, y);
+    ctx.stroke();
+  }
+  for (let lng = -180; lng <= 180; lng += 30) {
+    const [x] = toXY(0, lng);
+    ctx.beginPath();
+    ctx.moveTo(x, 0);
+    ctx.lineTo(x, canvas.height);
+    ctx.stroke();
+  }
+
+  // 3. World Continents Polygons
+  const continents = [
+    // India Subcontinent (High detail & glowing focus)
+    {
+      isIndia: true,
+      coords: [
+        [35.5, 74.0], [35.0, 78.5], [32.0, 79.0], [30.5, 81.0], [27.5, 88.5],
+        [28.0, 97.0], [24.0, 94.0], [22.0, 91.5], [21.5, 87.0], [17.5, 83.0],
+        [13.0, 80.2], [10.0, 79.8], [8.0, 77.5], [10.0, 76.0], [15.5, 73.8],
+        [19.0, 72.8], [21.5, 69.5], [23.5, 68.5], [27.0, 70.5], [31.5, 74.5],
+        [35.5, 74.0]
+      ]
+    },
+    // Eurasia / Northern Asia
+    {
+      isIndia: false,
+      coords: [
+        [70, 30], [72, 110], [68, 170], [55, 140], [42, 130], [35, 120],
+        [22, 115], [12, 108], [5, 102], [15, 100], [22, 92], [35, 75],
+        [40, 52], [36, 36], [42, 28], [58, 25], [70, 30]
+      ]
+    },
+    // Africa
+    {
+      isIndia: false,
+      coords: [
+        [37, 10], [32, 32], [12, 44], [0, 42], [-15, 40], [-28, 32],
+        [-34, 18], [-30, 16], [-15, 12], [5, 2], [15, -17], [32, -10], [37, 10]
+      ]
+    },
+    // Europe
+    {
+      isIndia: false,
+      coords: [
+        [71, 28], [60, 30], [45, 30], [38, 24], [36, -6], [44, -9],
+        [50, -5], [58, 6], [65, 15], [71, 28]
+      ]
+    },
+    // Australia
+    {
+      isIndia: false,
+      coords: [
+        [-12, 131], [-16, 146], [-28, 153], [-38, 145], [-35, 115], [-20, 114], [-12, 131]
+      ]
+    },
+    // North America
+    {
+      isIndia: false,
+      coords: [
+        [70, -165], [70, -70], [55, -55], [30, -82], [18, -88], [15, -95],
+        [24, -108], [33, -118], [52, -128], [62, -145], [70, -165]
+      ]
+    },
+    // South America
+    {
+      isIndia: false,
+      coords: [
+        [12, -72], [-2, -35], [-22, -40], [-42, -64], [-55, -67], [-50, -75],
+        [-20, -70], [0, -80], [12, -72]
+      ]
+    }
+  ];
+
+  continents.forEach(({ isIndia, coords }) => {
+    ctx.beginPath();
+    coords.forEach(([lat, lng], idx) => {
+      const [x, y] = toXY(lat, lng);
+      if (idx === 0) ctx.moveTo(x, y);
+      else ctx.lineTo(x, y);
+    });
+    ctx.closePath();
+
+    if (isIndia) {
+      // Vibrant Indian territory styling
+      ctx.fillStyle = '#064e3b';
+      ctx.fill();
+      ctx.strokeStyle = '#10b981';
+      ctx.lineWidth = 4;
+      ctx.stroke();
+    } else {
+      // Surrounding continental landmasses
+      ctx.fillStyle = '#1e293b';
+      ctx.fill();
+      ctx.strokeStyle = '#334155';
+      ctx.lineWidth = 1.5;
+      ctx.stroke();
+    }
+  });
+
+  const texture = new THREE.CanvasTexture(canvas);
+  return texture;
+}
+
+export default function AtmosphericGlobe3D({ stations = [], onSelectCity, selectedCity }) {
   const { currentLang, t } = useLanguage();
   const mountRef = useRef(null);
   
@@ -99,12 +231,14 @@ export default function AtmosphericGlobe3D({ onSelectCity, selectedCity }) {
 
     const GLOBE_RADIUS = 75;
 
-    // 6. Base Terrestrial Earth Sphere
+    // 6. Base Terrestrial Earth Sphere with Geographic Continents
+    const earthTexture = createEarthCanvasTexture();
     const globeGeo = new THREE.SphereGeometry(GLOBE_RADIUS, 64, 64);
     const globeMat = new THREE.MeshStandardMaterial({
-      color: 0x0f172a, // Deep slate-navy ocean
-      roughness: 0.8,
-      metalness: 0.2
+      map: earthTexture || undefined,
+      color: 0xffffff,
+      roughness: 0.75,
+      metalness: 0.15
     });
     const globeMesh = new THREE.Mesh(globeGeo, globeMat);
     globeGroup.add(globeMesh);
@@ -147,10 +281,12 @@ export default function AtmosphericGlobe3D({ onSelectCity, selectedCity }) {
 
     // 10. City AQI Laser Beacons & Pulsing Nodes
     const raycastTargets = [];
+    const stationList = stations && stations.length > 0 ? stations : CITIES_DATA;
 
-    CITIES_DATA.forEach((city) => {
-      const coords = city.coordinates || { lat: 28.6, lng: 77.2 };
-      const pos = latLngToVector3(coords.lat, coords.lng, GLOBE_RADIUS);
+    stationList.forEach((city) => {
+      const lat = city.coordinates?.lat ?? city.coordinates?.latitude ?? 28.6;
+      const lng = city.coordinates?.lng ?? city.coordinates?.longitude ?? 77.2;
+      const pos = latLngToVector3(lat, lng, GLOBE_RADIUS);
       const level = getAQILevel(city.aqi);
 
       // Height of laser beam scaled proportional to AQI (Max 35 units)
@@ -347,6 +483,7 @@ export default function AtmosphericGlobe3D({ onSelectCity, selectedCity }) {
       window.removeEventListener('touchmove', onTouchMove);
       window.removeEventListener('touchend', onTouchEnd);
       renderer.dispose();
+      if (earthTexture) earthTexture.dispose();
       if (container && renderer.domElement) {
         container.removeChild(renderer.domElement);
       }
