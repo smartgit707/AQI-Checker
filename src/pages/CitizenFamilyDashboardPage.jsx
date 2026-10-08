@@ -4,6 +4,7 @@ import { useAuth } from '../context/AuthContext';
 import { useLanguage } from '../context/LanguageContext';
 import { CITIES_DATA } from '../data/mockData';
 import { getAQILevel } from '../design-system/aqiTokens';
+import AudioBriefingPlayer from '../components/common/AudioBriefingPlayer';
 import Navbar from '../components/layout/Navbar';
 import Footer from '../components/layout/Footer';
 import {
@@ -432,6 +433,9 @@ export default function CitizenFamilyDashboardPage() {
               </div>
             </div>
           </div>
+
+          {/* AI Voice Morning Atmospheric Bulletin Player */}
+          <AudioBriefingPlayer city={currentCity} />
 
           {/* Section 1: Golden Outdoor Window & Hour-by-Hour Activity Planner */}
           <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/80 shadow-xs space-y-6">

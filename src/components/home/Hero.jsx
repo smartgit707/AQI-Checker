@@ -3,6 +3,7 @@ import { Compass, ShieldCheck, Activity, ChevronRight, Wind, ArrowRight } from '
 import { Link } from 'react-router-dom';
 import LocationSearch from '../common/LocationSearch';
 import OptimizedImage from '../common/OptimizedImage';
+import AudioBriefingPlayer from '../common/AudioBriefingPlayer';
 import { IMAGES } from '../../data/images';
 import { getAQILevel } from '../../design-system/aqiTokens';
 import { useLanguage } from '../../context/LanguageContext';
@@ -145,6 +146,11 @@ export default function Hero({ onSelectCity, currentCity }) {
                       </span>
                     </div>
                   </div>
+                </div>
+
+                {/* AI Voice Air Quality Briefing Audio Player */}
+                <div className="mb-4">
+                  <AudioBriefingPlayer city={city} />
                 </div>
 
                 {/* Advisory Snippet */}
