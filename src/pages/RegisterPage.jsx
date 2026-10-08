@@ -234,7 +234,7 @@ export default function RegisterPage() {
             <p className="text-sm text-slate-600">
               Already have an account?{' '}
               <Link
-                to={`/login${redirect !== '/dashboard' ? `?redirect=${encodeURIComponent(redirect)}` : ''}`}
+                to={`/login${redirect && redirect !== '/dashboard' ? `?redirect=${encodeURIComponent(redirect)}` : ''}`}
                 className="font-semibold text-emerald-600 hover:text-emerald-700 transition-colors"
               >
                 Sign In

@@ -179,7 +179,7 @@ export default function LoginPage() {
             <p className="text-sm text-slate-600">
               Don't have an AeroSense account?{' '}
               <Link
-                to={`/register${redirect !== '/dashboard' ? `?redirect=${encodeURIComponent(redirect)}` : ''}`}
+                to={`/register${customRedirect && customRedirect !== '/dashboard' ? `?redirect=${encodeURIComponent(customRedirect)}` : ''}`}
                 className="font-semibold text-emerald-600 hover:text-emerald-700 transition-colors"
               >
                 Create an account
