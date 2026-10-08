@@ -19,7 +19,8 @@ import {
   Settings,
   LogOut,
   Sparkles,
-  ShieldAlert
+  ShieldAlert,
+  Home
 } from 'lucide-react';
 
 export default function Navbar({ onSelectCity, selectedCity }) {
@@ -120,10 +121,17 @@ export default function Navbar({ onSelectCity, selectedCity }) {
               <>
                 <Link
                   to="/dashboard"
-                  className="px-3.5 py-2 rounded-lg text-sm font-semibold text-emerald-700 bg-emerald-50/80 hover:bg-emerald-100/80 transition-colors flex items-center gap-1.5"
+                  className="px-3 py-2 rounded-lg text-sm font-semibold text-emerald-700 bg-emerald-50/80 hover:bg-emerald-100/80 transition-colors flex items-center gap-1.5"
                 >
                   <LayoutDashboard className="w-3.5 h-3.5 text-emerald-600" />
                   <span>Dashboard</span>
+                </Link>
+                <Link
+                  to="/citizen-dashboard"
+                  className="px-3 py-2 rounded-lg text-sm font-semibold text-teal-700 bg-teal-50/80 hover:bg-teal-100/80 transition-colors flex items-center gap-1.5"
+                >
+                  <Home className="w-3.5 h-3.5 text-teal-600" />
+                  <span>Family Health</span>
                 </Link>
                 <Link
                   to="/favorites"
@@ -205,7 +213,16 @@ export default function Navbar({ onSelectCity, selectedCity }) {
                           className="flex items-center gap-2.5 px-4 py-2 text-xs font-medium text-slate-700 hover:bg-emerald-50 hover:text-emerald-700 transition-colors"
                         >
                           <LayoutDashboard className="w-4 h-4 text-emerald-600" />
-                          <span>Personal Dashboard</span>
+                          <span>Scientific Dashboard</span>
+                        </Link>
+
+                        <Link
+                          to="/citizen-dashboard"
+                          onClick={() => setUserDropdownOpen(false)}
+                          className="flex items-center gap-2.5 px-4 py-2 text-xs font-medium text-slate-700 hover:bg-teal-50 hover:text-teal-700 transition-colors"
+                        >
+                          <Home className="w-4 h-4 text-teal-600" />
+                          <span>Citizen & Family Health Advisory</span>
                         </Link>
 
                         <Link
@@ -361,6 +378,22 @@ export default function Navbar({ onSelectCity, selectedCity }) {
                     <span>Administrative Console</span>
                   </Link>
                 )}
+                <Link
+                  to="/dashboard"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="px-3 py-2.5 rounded-lg text-base font-medium text-slate-700 hover:text-emerald-700 hover:bg-emerald-50/60 transition-colors flex items-center gap-2"
+                >
+                  <LayoutDashboard className="w-4 h-4 text-emerald-600" />
+                  <span>Scientific Dashboard</span>
+                </Link>
+                <Link
+                  to="/citizen-dashboard"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="px-3 py-2.5 rounded-lg text-base font-medium text-slate-700 hover:text-teal-700 hover:bg-teal-50/60 transition-colors flex items-center gap-2"
+                >
+                  <Home className="w-4 h-4 text-teal-600" />
+                  <span>Citizen & Family Health</span>
+                </Link>
                 <Link
                   to="/favorites"
                   onClick={() => setMobileMenuOpen(false)}

@@ -18,6 +18,7 @@ const DataSourcesPage = lazy(() => import('./pages/DataSourcesPage.jsx'));
 const LoginPage = lazy(() => import('./pages/LoginPage.jsx'));
 const RegisterPage = lazy(() => import('./pages/RegisterPage.jsx'));
 const DashboardPage = lazy(() => import('./pages/DashboardPage.jsx'));
+const CitizenFamilyDashboardPage = lazy(() => import('./pages/CitizenFamilyDashboardPage.jsx'));
 const FavoritesPage = lazy(() => import('./pages/FavoritesPage.jsx'));
 const ProfilePage = lazy(() => import('./pages/ProfilePage.jsx'));
 const SettingsPage = lazy(() => import('./pages/SettingsPage.jsx'));
@@ -51,6 +52,22 @@ ReactDOM.createRoot(document.getElementById('root')).render(
                 element={
                   <ProtectedRoute>
                     <DashboardPage />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/citizen-dashboard"
+                element={
+                  <ProtectedRoute>
+                    <CitizenFamilyDashboardPage />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/family-dashboard"
+                element={
+                  <ProtectedRoute>
+                    <CitizenFamilyDashboardPage />
                   </ProtectedRoute>
                 }
               />

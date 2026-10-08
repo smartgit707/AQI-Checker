@@ -39,6 +39,7 @@ import {
   CheckCircle2,
   Sliders,
   Loader2,
+  Home,
   ToggleLeft,
   ToggleRight
 } from 'lucide-react';
@@ -255,6 +256,51 @@ export default function DashboardPage() {
       <main className="flex-1 py-10 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto space-y-8">
           
+          {/* Persona Switcher Bar */}
+          <div className="bg-white rounded-2xl p-2.5 border border-slate-200 shadow-2xs flex flex-wrap items-center justify-between gap-3">
+            <div className="flex items-center gap-1.5 overflow-x-auto py-1">
+              <Link
+                to="/dashboard"
+                className="px-4 py-2 rounded-xl bg-emerald-600 text-white font-bold text-xs sm:text-sm flex items-center gap-2 shadow-xs transition-colors"
+              >
+                <Activity className="w-4 h-4 text-emerald-200" />
+                <span>Scientific Sensor Overview</span>
+              </Link>
+
+              <Link
+                to="/citizen-dashboard"
+                className="px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-xs sm:text-sm flex items-center gap-2 transition-colors"
+              >
+                <Home className="w-4 h-4 text-emerald-600" />
+                <span>Citizen & Family Lifestyle</span>
+              </Link>
+
+              <Link
+                to="/alerts"
+                className="px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-xs sm:text-sm flex items-center gap-2 transition-colors"
+              >
+                <Bell className="w-4 h-4 text-amber-500" />
+                <span>Alert Rules ({alerts.length})</span>
+              </Link>
+
+              <Link
+                to="/favorites"
+                className="px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-xs sm:text-sm flex items-center gap-2 transition-colors"
+              >
+                <Heart className="w-4 h-4 text-rose-500" />
+                <span>Favorites ({favorites.length})</span>
+              </Link>
+            </div>
+
+            <Link
+              to="/citizen-dashboard"
+              className="text-xs font-bold text-emerald-700 hover:text-emerald-800 flex items-center gap-1 px-3 py-1.5 rounded-lg hover:bg-emerald-50 transition-colors"
+            >
+              <span>Explore Family Lifestyle Advisory</span>
+              <ArrowRight className="w-3.5 h-3.5" />
+            </Link>
+          </div>
+
           {/* Welcome Header */}
           <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/80 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-6">
             <div className="space-y-1.5">
