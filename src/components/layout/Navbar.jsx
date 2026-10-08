@@ -24,7 +24,8 @@ import {
   Sparkles,
   ShieldAlert,
   Home,
-  Navigation
+  Navigation,
+  Flame
 } from 'lucide-react';
 
 export default function Navbar({ onSelectCity, selectedCity }) {
@@ -74,6 +75,7 @@ export default function Navbar({ onSelectCity, selectedCity }) {
     { name: 'Compare', href: '/compare' },
     { name: 'Rankings', href: '/rankings' },
     { name: 'Clean Route', href: '/clean-commute', isNew: true },
+    { name: 'Stubble Fires', href: '/stubble-tracker', isFire: true },
   ];
 
   return (
@@ -109,12 +111,17 @@ export default function Navbar({ onSelectCity, selectedCity }) {
               <Link
                 key={link.href}
                 to={link.href}
-                className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-sm font-semibold text-slate-600 hover:text-slate-900 hover:bg-slate-100/80 dark:hover:bg-slate-800/60 transition-colors"
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-semibold text-slate-600 hover:text-slate-900 hover:bg-slate-100/80 dark:hover:bg-slate-800/60 transition-colors"
               >
                 <span>{link.name}</span>
                 {link.isNew && (
                   <span className="px-1.5 py-0.5 rounded-full text-[9px] font-extrabold uppercase bg-emerald-100 text-emerald-800 border border-emerald-300">
                     New
+                  </span>
+                )}
+                {link.isFire && (
+                  <span className="px-1.5 py-0.5 rounded-full text-[9px] font-extrabold uppercase bg-rose-100 text-rose-800 border border-rose-300">
+                    🔥 Live
                   </span>
                 )}
               </Link>
@@ -163,6 +170,20 @@ export default function Navbar({ onSelectCity, selectedCity }) {
                       <div>
                         <div className="text-xs font-bold text-slate-900">{t('nav.citizenDashboard', 'Citizen & Family')}</div>
                         <div className="text-3xs text-slate-500">{t('nav.citizenSubtitle', '24h Golden Window & advisory')}</div>
+                      </div>
+                    </Link>
+
+                    <Link
+                      to="/stubble-tracker"
+                      onClick={() => setDashboardMenuOpen(false)}
+                      className="flex items-center gap-3 p-2.5 rounded-xl hover:bg-rose-50/50 transition-colors"
+                    >
+                      <div className="w-8 h-8 rounded-lg bg-rose-50 text-rose-600 flex items-center justify-center shrink-0">
+                        <Flame className="w-4 h-4" />
+                      </div>
+                      <div>
+                        <div className="text-xs font-bold text-slate-900">Stubble Fire Tracker</div>
+                        <div className="text-3xs text-rose-600 font-semibold">NASA FIRMS live satellite pass</div>
                       </div>
                     </Link>
 
