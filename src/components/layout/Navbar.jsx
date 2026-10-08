@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import NotificationBell from '../notifications/NotificationBell';
+import ThemeToggle from '../common/ThemeToggle';
 import { 
   Wind, 
   Search, 
@@ -154,7 +155,9 @@ export default function Navbar({ onSelectCity, selectedCity }) {
           </nav>
 
           {/* Right Action Area */}
-          <div className="hidden md:flex items-center gap-3">
+          <div className="hidden md:flex items-center gap-2.5">
+            <ThemeToggle />
+
             {isAuthenticated ? (
               /* Authenticated User Menu */
               <div className="flex items-center gap-2">
@@ -306,6 +309,7 @@ export default function Navbar({ onSelectCity, selectedCity }) {
 
           {/* Mobile Menu Button */}
           <div className="flex items-center gap-2 lg:hidden">
+            <ThemeToggle />
             {isAuthenticated && <NotificationBell />}
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}

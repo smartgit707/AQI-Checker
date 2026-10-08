@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { useTheme } from '../context/ThemeContext';
 import Navbar from '../components/layout/Navbar';
 import Footer from '../components/layout/Footer';
 import {
@@ -11,11 +12,15 @@ import {
   AlertCircle,
   Trash2,
   ShieldAlert,
-  KeyRound
+  KeyRound,
+  Sun,
+  Moon,
+  Monitor
 } from 'lucide-react';
 
 export default function SettingsPage() {
   const { user, changePassword, updateProfile, deleteAccount, logout } = useAuth();
+  const { theme, setTheme } = useTheme();
   const navigate = useNavigate();
 
   // Password state
@@ -287,6 +292,55 @@ export default function SettingsPage() {
                   Compact Table
                 </button>
               </div>
+            </div>
+
+            <div>
+              <label className="block text-xs font-semibold uppercase tracking-wider text-slate-700 mb-2">
+                Interface Color Theme
+              </label>
+              <div className="grid grid-cols-3 gap-3">
+                <button
+                  type="button"
+                  onClick={() => setTheme('light')}
+                  className={`py-3 px-3 rounded-xl border text-xs font-bold transition-all flex flex-col items-center gap-1.5 ${
+                    theme === 'light'
+                      ? 'border-emerald-500 bg-emerald-50 text-emerald-800 shadow-2xs'
+                      : 'border-slate-200 bg-slate-50 text-slate-700 hover:bg-slate-100'
+                  }`}
+                >
+                  <Sun className={`w-4 h-4 ${theme === 'light' ? 'text-amber-500' : 'text-slate-400'}`} />
+                  <span>Light Mode</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setTheme('dark')}
+                  className={`py-3 px-3 rounded-xl border text-xs font-bold transition-all flex flex-col items-center gap-1.5 ${
+                    theme === 'dark'
+                      ? 'border-emerald-500 bg-emerald-50 text-emerald-800 shadow-2xs'
+                      : 'border-slate-200 bg-slate-50 text-slate-700 hover:bg-slate-100'
+                  }`}
+                >
+                  <Moon className={`w-4 h-4 ${theme === 'dark' ? 'text-indigo-400' : 'text-slate-400'}`} />
+                  <span>Dark Mode</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setTheme('system')}
+                  className={`py-3 px-3 rounded-xl border text-xs font-bold transition-all flex flex-col items-center gap-1.5 ${
+                    theme === 'system'
+                      ? 'border-emerald-500 bg-emerald-50 text-emerald-800 shadow-2xs'
+                      : 'border-slate-200 bg-slate-50 text-slate-700 hover:bg-slate-100'
+                  }`}
+                >
+                  <Monitor className={`w-4 h-4 ${theme === 'system' ? 'text-teal-500' : 'text-slate-400'}`} />
+                  <span>System Auto</span>
+                </button>
+              </div>
+              <p className="text-2xs text-slate-400 mt-1.5">
+                Quick toggle anytime with keyboard shortcut <kbd className="px-1.5 py-0.5 rounded bg-slate-200 text-slate-700 font-mono text-3xs">⌘ + J</kbd> or <kbd className="px-1.5 py-0.5 rounded bg-slate-200 text-slate-700 font-mono text-3xs">Ctrl + J</kbd>.
+              </p>
             </div>
 
             <button

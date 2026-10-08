@@ -7,6 +7,7 @@ import ProtectedRoute from './components/auth/ProtectedRoute.jsx';
 import ErrorBoundary from './components/common/ErrorBoundary.jsx';
 import LoadingFallback from './components/common/LoadingFallback.jsx';
 import { AuthProvider } from './context/AuthContext.jsx';
+import { ThemeProvider } from './context/ThemeContext.jsx';
 import './index.css';
 
 // Route-level code-splitting for secondary views
@@ -30,7 +31,8 @@ ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <ErrorBoundary>
       <BrowserRouter>
-        <AuthProvider>
+        <ThemeProvider>
+          <AuthProvider>
           <Suspense fallback={<LoadingFallback />}>
             <Routes>
               {/* Public Environmental Exploration Routes */}
@@ -124,7 +126,8 @@ ReactDOM.createRoot(document.getElementById('root')).render(
             </Routes>
           </Suspense>
         </AuthProvider>
-      </BrowserRouter>
+      </ThemeProvider>
+    </BrowserRouter>
     </ErrorBoundary>
   </React.StrictMode>
 );
