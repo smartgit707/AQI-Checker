@@ -25,14 +25,15 @@ export default function AiAssistantWidget({ currentCity }) {
   const [isTyping, setIsTyping] = useState(false);
   const [isSpeaking, setIsSpeaking] = useState(false);
 
-  const city = currentCity || CITIES_DATA[0];
+  const city = currentCity || CITIES_DATA[0] || { name: 'Delhi NCR', aqi: 284 };
+  const cityName = city?.name || 'Your City';
 
   const defaultWelcomeMessage = {
     id: 'msg_welcome',
     sender: 'assistant',
     text: currentLang === 'hi'
-      ? `नमस्ते! मैं आपका **AeroSense AI सहायक** हूँ। मैं **${city.name}** की हवा, स्वास्थ्य दिशानिर्देश, मास्क और प्यूरीफायर से जुड़े सवालों में आपकी मदद कर सकता हूँ। मुझसे कोई भी सवाल पूछें!`
-      : `Hello! I'm your **AeroSense Environmental AI Assistant**. Ask me anything about air quality in **${city.name}**, safe jogging hours, mask recommendations, or home purifier settings!`,
+      ? `नमस्ते! मैं आपका **AeroSense AI सहायक** हूँ। मैं **${cityName}** की हवा, स्वास्थ्य दिशानिर्देश, मास्क और प्यूरीफायर से जुड़े सवालों में आपकी मदद कर सकता हूँ। मुझसे कोई भी सवाल पूछें!`
+      : `Hello! I'm your **AeroSense Environmental AI Assistant**. Ask me anything about air quality in **${cityName}**, safe jogging hours, mask recommendations, or home purifier settings!`,
     timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
   };
 

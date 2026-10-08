@@ -1030,7 +1030,7 @@ export default function DashboardPage() {
       <Footer />
 
       {/* Floating AI Assistant */}
-      <AiAssistantWidget currentCity={activeCityData} />
+      <AiAssistantWidget currentCity={favorites[0] || CITIES_DATA[0]} />
     </div>
   );
 }
