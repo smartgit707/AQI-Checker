@@ -80,10 +80,34 @@ export const AQI_LEVELS = [
 
 export function getAQILevel(value) {
   const val = Number(value);
-  if (val <= 50) return AQI_LEVELS[0];
-  if (val <= 100) return AQI_LEVELS[1];
-  if (val <= 200) return AQI_LEVELS[2];
-  if (val <= 300) return AQI_LEVELS[3];
-  if (val <= 400) return AQI_LEVELS[4];
-  return AQI_LEVELS[5];
+  let baseLevel;
+  if (val <= 50) baseLevel = AQI_LEVELS[0];
+  else if (val <= 100) baseLevel = AQI_LEVELS[1];
+  else if (val <= 200) baseLevel = AQI_LEVELS[2];
+  else if (val <= 300) baseLevel = AQI_LEVELS[3];
+  else if (val <= 400) baseLevel = AQI_LEVELS[4];
+  else baseLevel = AQI_LEVELS[5];
+
+  if (typeof document !== 'undefined' && document.documentElement.classList.contains('dark')) {
+    const darkLuminous = {
+      Good: { color: '#10b981', textColor: '#34d399', bgColor: 'rgba(16, 185, 129, 0.22)', borderColor: 'rgba(16, 185, 129, 0.45)' },
+      Moderate: { color: '#fbbf24', textColor: '#fde68a', bgColor: 'rgba(245, 158, 11, 0.22)', borderColor: 'rgba(245, 158, 11, 0.45)' },
+      Poor: { color: '#fb923c', textColor: '#fed7aa', bgColor: 'rgba(249, 115, 22, 0.22)', borderColor: 'rgba(249, 115, 22, 0.45)' },
+      Unhealthy: { color: '#f87171', textColor: '#fca5a5', bgColor: 'rgba(239, 68, 68, 0.22)', borderColor: 'rgba(239, 68, 68, 0.45)' },
+      Severe: { color: '#c084fc', textColor: '#e9d5ff', bgColor: 'rgba(139, 92, 246, 0.22)', borderColor: 'rgba(139, 92, 246, 0.45)' },
+      Hazardous: { color: '#fb7185', textColor: '#ffe4e6', bgColor: 'rgba(225, 29, 72, 0.25)', borderColor: 'rgba(225, 29, 72, 0.45)' }
+    };
+    const darkInfo = darkLuminous[baseLevel.category];
+    if (darkInfo) {
+      return {
+        ...baseLevel,
+        color: darkInfo.color,
+        textColor: darkInfo.textColor,
+        bgColor: darkInfo.bgColor,
+        borderColor: darkInfo.borderColor
+      };
+    }
+  }
+
+  return baseLevel;
 }

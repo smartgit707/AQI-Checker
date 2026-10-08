@@ -57,7 +57,7 @@ export default function InteractiveIndiaLeafletMap({
         maxZoom={12}
         scrollWheelZoom={false}
         className="w-full h-full z-10"
-        style={{ height: '100%', width: '100%', minHeight: '480px', background: '#f8fafc' }}
+        style={{ height: '100%', width: '100%', minHeight: '480px' }}
         whenReady={() => setMapReady(true)}
       >
         {/* OpenStreetMap Standard Free Tiles - 100% Free, Zero API Key Required */}

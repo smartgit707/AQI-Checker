@@ -12,7 +12,7 @@ export default function Hero({ onSelectCity, currentCity }) {
   return (
     <section className="relative pt-6 pb-16 lg:pt-10 lg:pb-24 overflow-hidden border-b border-slate-200/60">
       {/* Background Subtle Ambience */}
-      <div className="absolute inset-0 bg-gradient-to-b from-emerald-50/40 via-white to-slate-50/50 -z-10 pointer-events-none" />
+      <div className="absolute inset-0 bg-gradient-to-b from-emerald-50/40 via-white to-slate-50/50 dark:from-emerald-950/20 dark:via-slate-950 dark:to-slate-900 -z-10 pointer-events-none" />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
