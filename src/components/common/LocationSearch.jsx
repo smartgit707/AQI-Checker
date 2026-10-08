@@ -4,8 +4,10 @@ import { Link } from 'react-router-dom';
 import { getCities } from '../../services/api';
 import { CITIES_DATA } from '../../data/mockData';
 import { getAQILevel } from '../../design-system/aqiTokens';
+import { useLanguage } from '../../context/LanguageContext';
 
 export default function LocationSearch({ onSelectCity, currentCityId }) {
+  const { t } = useLanguage();
   const [query, setQuery] = useState('');
   const [isOpen, setIsOpen] = useState(false);
   const [backendCities, setBackendCities] = useState([]);
@@ -94,7 +96,7 @@ export default function LocationSearch({ onSelectCity, currentCityId }) {
             setIsOpen(true);
           }}
           onFocus={() => setIsOpen(true)}
-          placeholder="Search city, district, or monitoring station (e.g. Delhi, Chennai, Bengaluru)..."
+          placeholder={t('hero.searchPlaceholder', 'Search city, district, or monitoring station (e.g. Delhi, Chennai, Bengaluru)...')}
           className="w-full py-2.5 pr-4 text-slate-900 text-sm sm:text-base placeholder:text-slate-400 bg-transparent outline-none font-medium"
         />
 
@@ -103,7 +105,7 @@ export default function LocationSearch({ onSelectCity, currentCityId }) {
             onClick={() => setQuery('')}
             className="p-1.5 text-slate-400 hover:text-slate-600 rounded-full hover:bg-slate-100 mr-1 text-xs"
           >
-            Clear
+            {t('common.clear', 'Clear')}
           </button>
         )}
 
@@ -116,7 +118,7 @@ export default function LocationSearch({ onSelectCity, currentCityId }) {
           title="Use current geographic location"
         >
           <Navigation className="w-3.5 h-3.5 text-emerald-600" />
-          <span>My Location</span>
+          <span>{t('hero.myLocation', 'My Location')}</span>
         </button>
       </div>
 

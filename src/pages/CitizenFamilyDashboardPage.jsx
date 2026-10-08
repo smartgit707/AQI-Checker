@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { useLanguage } from '../context/LanguageContext';
 import { CITIES_DATA } from '../data/mockData';
 import { getAQILevel } from '../design-system/aqiTokens';
 import Navbar from '../components/layout/Navbar';
@@ -83,6 +84,7 @@ const DEFAULT_FAMILY_MEMBERS = [
 
 export default function CitizenFamilyDashboardPage() {
   const { user } = useAuth();
+  const { t, currentLang } = useLanguage();
 
   // Selected City for Family Intelligence
   const initialCitySlug = (user?.favoriteCities && user.favoriteCities[0]) || 'delhi';
@@ -370,13 +372,15 @@ export default function CitizenFamilyDashboardPage() {
             <div className="space-y-2">
               <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-semibold uppercase tracking-wider">
                 <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
-                Family Air Quality & Lifestyle Advisory
+                {t('citizen.title', 'Family Air Quality & Lifestyle Advisory')}
               </div>
               <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
-                Daily Protection Guide for {user?.name || 'Your Household'}
+                {currentLang === 'hi'
+                  ? `${user?.name ? `${user.name} के ` : ''}परिवार के लिए दैनिक सुरक्षा निर्देशिका`
+                  : `Daily Protection Guide for ${user?.name || 'Your Household'}`}
               </h1>
               <p className="text-slate-600 text-sm max-w-2xl leading-relaxed">
-                Practical, science-backed guidance translating complex atmospheric data into everyday decisions: school commutes, morning jogging windows, and home air purifier settings.
+                {t('citizen.subtitle', 'Practical, science-backed guidance translating complex atmospheric data into everyday decisions: school commutes, morning jogging windows, and home air purifier settings.')}
               </p>
             </div>
 
@@ -438,11 +442,13 @@ export default function CitizenFamilyDashboardPage() {
                     <Footprints className="w-4 h-4" />
                   </div>
                   <h2 className="text-xl font-bold text-slate-900">
-                    Outdoor Activity & Exercise Windows
+                    {t('citizen.outdoorWindows', 'Outdoor Activity & Exercise Windows')}
                   </h2>
                 </div>
                 <p className="text-sm text-slate-500">
-                  Plan walks, jogging sessions, and children's outdoor playtime when ground-level particulates are lowest.
+                  {currentLang === 'hi'
+                    ? 'टहलने, दौड़ने और बच्चों के खेलकूद के लिए वह समय चुनें जब जमीनी स्तर पर प्रदूषण के कण न्यूनतम हों।'
+                    : "Plan walks, jogging sessions, and children's outdoor playtime when ground-level particulates are lowest."}
                 </p>
               </div>
 
@@ -453,7 +459,7 @@ export default function CitizenFamilyDashboardPage() {
                 </div>
                 <div>
                   <span className="text-2xs font-extrabold text-emerald-800 uppercase tracking-wider block">
-                    Golden Window Today
+                    {t('citizen.goldenWindow', 'Golden Window Today')}
                   </span>
                   <div className="text-xs font-bold text-slate-900">
                     {goldenHour.hour} ({goldenHour.period}) • AQI ~{goldenHour.aqi}
@@ -514,11 +520,13 @@ export default function CitizenFamilyDashboardPage() {
                   <Bike className="w-4 h-4" />
                 </div>
                 <h2 className="text-xl font-bold text-slate-900">
-                  Daily Commute & School Exposure Calculator
+                  {t('citizen.commuteTitle', 'Daily Commute & School Exposure Calculator')}
                 </h2>
               </div>
               <p className="text-sm text-slate-500">
-                Estimate how much particulate pollution you and your children inhale based on travel duration and transit mode in {currentCity.name}.
+                {currentLang === 'hi'
+                  ? `${currentCity.name} में यात्रा के समय और वाहन के प्रकार के आधार पर सांस द्वारा अंदर जाने वाले प्रदूषण कणों का सटीक अनुमान लगाएं।`
+                  : `Estimate how much particulate pollution you and your children inhale based on travel duration and transit mode in ${currentCity.name}.`}
               </p>
             </div>
 
@@ -528,7 +536,7 @@ export default function CitizenFamilyDashboardPage() {
                 {/* Mode Selector */}
                 <div>
                   <label className="text-xs font-bold text-slate-700 uppercase tracking-wider block mb-2">
-                    1. Select Transit Mode
+                    {t('citizen.transitMode', '1. Select Transit Mode')}
                   </label>
                   <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
                     {[
@@ -563,10 +571,10 @@ export default function CitizenFamilyDashboardPage() {
                 <div>
                   <div className="flex items-center justify-between mb-2">
                     <label className="text-xs font-bold text-slate-700 uppercase tracking-wider">
-                      2. One-Way Travel Duration
+                      {t('citizen.transitDuration', '2. One-Way Travel Duration')}
                     </label>
                     <span className="text-sm font-extrabold text-emerald-700 bg-emerald-50 px-2.5 py-0.5 rounded-lg border border-emerald-200">
-                      {commuteMinutes} Minutes
+                      {commuteMinutes} {currentLang === 'hi' ? 'मिनट' : 'Minutes'}
                     </span>
                   </div>
                   <input
@@ -590,7 +598,7 @@ export default function CitizenFamilyDashboardPage() {
                 {/* Route Type */}
                 <div>
                   <label className="text-xs font-bold text-slate-700 uppercase tracking-wider block mb-2">
-                    3. Route Environment
+                    {t('citizen.routeEnv', '3. Route Environment')}
                   </label>
                   <div className="grid grid-cols-3 gap-2.5">
                     {[
@@ -620,7 +628,7 @@ export default function CitizenFamilyDashboardPage() {
               <div className="lg:col-span-5 bg-gradient-to-br from-slate-900 to-slate-800 rounded-3xl p-6 text-white space-y-5 shadow-lg">
                 <div className="flex items-center justify-between">
                   <span className="text-2xs font-extrabold text-emerald-400 uppercase tracking-wider">
-                    Calculated Inhalation Score
+                    {t('citizen.inhalationScore', 'Calculated Inhalation Score')}
                   </span>
                   <span className={`px-2.5 py-0.5 rounded-full text-2xs font-extrabold border ${commuteAnalysis.riskColor}`}>
                     {commuteAnalysis.riskGrade}
@@ -668,11 +676,13 @@ export default function CitizenFamilyDashboardPage() {
                     <Users className="w-4 h-4" />
                   </div>
                   <h2 className="text-xl font-bold text-slate-900">
-                    Household Member Vulnerability Profiles
+                    {t('citizen.familyProfiles', 'Household Member Vulnerability Profiles')}
                   </h2>
                 </div>
                 <p className="text-sm text-slate-500">
-                  Customized health cautions and safety restrictions based on age, pre-existing conditions, and sensitivity.
+                  {currentLang === 'hi'
+                    ? 'उम्र, पूर्व स्वास्थ्य स्थितियों और संवेदनशीलता के आधार पर व्यक्तिगत स्वास्थ्य सावधानियां।'
+                    : 'Customized health cautions and safety restrictions based on age, pre-existing conditions, and sensitivity.'}
                 </p>
               </div>
 
@@ -682,7 +692,7 @@ export default function CitizenFamilyDashboardPage() {
                 className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs sm:text-sm transition-colors shadow-xs self-start sm:self-auto"
               >
                 <Plus className="w-4 h-4" />
-                <span>Add Family Member</span>
+                <span>{t('citizen.addMember', 'Add Family Member')}</span>
               </button>
             </div>
 
@@ -755,7 +765,7 @@ export default function CitizenFamilyDashboardPage() {
                   <Wind className="w-5 h-5" />
                 </div>
                 <div>
-                  <h3 className="font-bold text-slate-900 text-base">Air Purifier Setting</h3>
+                  <h3 className="font-bold text-slate-900 text-base">{t('citizen.purifierSetting', 'Air Purifier Setting')}</h3>
                   <span className="text-xs text-slate-500">HEPA CADR Control</span>
                 </div>
               </div>
@@ -776,7 +786,7 @@ export default function CitizenFamilyDashboardPage() {
                   <ShieldAlert className="w-5 h-5" />
                 </div>
                 <div>
-                  <h3 className="font-bold text-slate-900 text-base">Outdoor Mask Guide</h3>
+                  <h3 className="font-bold text-slate-900 text-base">{t('citizen.maskGuide', 'Outdoor Mask Guide')}</h3>
                   <span className="text-xs text-slate-500">Particulate Filtration</span>
                 </div>
               </div>
@@ -797,7 +807,7 @@ export default function CitizenFamilyDashboardPage() {
                   <CloudSun className="w-5 h-5" />
                 </div>
                 <div>
-                  <h3 className="font-bold text-slate-900 text-base">Window Ventilation</h3>
+                  <h3 className="font-bold text-slate-900 text-base">{t('citizen.windowVent', 'Window Ventilation')}</h3>
                   <span className="text-xs text-slate-500">Safe Fresh Air Window</span>
                 </div>
               </div>

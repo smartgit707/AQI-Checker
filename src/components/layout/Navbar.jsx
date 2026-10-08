@@ -3,6 +3,8 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import NotificationBell from '../notifications/NotificationBell';
 import ThemeToggle from '../common/ThemeToggle';
+import LanguageToggle from '../common/LanguageToggle';
+import { useLanguage } from '../../context/LanguageContext';
 import { 
   Wind, 
   Search, 
@@ -26,6 +28,7 @@ import {
 
 export default function Navbar({ onSelectCity, selectedCity }) {
   const { user, isAuthenticated, logout } = useAuth();
+  const { t } = useLanguage();
   const navigate = useNavigate();
 
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -102,7 +105,7 @@ export default function Navbar({ onSelectCity, selectedCity }) {
           <nav className="hidden lg:flex items-center gap-1 xl:gap-2">
             {navLinks.map((link) => (
               <Link
-                key={link.name}
+                key={link.href}
                 to={link.href}
                 className="px-3.5 py-1.5 rounded-lg text-sm font-semibold text-slate-600 hover:text-slate-900 hover:bg-slate-100/80 dark:hover:bg-slate-800/60 transition-colors"
               >
@@ -115,7 +118,7 @@ export default function Navbar({ onSelectCity, selectedCity }) {
                 to="/methodology"
                 className="px-3.5 py-1.5 rounded-lg text-sm font-semibold text-slate-600 hover:text-slate-900 hover:bg-slate-100/80 dark:hover:bg-slate-800/60 transition-colors"
               >
-                Methodology
+                {t('nav.methodology', 'Methodology')}
               </Link>
             )}
 
@@ -132,14 +135,14 @@ export default function Navbar({ onSelectCity, selectedCity }) {
                   }`}
                 >
                   <LayoutDashboard className="w-4 h-4 text-emerald-600" />
-                  <span>Dashboards</span>
+                  <span>{t('nav.dashboards', 'Dashboards')}</span>
                   <ChevronDown className={`w-3.5 h-3.5 text-slate-400 transition-transform ${dashboardMenuOpen ? 'rotate-180' : ''}`} />
                 </button>
 
                 {dashboardMenuOpen && (
                   <div className="absolute left-0 mt-2 w-64 rounded-2xl bg-white border border-slate-200/90 shadow-xl p-1.5 z-50 animate-fadeIn">
                     <div className="px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider text-slate-400">
-                      Workspaces
+                      {t('nav.workspaces', 'Workspaces')}
                     </div>
 
                     <Link
@@ -151,8 +154,8 @@ export default function Navbar({ onSelectCity, selectedCity }) {
                         <Home className="w-4 h-4" />
                       </div>
                       <div>
-                        <div className="text-xs font-bold text-slate-900">Citizen & Family</div>
-                        <div className="text-3xs text-slate-500">24h Golden Window & advisory</div>
+                        <div className="text-xs font-bold text-slate-900">{t('nav.citizenDashboard', 'Citizen & Family')}</div>
+                        <div className="text-3xs text-slate-500">{t('nav.citizenSubtitle', '24h Golden Window & advisory')}</div>
                       </div>
                     </Link>
 
@@ -165,8 +168,8 @@ export default function Navbar({ onSelectCity, selectedCity }) {
                         <LayoutDashboard className="w-4 h-4" />
                       </div>
                       <div>
-                        <div className="text-xs font-bold text-slate-900">Scientific Sensor</div>
-                        <div className="text-3xs text-slate-500">Telemetry & station sensors</div>
+                        <div className="text-xs font-bold text-slate-900">{t('nav.scientificDashboard', 'Scientific Dashboard')}</div>
+                        <div className="text-3xs text-slate-500">{t('nav.scientificSubtitle', 'Telemetry & station sensors')}</div>
                       </div>
                     </Link>
 
@@ -180,8 +183,8 @@ export default function Navbar({ onSelectCity, selectedCity }) {
                           <ShieldAlert className="w-4 h-4" />
                         </div>
                         <div>
-                          <div className="text-xs font-bold text-purple-900">Admin Console</div>
-                          <div className="text-3xs text-purple-500">System operations & controls</div>
+                          <div className="text-xs font-bold text-purple-900">{t('nav.adminConsole', 'Admin Console')}</div>
+                          <div className="text-3xs text-purple-500">{t('nav.adminSubtitle', 'System operations & controls')}</div>
                         </div>
                       </Link>
                     )}
@@ -193,6 +196,7 @@ export default function Navbar({ onSelectCity, selectedCity }) {
 
           {/* Right Action Area */}
           <div className="hidden md:flex items-center gap-2">
+            <LanguageToggle />
             <ThemeToggle />
 
             {isAuthenticated ? (
@@ -231,7 +235,7 @@ export default function Navbar({ onSelectCity, selectedCity }) {
                   {userDropdownOpen && (
                     <div className="absolute right-0 mt-2 w-64 rounded-2xl bg-white border border-slate-200/80 shadow-xl py-2 z-50 animate-fadeIn">
                       <div className="px-4 py-3 border-b border-slate-100">
-                        <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Signed in as</p>
+                        <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider">{t('nav.signedInAs', 'Signed in as')}</p>
                         <p className="text-sm font-bold text-slate-900 truncate mt-0.5">{user?.name}</p>
                         <p className="text-xs text-slate-500 truncate">{user?.email}</p>
                         {user?.role === 'admin' && (
@@ -338,20 +342,21 @@ export default function Navbar({ onSelectCity, selectedCity }) {
                   to="/login"
                   className="px-3.5 py-2 rounded-xl text-sm font-semibold text-slate-700 hover:text-slate-900 hover:bg-slate-100 transition-colors"
                 >
-                  Sign In
+                  {t('nav.signIn', 'Sign In')}
                 </Link>
                 <Link
                   to="/register"
                   className="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-semibold transition-colors shadow-xs"
                 >
-                  Get Started
+                  {t('nav.getStarted', 'Get Started')}
                 </Link>
               </div>
             )}
           </div>
 
           {/* Mobile Menu Button */}
-          <div className="flex items-center gap-2 lg:hidden">
+          <div className="flex items-center gap-1.5 lg:hidden">
+            <LanguageToggle />
             <ThemeToggle />
             {isAuthenticated && <NotificationBell />}
             <button

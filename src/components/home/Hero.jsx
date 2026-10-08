@@ -5,9 +5,11 @@ import LocationSearch from '../common/LocationSearch';
 import OptimizedImage from '../common/OptimizedImage';
 import { IMAGES } from '../../data/images';
 import { getAQILevel } from '../../design-system/aqiTokens';
+import { useLanguage } from '../../context/LanguageContext';
 
 export default function Hero({ onSelectCity, currentCity }) {
   const currentLevel = getAQILevel(currentCity.aqi);
+  const { t } = useLanguage();
 
   return (
     <section className="relative pt-10 sm:pt-14 lg:pt-16 pb-16 sm:pb-20 lg:pb-24 overflow-hidden border-b border-slate-200/60">
@@ -20,24 +22,26 @@ export default function Hero({ onSelectCity, currentCity }) {
         <div className="flex justify-center mb-6">
           <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/90 dark:bg-slate-900/90 border border-slate-200/90 dark:border-slate-800 shadow-2xs text-xs font-medium text-slate-700">
             <span className="flex h-2 w-2 rounded-full bg-emerald-500 animate-ping" />
-            <span className="font-semibold text-emerald-800">CPCB & Sensor Network</span>
+            <span className="font-semibold text-emerald-800">{t('hero.badgeNetwork', 'CPCB & Sensor Network')}</span>
             <span className="text-slate-300 dark:text-slate-600">•</span>
-            <span>Real-time Pan-India Ambient Air Monitoring</span>
+            <span>{t('hero.badgeLive', 'Real-time Pan-India Ambient Air Monitoring')}</span>
           </div>
         </div>
 
         {/* Hero Headline & Subtitle */}
         <div className="text-center max-w-3xl mx-auto mb-8 sm:mb-10">
           <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-slate-900 tracking-tight font-display leading-[1.18]">
-            Understand the <span className="text-emerald-700 relative inline-block">
-              air you breathe
+            {t('hero.headlinePrefix', 'Understand the')}{' '}
+            <span className="text-emerald-700 relative inline-block">
+              {t('hero.headlineHighlight', 'air you breathe')}
               <svg className="absolute -bottom-2 left-0 w-full h-2 text-emerald-300 -z-10" viewBox="0 0 100 20" preserveAspectRatio="none">
                 <path d="M0 15 Q 50 0 100 15" stroke="currentColor" strokeWidth="6" fill="none" />
               </svg>
-            </span> with precision.
+            </span>{' '}
+            {t('hero.headlineSuffix', 'with precision.')}
           </h1>
           <p className="mt-4 sm:mt-5 text-sm sm:text-base lg:text-lg text-slate-600 max-w-2xl mx-auto leading-relaxed">
-            Real-time air quality metrics, pollutant breakdown, atmospheric trends, and actionable health guidance for cities across India.
+            {t('hero.subtitle', 'Real-time air quality metrics, pollutant breakdown, atmospheric trends, and actionable health guidance for cities across India.')}
           </p>
         </div>
 
@@ -47,17 +51,17 @@ export default function Hero({ onSelectCity, currentCity }) {
           <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 mt-4 text-xs text-slate-400 font-medium">
             <span className="flex items-center gap-1.5">
               <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
-              Calibrated NAQI Standards
+              {t('hero.featureStandards', 'Calibrated NAQI Standards')}
             </span>
             <span className="hidden sm:inline text-slate-300 dark:text-slate-700">•</span>
             <span className="flex items-center gap-1.5">
               <Activity className="w-3.5 h-3.5 text-teal-600" />
-              Sub-Hour Telemetry Refresh
+              {t('hero.featureTelemetry', 'Sub-Hour Telemetry Refresh')}
             </span>
             <span className="hidden sm:inline text-slate-300 dark:text-slate-700">•</span>
             <span className="hidden sm:inline-flex items-center gap-1.5">
               <Wind className="w-3.5 h-3.5 text-blue-600" />
-              Multi-Pollutant Particulate Breakdown
+              {t('hero.featureBreakdown', 'Multi-Pollutant Particulate Breakdown')}
             </span>
           </div>
         </div>
@@ -103,13 +107,13 @@ export default function Hero({ onSelectCity, currentCity }) {
               <div>
                 <div className="flex items-center justify-between pb-4 border-b border-slate-100">
                   <div>
-                    <span className="text-xs font-bold uppercase tracking-wider text-slate-500">Live Air Quality Index</span>
+                    <span className="text-xs font-bold uppercase tracking-wider text-slate-500">{t('hero.liveAqi', 'Live Air Quality Index')}</span>
                     <h3 className="text-2xl font-bold text-slate-900 font-display mt-0.5">
                       {currentCity.name}
                     </h3>
                   </div>
                   <span className={`px-3 py-1.5 rounded-full text-xs font-bold border ${currentLevel.badgeClass}`}>
-                    {currentLevel.category}
+                    {t(`aqi.${currentLevel.category.toLowerCase()}`, currentLevel.category)}
                   </span>
                 </div>
 
@@ -122,12 +126,12 @@ export default function Hero({ onSelectCity, currentCity }) {
                     {currentCity.aqi}
                   </div>
                   <div>
-                    <span className="text-xs uppercase font-bold text-slate-500 block">NAQI Value</span>
+                    <span className="text-xs uppercase font-bold text-slate-500 block">{t('hero.naqiScore', 'NAQI Value')}</span>
                     <span className="text-sm font-semibold text-slate-700">
-                      Dominant: <strong className="text-slate-900">{currentCity.dominantPollutant}</strong>
+                      {t('hero.dominant', 'Dominant')}: <strong className="text-slate-900">{currentCity.dominantPollutant}</strong>
                     </span>
                     <div className="flex items-center gap-1.5 mt-1 text-xs font-medium text-slate-500">
-                      <span>24h Trend:</span>
+                      <span>{t('hero.trend24h', '24h Trend')}:</span>
                       <span className={(currentCity.trend || '').startsWith('+') ? 'text-rose-600 font-bold' : 'text-emerald-600 font-bold'}>
                         {currentCity.trend || '-2%'}
                       </span>
@@ -139,7 +143,7 @@ export default function Hero({ onSelectCity, currentCity }) {
                 <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200/80 mb-6">
                   <div className="text-xs font-bold uppercase tracking-wider text-slate-600 mb-1 flex items-center gap-1.5">
                     <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: currentLevel.color }}></span>
-                    Health Advisory Note
+                    {t('hero.healthAdvisory', 'Health Advisory Note')}
                   </div>
                   <p className="text-xs sm:text-sm text-slate-700 leading-relaxed">
                     {currentLevel.advisory}
@@ -149,15 +153,15 @@ export default function Hero({ onSelectCity, currentCity }) {
                 {/* Quick Weather Parameters */}
                 <div className="grid grid-cols-3 gap-3 pt-2">
                   <div className="bg-slate-50/80 rounded-xl p-2.5 text-center border border-slate-100">
-                    <span className="text-[11px] text-slate-500 block">Temperature</span>
+                    <span className="text-[11px] text-slate-500 block">{t('hero.temperature', 'Temperature')}</span>
                     <span className="text-sm font-bold text-slate-900">{currentCity.temperature}</span>
                   </div>
                   <div className="bg-slate-50/80 rounded-xl p-2.5 text-center border border-slate-100">
-                    <span className="text-[11px] text-slate-500 block">Humidity</span>
+                    <span className="text-[11px] text-slate-500 block">{t('hero.humidity', 'Humidity')}</span>
                     <span className="text-sm font-bold text-slate-900">{currentCity.humidity}</span>
                   </div>
                   <div className="bg-slate-50/80 rounded-xl p-2.5 text-center border border-slate-100">
-                    <span className="text-[11px] text-slate-500 block">Wind Speed</span>
+                    <span className="text-[11px] text-slate-500 block">{t('hero.windSpeed', 'Wind Speed')}</span>
                     <span className="text-sm font-bold text-slate-900">{(currentCity.wind || '12 km/h NW').split(' ')[0]} km/h</span>
                   </div>
                 </div>
@@ -169,14 +173,14 @@ export default function Hero({ onSelectCity, currentCity }) {
                   to={`/city/${currentCity.id || 'delhi'}`}
                   className="flex-1 inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-sm transition-colors shadow-xs"
                 >
-                  <span>Full City Profile</span>
+                  <span>{t('hero.fullProfile', 'Full City Profile')}</span>
                   <ArrowRight className="w-4 h-4" />
                 </Link>
                 <a
                   href="#current-aqi"
                   className="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 font-semibold text-sm transition-colors"
                 >
-                  <span>Sensor Telemetry</span>
+                  <span>{t('hero.sensorTelemetry', 'Sensor Telemetry')}</span>
                   <ChevronRight className="w-4 h-4" />
                 </a>
               </div>
