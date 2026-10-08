@@ -10,7 +10,7 @@ export default function Hero({ onSelectCity, currentCity }) {
   const currentLevel = getAQILevel(currentCity.aqi);
 
   return (
-    <section className="relative pt-6 pb-16 lg:pt-10 lg:pb-24 overflow-hidden border-b border-slate-200/60">
+    <section className="relative pt-10 sm:pt-14 lg:pt-16 pb-16 sm:pb-20 lg:pb-24 overflow-hidden border-b border-slate-200/60">
       {/* Background Subtle Ambience */}
       <div className="absolute inset-0 bg-gradient-to-b from-emerald-50/40 via-white to-slate-50/50 dark:from-emerald-950/20 dark:via-slate-950 dark:to-slate-900 -z-10 pointer-events-none" />
 
@@ -18,17 +18,17 @@ export default function Hero({ onSelectCity, currentCity }) {
         
         {/* Top Editorial Badge */}
         <div className="flex justify-center mb-6">
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white border border-slate-200 shadow-xs text-xs font-medium text-slate-700">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/90 dark:bg-slate-900/90 border border-slate-200/90 dark:border-slate-800 shadow-2xs text-xs font-medium text-slate-700">
             <span className="flex h-2 w-2 rounded-full bg-emerald-500 animate-ping" />
             <span className="font-semibold text-emerald-800">CPCB & Sensor Network</span>
-            <span className="text-slate-300">•</span>
+            <span className="text-slate-300 dark:text-slate-600">•</span>
             <span>Real-time Pan-India Ambient Air Monitoring</span>
           </div>
         </div>
 
         {/* Hero Headline & Subtitle */}
-        <div className="text-center max-w-4xl mx-auto mb-8 sm:mb-10">
-          <h1 className="text-3xl sm:text-5xl lg:text-6xl font-extrabold text-slate-900 tracking-tight font-display leading-[1.15]">
+        <div className="text-center max-w-3xl mx-auto mb-8 sm:mb-10">
+          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-slate-900 tracking-tight font-display leading-[1.18]">
             Understand the <span className="text-emerald-700 relative inline-block">
               air you breathe
               <svg className="absolute -bottom-2 left-0 w-full h-2 text-emerald-300 -z-10" viewBox="0 0 100 20" preserveAspectRatio="none">
@@ -36,25 +36,25 @@ export default function Hero({ onSelectCity, currentCity }) {
               </svg>
             </span> with precision.
           </h1>
-          <p className="mt-5 text-base sm:text-xl text-slate-600 max-w-2xl mx-auto leading-relaxed">
+          <p className="mt-4 sm:mt-5 text-sm sm:text-base lg:text-lg text-slate-600 max-w-2xl mx-auto leading-relaxed">
             Real-time air quality metrics, pollutant breakdown, atmospheric trends, and actionable health guidance for cities across India.
           </p>
         </div>
 
         {/* Location Search Box */}
-        <div className="mb-10 sm:mb-12">
+        <div className="mb-12 sm:mb-16">
           <LocationSearch onSelectCity={onSelectCity} currentCityId={currentCity.id} />
-          <div className="flex items-center justify-center gap-3 sm:gap-6 mt-4 text-xs text-slate-500">
+          <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 mt-4 text-xs text-slate-400 font-medium">
             <span className="flex items-center gap-1.5">
               <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
               Calibrated NAQI Standards
             </span>
-            <span className="text-slate-300">•</span>
+            <span className="hidden sm:inline text-slate-300 dark:text-slate-700">•</span>
             <span className="flex items-center gap-1.5">
               <Activity className="w-3.5 h-3.5 text-teal-600" />
               Sub-Hour Telemetry Refresh
             </span>
-            <span className="text-slate-300">•</span>
+            <span className="hidden sm:inline text-slate-300 dark:text-slate-700">•</span>
             <span className="hidden sm:inline-flex items-center gap-1.5">
               <Wind className="w-3.5 h-3.5 text-blue-600" />
               Multi-Pollutant Particulate Breakdown
@@ -164,27 +164,20 @@ export default function Hero({ onSelectCity, currentCity }) {
               </div>
 
               {/* Call to Actions */}
-              <div className="mt-8 pt-4 border-t border-slate-100 flex flex-col sm:flex-row gap-3">
+              <div className="mt-8 pt-4 border-t border-slate-100 dark:border-slate-800 flex flex-col sm:flex-row gap-3">
                 <Link
                   to={`/city/${currentCity.id || 'delhi'}`}
-                  className="flex-1 inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-emerald-700 text-white font-semibold text-sm hover:bg-emerald-800 transition-colors shadow-sm"
+                  className="flex-1 inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-sm transition-colors shadow-xs"
                 >
                   <span>Full City Profile</span>
                   <ArrowRight className="w-4 h-4" />
                 </Link>
                 <a
                   href="#current-aqi"
-                  className="inline-flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-slate-900 text-white font-semibold text-sm hover:bg-slate-800 transition-colors shadow-sm"
+                  className="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 font-semibold text-sm transition-colors"
                 >
-                  <span>Quick Analysis</span>
+                  <span>Sensor Telemetry</span>
                   <ChevronRight className="w-4 h-4" />
-                </a>
-                <a
-                  href="#live-map"
-                  className="inline-flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-slate-100 text-slate-800 border border-slate-200/80 font-semibold text-sm hover:bg-slate-200 transition-colors"
-                >
-                  <Compass className="w-4 h-4 text-emerald-600" />
-                  <span>Map</span>
                 </a>
               </div>
 

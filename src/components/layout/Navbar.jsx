@@ -30,8 +30,10 @@ export default function Navbar({ onSelectCity, selectedCity }) {
 
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [userDropdownOpen, setUserDropdownOpen] = useState(false);
+  const [dashboardMenuOpen, setDashboardMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const dropdownRef = useRef(null);
+  const dashboardMenuRef = useRef(null);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -41,11 +43,14 @@ export default function Navbar({ onSelectCity, selectedCity }) {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Click outside to close user dropdown
+  // Click outside to close dropdowns
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
         setUserDropdownOpen(false);
+      }
+      if (dashboardMenuRef.current && !dashboardMenuRef.current.contains(event.target)) {
+        setDashboardMenuOpen(false);
       }
     };
     document.addEventListener('mousedown', handleClickOutside);
@@ -54,18 +59,16 @@ export default function Navbar({ onSelectCity, selectedCity }) {
 
   const handleLogout = async () => {
     setUserDropdownOpen(false);
+    setDashboardMenuOpen(false);
     setMobileMenuOpen(false);
     await logout();
     navigate('/');
   };
 
   const navLinks = [
-    { name: 'Overview', href: '/' },
     { name: 'Analytics', href: '/analytics' },
     { name: 'Compare', href: '/compare' },
     { name: 'Rankings', href: '/rankings' },
-    { name: 'Methodology', href: '/methodology' },
-    { name: 'Live Map', href: '/#live-map' },
   ];
 
   return (
@@ -73,7 +76,7 @@ export default function Navbar({ onSelectCity, selectedCity }) {
       className={`sticky top-0 z-50 transition-all duration-300 ${
         isScrolled 
           ? 'bg-white/95 dark:bg-slate-900/95 backdrop-blur-md shadow-sm border-b border-slate-200/80 dark:border-slate-800 py-3' 
-          : 'bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm border-b border-slate-100 dark:border-slate-800/80 py-4'
+          : 'bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm border-b border-slate-100 dark:border-slate-800/80 py-3.5'
       }`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -81,15 +84,15 @@ export default function Navbar({ onSelectCity, selectedCity }) {
           
           {/* Brand Logo & Wordmark */}
           <Link to="/" className="flex items-center gap-3 group shrink-0">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-600 to-teal-700 flex items-center justify-center text-white shadow-md shadow-emerald-600/20 group-hover:scale-105 transition-transform duration-200">
-              <Wind className="w-5 h-5 text-emerald-100" />
+            <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-emerald-600 to-teal-700 flex items-center justify-center text-white shadow-md shadow-emerald-600/20 group-hover:scale-105 transition-transform duration-200">
+              <Wind className="w-4.5 h-4.5 text-emerald-100" />
             </div>
             <div>
-              <span className="text-xl font-extrabold tracking-tight text-slate-900 font-display flex items-center gap-1">
+              <span className="text-lg sm:text-xl font-extrabold tracking-tight text-slate-900 font-display flex items-center gap-1">
                 AeroSense
                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
               </span>
-              <span className="block text-[10px] uppercase tracking-wider font-semibold text-slate-500 -mt-1">
+              <span className="block text-[9px] uppercase tracking-wider font-semibold text-slate-500 -mt-0.5">
                 Environmental Intelligence
               </span>
             </div>
@@ -97,91 +100,131 @@ export default function Navbar({ onSelectCity, selectedCity }) {
 
           {/* Desktop Navigation Links */}
           <nav className="hidden lg:flex items-center gap-1 xl:gap-2">
-            {navLinks.map((link) => {
-              const isInternal = link.href.startsWith('/') && !link.href.includes('#');
-              return isInternal ? (
-                <Link
-                  key={link.name}
-                  to={link.href}
-                  className="px-3.5 py-2 rounded-lg text-sm font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-100/80 transition-colors"
-                >
-                  {link.name}
-                </Link>
-              ) : (
-                <a
-                  key={link.name}
-                  href={link.href}
-                  className="px-3.5 py-2 rounded-lg text-sm font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-100/80 transition-colors"
-                >
-                  {link.name}
-                </a>
-              );
-            })}
+            {navLinks.map((link) => (
+              <Link
+                key={link.name}
+                to={link.href}
+                className="px-3.5 py-1.5 rounded-lg text-sm font-semibold text-slate-600 hover:text-slate-900 hover:bg-slate-100/80 dark:hover:bg-slate-800/60 transition-colors"
+              >
+                {link.name}
+              </Link>
+            ))}
 
+            {!isAuthenticated && (
+              <Link
+                to="/methodology"
+                className="px-3.5 py-1.5 rounded-lg text-sm font-semibold text-slate-600 hover:text-slate-900 hover:bg-slate-100/80 dark:hover:bg-slate-800/60 transition-colors"
+              >
+                Methodology
+              </Link>
+            )}
+
+            {/* Consolidated Dashboards Dropdown */}
             {isAuthenticated && (
-              <>
-                <Link
-                  to="/dashboard"
-                  className="px-3 py-2 rounded-lg text-sm font-semibold text-emerald-700 bg-emerald-50/80 hover:bg-emerald-100/80 transition-colors flex items-center gap-1.5"
+              <div className="relative" ref={dashboardMenuRef}>
+                <button
+                  type="button"
+                  onClick={() => setDashboardMenuOpen(!dashboardMenuOpen)}
+                  className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-sm font-semibold transition-all ${
+                    dashboardMenuOpen
+                      ? 'bg-emerald-50 text-emerald-800 border border-emerald-200 shadow-2xs'
+                      : 'text-slate-700 hover:text-emerald-700 hover:bg-slate-100/80 dark:hover:bg-slate-800/60'
+                  }`}
                 >
-                  <LayoutDashboard className="w-3.5 h-3.5 text-emerald-600" />
-                  <span>Dashboard</span>
-                </Link>
-                <Link
-                  to="/citizen-dashboard"
-                  className="px-3 py-2 rounded-lg text-sm font-semibold text-teal-700 bg-teal-50/80 hover:bg-teal-100/80 transition-colors flex items-center gap-1.5"
-                >
-                  <Home className="w-3.5 h-3.5 text-teal-600" />
-                  <span>Family Health</span>
-                </Link>
-                <Link
-                  to="/favorites"
-                  className="px-3.5 py-2 rounded-lg text-sm font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-100/80 transition-colors flex items-center gap-1.5"
-                >
-                  <Heart className="w-3.5 h-3.5 text-rose-500" />
-                  <span>Favorites</span>
-                </Link>
-                {user?.role === 'admin' && (
-                  <Link
-                    to="/admin"
-                    className="px-3.5 py-2 rounded-lg text-sm font-bold text-purple-700 bg-purple-50/80 hover:bg-purple-100/80 transition-colors flex items-center gap-1.5"
-                  >
-                    <ShieldAlert className="w-3.5 h-3.5 text-purple-600" />
-                    <span>Admin</span>
-                  </Link>
+                  <LayoutDashboard className="w-4 h-4 text-emerald-600" />
+                  <span>Dashboards</span>
+                  <ChevronDown className={`w-3.5 h-3.5 text-slate-400 transition-transform ${dashboardMenuOpen ? 'rotate-180' : ''}`} />
+                </button>
+
+                {dashboardMenuOpen && (
+                  <div className="absolute left-0 mt-2 w-64 rounded-2xl bg-white border border-slate-200/90 shadow-xl p-1.5 z-50 animate-fadeIn">
+                    <div className="px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider text-slate-400">
+                      Workspaces
+                    </div>
+
+                    <Link
+                      to="/citizen-dashboard"
+                      onClick={() => setDashboardMenuOpen(false)}
+                      className="flex items-center gap-3 p-2.5 rounded-xl hover:bg-slate-50 transition-colors"
+                    >
+                      <div className="w-8 h-8 rounded-lg bg-teal-50 text-teal-600 flex items-center justify-center shrink-0">
+                        <Home className="w-4 h-4" />
+                      </div>
+                      <div>
+                        <div className="text-xs font-bold text-slate-900">Citizen & Family</div>
+                        <div className="text-3xs text-slate-500">24h Golden Window & advisory</div>
+                      </div>
+                    </Link>
+
+                    <Link
+                      to="/dashboard"
+                      onClick={() => setDashboardMenuOpen(false)}
+                      className="flex items-center gap-3 p-2.5 rounded-xl hover:bg-slate-50 transition-colors"
+                    >
+                      <div className="w-8 h-8 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0">
+                        <LayoutDashboard className="w-4 h-4" />
+                      </div>
+                      <div>
+                        <div className="text-xs font-bold text-slate-900">Scientific Sensor</div>
+                        <div className="text-3xs text-slate-500">Telemetry & station sensors</div>
+                      </div>
+                    </Link>
+
+                    {user?.role === 'admin' && (
+                      <Link
+                        to="/admin"
+                        onClick={() => setDashboardMenuOpen(false)}
+                        className="flex items-center gap-3 p-2.5 rounded-xl hover:bg-purple-50 transition-colors border-t border-slate-100 mt-1"
+                      >
+                        <div className="w-8 h-8 rounded-lg bg-purple-50 text-purple-600 flex items-center justify-center shrink-0">
+                          <ShieldAlert className="w-4 h-4" />
+                        </div>
+                        <div>
+                          <div className="text-xs font-bold text-purple-900">Admin Console</div>
+                          <div className="text-3xs text-purple-500">System operations & controls</div>
+                        </div>
+                      </Link>
+                    )}
+                  </div>
                 )}
-              </>
+              </div>
             )}
           </nav>
 
           {/* Right Action Area */}
-          <div className="hidden md:flex items-center gap-2.5">
+          <div className="hidden md:flex items-center gap-2">
             <ThemeToggle />
 
             {isAuthenticated ? (
               /* Authenticated User Menu */
-              <div className="flex items-center gap-2">
-                {/* Part 7: Notification Bell with Badge & Dropdown */}
+              <div className="flex items-center gap-1.5 sm:gap-2">
+                {/* Favorites Quick Icon */}
+                <Link
+                  to="/favorites"
+                  title={`Saved Favorites (${user?.favoriteCities?.length || 0})`}
+                  className="relative p-2 rounded-xl text-slate-600 hover:text-rose-600 hover:bg-slate-100 dark:hover:bg-slate-800/60 transition-colors"
+                >
+                  <Heart className="w-4 h-4 sm:w-4.5 sm:h-4.5" />
+                  {user?.favoriteCities?.length > 0 && (
+                    <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-rose-500 ring-2 ring-white dark:ring-slate-900"></span>
+                  )}
+                </Link>
+
+                {/* Notification Bell */}
                 <NotificationBell />
 
+                {/* Compact User Menu Avatar */}
                 <div className="relative" ref={dropdownRef}>
                   <button
                     type="button"
                     onClick={() => setUserDropdownOpen(!userDropdownOpen)}
-                    className="flex items-center gap-2.5 p-1.5 pr-3 rounded-full hover:bg-slate-100 border border-slate-200/80 transition-all text-left"
+                    className="flex items-center gap-1.5 p-1 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 border border-slate-200/80 dark:border-slate-800 transition-all"
+                    title={user?.name || 'Account menu'}
                   >
                     <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-emerald-600 to-teal-500 text-white font-bold text-xs flex items-center justify-center shadow-xs">
                       {user?.name ? user.name.charAt(0).toUpperCase() : 'U'}
                     </div>
-                    <div className="hidden xl:block">
-                      <div className="text-xs font-bold text-slate-900 leading-tight max-w-[100px] truncate">
-                        {user?.name || 'Account'}
-                      </div>
-                      <div className="text-2xs text-slate-400 leading-tight">
-                        {user?.role === 'admin' ? 'Administrator' : 'Environmentalist'}
-                      </div>
-                    </div>
-                    <ChevronDown className="w-3.5 h-3.5 text-slate-400" />
+                    <ChevronDown className="w-3.5 h-3.5 text-slate-400 mr-1" />
                   </button>
 
                   {/* Dropdown Menu */}
