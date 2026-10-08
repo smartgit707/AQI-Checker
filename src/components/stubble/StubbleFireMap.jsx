@@ -1,11 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   MapContainer, 
   TileLayer, 
   CircleMarker, 
   Polyline, 
   Tooltip, 
-  Popup 
+  Popup,
+  useMap 
 } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import { 
@@ -15,6 +16,20 @@ import {
 } from '../../data/stubbleFireData';
 import { Flame, Wind, Eye, Info, ShieldAlert } from 'lucide-react';
 import { useLanguage } from '../../context/LanguageContext';
+
+/**
+ * Controller to ensure map tiles immediately calculate full size
+ */
+function MapController() {
+  const map = useMap();
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      map.invalidateSize();
+    }, 150);
+    return () => clearTimeout(timer);
+  }, [map]);
+  return null;
+}
 
 export default function StubbleFireMap({ onSelectHotspot, selectedHotspot }) {
   const { currentLang, t } = useLanguage();
@@ -27,7 +42,7 @@ export default function StubbleFireMap({ onSelectHotspot, selectedHotspot }) {
   const mapCenter = [29.35, 76.85];
 
   return (
-    <div className="relative w-full h-[520px] sm:h-[600px] rounded-3xl overflow-hidden shadow-inner border border-slate-200 bg-slate-950">
+    <div className="relative w-full h-[520px] sm:h-[600px] rounded-3xl overflow-hidden shadow-inner border border-slate-200 bg-slate-100">
       
       <MapContainer
         center={mapCenter}
@@ -38,10 +53,12 @@ export default function StubbleFireMap({ onSelectHotspot, selectedHotspot }) {
         className="w-full h-full z-10"
         style={{ height: '100%', width: '100%' }}
       >
-        {/* Dark Satellite/Atmospheric Base Map Tiles */}
+        <MapController />
+
+        {/* Free, Open OpenStreetMap Standard Base Map */}
         <TileLayer
-          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> & CartoDB'
-          url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
+          attribution='&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noreferrer">OpenStreetMap</a> contributors'
+          url="https://tile.openstreetmap.org/{z}/{x}/{y}.png"
           maxZoom={19}
         />
 
