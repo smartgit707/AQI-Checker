@@ -15,8 +15,11 @@ import {
 import AQIGauge from './AQIGauge';
 import { getAQILevel } from '../../design-system/aqiTokens';
 
-export default function CurrentAirQuality({ city }) {
-  const level = getAQILevel(city.aqi);
+export default function CurrentAirQuality({ city = {} }) {
+  const safeAqi = typeof city.aqi === 'number' && !isNaN(city.aqi) ? city.aqi : (Number(city.aqi) || 50);
+  const level = getAQILevel(safeAqi) || {};
+  const trendStr = typeof city.trend === 'string' ? city.trend : (typeof city.trend === 'object' && city.trend !== null ? String(city.trend?.changePercent || '-2%') : '-2%');
+  const isTrendUp = trendStr.startsWith('+');
 
   return (
     <section id="current-aqi" className="py-16 sm:py-20 bg-slate-50/70 border-b border-slate-200/80">
@@ -95,10 +98,10 @@ export default function CurrentAirQuality({ city }) {
                   24h Variation
                 </span>
                 <span className={`text-lg font-extrabold font-display flex items-center justify-center gap-1 ${
-                  (city.trend || '').startsWith('+') ? 'text-rose-600' : 'text-emerald-600'
+                  isTrendUp ? 'text-rose-600' : 'text-emerald-600'
                 }`}>
-                  {(city.trend || '').startsWith('+') ? <TrendingUp className="w-4 h-4" /> : <TrendingDown className="w-4 h-4" />}
-                  {city.trend || '-2%'}
+                  {isTrendUp ? <TrendingUp className="w-4 h-4" /> : <TrendingDown className="w-4 h-4" />}
+                  {trendStr}
                 </span>
               </div>
             </div>

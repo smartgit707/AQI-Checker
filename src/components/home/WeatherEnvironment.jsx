@@ -15,8 +15,15 @@ import OptimizedImage from '../common/OptimizedImage';
 import { IMAGES } from '../../data/images';
 import { getAQILevel } from '../../design-system/aqiTokens';
 
-export default function WeatherEnvironment({ city }) {
-  const level = getAQILevel(city.aqi);
+export default function WeatherEnvironment({ city = {} }) {
+  const safeAqi = typeof city.aqi === 'number' && !isNaN(city.aqi) ? city.aqi : (Number(city.aqi) || 50);
+  const level = getAQILevel(safeAqi) || {};
+  const windStr = typeof city.wind === 'string' && city.wind.trim()
+    ? city.wind
+    : (typeof city.wind === 'object' && city.wind !== null ? `${city.wind?.speed || 12} km/h ${city.wind?.direction || 'NW'}` : '12 km/h NW');
+  const windParts = windStr.split(' ');
+  const windSpeedVal = windParts[0] || '12';
+  const windDirVal = windParts.slice(1).join(' ') || 'Variable';
 
   return (
     <section id="meteorology" className="py-16 sm:py-24 bg-slate-50/70 border-b border-slate-200/80">
@@ -101,9 +108,9 @@ export default function WeatherEnvironment({ city }) {
               </div>
               <div>
                 <span className="text-3xl font-black text-slate-900 font-display block">
-                  {(city.wind || '12 km/h NW').split(' ')[0]} <span className="text-base font-semibold">km/h</span>
+                  {windSpeedVal} <span className="text-base font-semibold">km/h</span>
                 </span>
-                <span className="text-xs text-slate-500 mt-1 block">Direction: {(city.wind || '12 km/h NW').split(' ').slice(1).join(' ') || 'Variable'}</span>
+                <span className="text-xs text-slate-500 mt-1 block">Direction: {windDirVal}</span>
               </div>
               <div className="mt-4 pt-3 border-t border-slate-100 text-[11px] text-slate-400">
                 Sufficient airflow preventing stagnation basins.

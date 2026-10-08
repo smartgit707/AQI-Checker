@@ -38,15 +38,18 @@ export function LanguageProvider({ children }) {
    * Translate key with optional fallback
    */
   const t = useCallback((key, fallback = '') => {
-    const langDict = TRANSLATIONS[currentLang] || TRANSLATIONS.en;
-    if (langDict && langDict[key] !== undefined) {
-      return langDict[key];
-    }
-    // Fallback to English
-    if (TRANSLATIONS.en && TRANSLATIONS.en[key] !== undefined) {
-      return TRANSLATIONS.en[key];
-    }
-    return fallback || key;
+    if (!key) return fallback || '';
+    try {
+      const langDict = (TRANSLATIONS && TRANSLATIONS[currentLang]) || (TRANSLATIONS && TRANSLATIONS.en);
+      if (langDict && langDict[key] !== undefined) {
+        return langDict[key];
+      }
+      // Fallback to English
+      if (TRANSLATIONS && TRANSLATIONS.en && TRANSLATIONS.en[key] !== undefined) {
+        return TRANSLATIONS.en[key];
+      }
+    } catch {}
+    return fallback !== '' ? fallback : String(key);
   }, [currentLang]);
 
   const value = {

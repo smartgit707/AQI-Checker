@@ -8,8 +8,16 @@ import { getAQILevel } from '../../design-system/aqiTokens';
 import { useLanguage } from '../../context/LanguageContext';
 
 export default function Hero({ onSelectCity, currentCity }) {
-  const currentLevel = getAQILevel(currentCity.aqi);
+  const city = currentCity || {};
+  const currentLevel = getAQILevel(city.aqi ?? 50) || {};
   const { t } = useLanguage();
+
+  const categoryStr = currentLevel.category || 'Moderate';
+  const categoryKey = categoryStr.toLowerCase();
+  const trendStr = typeof city.trend === 'string' ? city.trend : String(city.trend || '-2%');
+  const isTrendUp = trendStr.startsWith('+');
+  const windStr = typeof city.wind === 'string' ? city.wind : (city.wind?.speed ? `${city.wind.speed} km/h` : '12 km/h NW');
+  const windSpeedVal = windStr.split(' ')[0] || '12';
 
   return (
     <section className="relative pt-10 sm:pt-14 lg:pt-16 pb-16 sm:pb-20 lg:pb-24 overflow-hidden border-b border-slate-200/60">
@@ -109,11 +117,11 @@ export default function Hero({ onSelectCity, currentCity }) {
                   <div>
                     <span className="text-xs font-bold uppercase tracking-wider text-slate-500">{t('hero.liveAqi', 'Live Air Quality Index')}</span>
                     <h3 className="text-2xl font-bold text-slate-900 font-display mt-0.5">
-                      {currentCity.name}
+                      {city.name || 'City'}
                     </h3>
                   </div>
-                  <span className={`px-3 py-1.5 rounded-full text-xs font-bold border ${currentLevel.badgeClass}`}>
-                    {t(`aqi.${currentLevel.category.toLowerCase()}`, currentLevel.category)}
+                  <span className={`px-3 py-1.5 rounded-full text-xs font-bold border ${currentLevel.badgeClass || 'bg-slate-100 text-slate-700 border-slate-200'}`}>
+                    {t(`aqi.${categoryKey}`, categoryStr)}
                   </span>
                 </div>
 
@@ -121,19 +129,19 @@ export default function Hero({ onSelectCity, currentCity }) {
                 <div className="my-6 flex items-baseline gap-4">
                   <div 
                     className="text-6xl sm:text-7xl font-extrabold tracking-tight font-display"
-                    style={{ color: currentLevel.color }}
+                    style={{ color: currentLevel.color || '#10b981' }}
                   >
-                    {currentCity.aqi}
+                    {city.aqi ?? 50}
                   </div>
                   <div>
                     <span className="text-xs uppercase font-bold text-slate-500 block">{t('hero.naqiScore', 'NAQI Value')}</span>
                     <span className="text-sm font-semibold text-slate-700">
-                      {t('hero.dominant', 'Dominant')}: <strong className="text-slate-900">{currentCity.dominantPollutant}</strong>
+                      {t('hero.dominant', 'Dominant')}: <strong className="text-slate-900">{city.dominantPollutant || 'PM2.5'}</strong>
                     </span>
                     <div className="flex items-center gap-1.5 mt-1 text-xs font-medium text-slate-500">
                       <span>{t('hero.trend24h', '24h Trend')}:</span>
-                      <span className={(currentCity.trend || '').startsWith('+') ? 'text-rose-600 font-bold' : 'text-emerald-600 font-bold'}>
-                        {currentCity.trend || '-2%'}
+                      <span className={isTrendUp ? 'text-rose-600 font-bold' : 'text-emerald-600 font-bold'}>
+                        {trendStr}
                       </span>
                     </div>
                   </div>
@@ -142,11 +150,11 @@ export default function Hero({ onSelectCity, currentCity }) {
                 {/* Advisory Snippet */}
                 <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200/80 mb-6">
                   <div className="text-xs font-bold uppercase tracking-wider text-slate-600 mb-1 flex items-center gap-1.5">
-                    <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: currentLevel.color }}></span>
+                    <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: currentLevel.color || '#10b981' }}></span>
                     {t('hero.healthAdvisory', 'Health Advisory Note')}
                   </div>
                   <p className="text-xs sm:text-sm text-slate-700 leading-relaxed">
-                    {currentLevel.advisory}
+                    {currentLevel.advisory || 'Standard ambient air conditions observed.'}
                   </p>
                 </div>
 
@@ -154,15 +162,15 @@ export default function Hero({ onSelectCity, currentCity }) {
                 <div className="grid grid-cols-3 gap-3 pt-2">
                   <div className="bg-slate-50/80 rounded-xl p-2.5 text-center border border-slate-100">
                     <span className="text-[11px] text-slate-500 block">{t('hero.temperature', 'Temperature')}</span>
-                    <span className="text-sm font-bold text-slate-900">{currentCity.temperature}</span>
+                    <span className="text-sm font-bold text-slate-900">{city.temperature || '28°C'}</span>
                   </div>
                   <div className="bg-slate-50/80 rounded-xl p-2.5 text-center border border-slate-100">
                     <span className="text-[11px] text-slate-500 block">{t('hero.humidity', 'Humidity')}</span>
-                    <span className="text-sm font-bold text-slate-900">{currentCity.humidity}</span>
+                    <span className="text-sm font-bold text-slate-900">{city.humidity || '60%'}</span>
                   </div>
                   <div className="bg-slate-50/80 rounded-xl p-2.5 text-center border border-slate-100">
                     <span className="text-[11px] text-slate-500 block">{t('hero.windSpeed', 'Wind Speed')}</span>
-                    <span className="text-sm font-bold text-slate-900">{(currentCity.wind || '12 km/h NW').split(' ')[0]} km/h</span>
+                    <span className="text-sm font-bold text-slate-900">{windSpeedVal} km/h</span>
                   </div>
                 </div>
               </div>
