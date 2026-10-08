@@ -10,8 +10,8 @@ const COOKIE_OPTIONS = {
 
 export async function register(req, res, next) {
   try {
-    const { name, email, password } = req.body;
-    const { user, token } = await registerUser({ name, email, password });
+    const { name, email, password, role } = req.body;
+    const { user, token } = await registerUser({ name, email, password, role });
 
     res.cookie('token', token, COOKIE_OPTIONS);
 

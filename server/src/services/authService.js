@@ -18,14 +18,37 @@ const FALLBACK_USERS_FILE = path.join(os.tmpdir(), 'aerosense_users_fallback.jso
  */
 const IN_MEMORY_USERS = new Map();
 
-// Initialize Demo Account in In-Memory Store
+// Initialize Citizen Account in In-Memory Store
+const citizenPasswordHash = bcrypt.hashSync('password123', 10);
+IN_MEMORY_USERS.set('citizen@aerosense.air', {
+  _id: 'user_citizen_201',
+  name: 'Priya Sharma (Parent)',
+  email: 'citizen@aerosense.air',
+  passwordHash: citizenPasswordHash,
+  role: 'citizen',
+  isActive: true,
+  avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=200&q=80',
+  favoriteCities: ['delhi', 'chennai'],
+  recentCities: [
+    { slug: 'delhi', visitedAt: new Date(Date.now() - 1000 * 60 * 15) }
+  ],
+  settings: {
+    temperatureUnit: 'C',
+    defaultDashboardView: 'citizen'
+  },
+  lastLoginAt: new Date(),
+  createdAt: new Date('2026-01-01T00:00:00Z'),
+  updatedAt: new Date()
+});
+
+// Initialize Environmentalist Demo Account in In-Memory Store
 const demoPasswordHash = bcrypt.hashSync('password123', 10);
 IN_MEMORY_USERS.set('demo@aerosense.air', {
   _id: 'user_demo_101',
   name: 'Dr. Aarav Sharma',
   email: 'demo@aerosense.air',
   passwordHash: demoPasswordHash,
-  role: 'user',
+  role: 'environmentalist',
   isActive: true,
   avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80',
   favoriteCities: ['delhi', 'mumbai', 'bengaluru'],
@@ -139,13 +162,14 @@ export function sanitizeUser(user) {
 /**
  * Register a new user
  */
-export async function registerUser({ name, email, password }) {
+export async function registerUser({ name, email, password, role = 'citizen' }) {
   if (!name || !email || !password) {
     throw new Error('Name, email, and password are required');
   }
 
   const cleanName = name.trim();
   const cleanEmail = email.trim().toLowerCase();
+  const userRole = role === 'environmentalist' ? 'environmentalist' : 'citizen';
 
   if (password.length < 6) {
     throw new Error('Password must be at least 6 characters long');
@@ -167,7 +191,7 @@ export async function registerUser({ name, email, password }) {
       name: cleanName,
       email: cleanEmail,
       passwordHash,
-      role: 'user',
+      role: userRole,
       avatar: ''
     });
 
@@ -187,14 +211,14 @@ export async function registerUser({ name, email, password }) {
     name: cleanName,
     email: cleanEmail,
     passwordHash,
-    role: 'user', // Always user, no privilege escalation
+    role: userRole,
     isActive: true,
     avatar: '',
     favoriteCities: [],
     recentCities: [],
     settings: {
       temperatureUnit: 'C',
-      defaultDashboardView: 'detailed'
+      defaultDashboardView: userRole === 'citizen' ? 'citizen' : 'detailed'
     },
     lastLoginAt: new Date(),
     createdAt: new Date(),

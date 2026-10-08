@@ -306,7 +306,7 @@ export default function DashboardPage() {
             <div className="space-y-1.5">
               <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-semibold uppercase tracking-wider">
                 <Sparkles className="w-3.5 h-3.5 text-emerald-600" />
-                Personal Environmental Dashboard
+                {user?.role === 'environmentalist' ? '🔬 Scientific Environmentalist Telemetry Suite' : 'Personal Environmental Dashboard'}
               </div>
               <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
                 Welcome back, {user?.name || 'Explorer'}

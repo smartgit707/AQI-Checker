@@ -174,10 +174,10 @@ export async function loginApi({ email, password }) {
   return result;
 }
 
-export async function registerApi({ name, email, password }) {
+export async function registerApi({ name, email, password, role }) {
   const result = await request('/auth/register', {
     method: 'POST',
-    body: JSON.stringify({ name, email, password })
+    body: JSON.stringify({ name, email, password, role })
   });
   if (result.token) {
     setAuthToken(result.token);

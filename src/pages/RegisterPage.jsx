@@ -1,14 +1,15 @@
 import React, { useState } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { Wind, User, Mail, Lock, ArrowRight, AlertCircle, ShieldCheck } from 'lucide-react';
+import { Wind, User, Mail, Lock, ArrowRight, AlertCircle, ShieldCheck, Home, Activity } from 'lucide-react';
 
 export default function RegisterPage() {
   const { register, authError, clearAuthError } = useAuth();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const redirect = searchParams.get('redirect') || '/dashboard';
+  const redirect = searchParams.get('redirect');
 
+  const [role, setRole] = useState('citizen'); // 'citizen' or 'environmentalist'
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -37,11 +38,12 @@ export default function RegisterPage() {
     }
 
     setIsSubmitting(true);
-    const result = await register(name, email, password);
+    const result = await register(name, email, password, role);
     setIsSubmitting(false);
 
     if (result.success) {
-      navigate(redirect, { replace: true });
+      const target = redirect || (role === 'citizen' ? '/citizen-dashboard' : '/dashboard');
+      navigate(target, { replace: true });
     }
   };
 
@@ -76,6 +78,54 @@ export default function RegisterPage() {
           )}
 
           <form className="space-y-4" onSubmit={handleSubmit}>
+            {/* Account Persona / Role Selector */}
+            <div>
+              <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-2">
+                Select Your Role / Purpose
+              </label>
+              <div className="grid grid-cols-2 gap-3 mb-4">
+                <button
+                  type="button"
+                  onClick={() => setRole('citizen')}
+                  className={`p-3 rounded-2xl border text-left transition-all ${
+                    role === 'citizen'
+                      ? 'border-emerald-500 bg-emerald-50/80 ring-2 ring-emerald-500/20 text-emerald-900 shadow-2xs'
+                      : 'border-slate-200 bg-slate-50/50 hover:bg-slate-100/60 text-slate-700'
+                  }`}
+                >
+                  <div className="flex items-center gap-2 mb-1">
+                    <div className={`w-7 h-7 rounded-lg flex items-center justify-center ${role === 'citizen' ? 'bg-emerald-600 text-white' : 'bg-slate-200 text-slate-600'}`}>
+                      <Home className="w-3.5 h-3.5" />
+                    </div>
+                    <span className="font-bold text-xs">Citizen & Family</span>
+                  </div>
+                  <p className="text-3xs text-slate-500 leading-tight">
+                    Everyday protection, commute score, family profiles
+                  </p>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setRole('environmentalist')}
+                  className={`p-3 rounded-2xl border text-left transition-all ${
+                    role === 'environmentalist'
+                      ? 'border-emerald-500 bg-emerald-50/80 ring-2 ring-emerald-500/20 text-emerald-900 shadow-2xs'
+                      : 'border-slate-200 bg-slate-50/50 hover:bg-slate-100/60 text-slate-700'
+                  }`}
+                >
+                  <div className="flex items-center gap-2 mb-1">
+                    <div className={`w-7 h-7 rounded-lg flex items-center justify-center ${role === 'environmentalist' ? 'bg-emerald-600 text-white' : 'bg-slate-200 text-slate-600'}`}>
+                      <Activity className="w-3.5 h-3.5" />
+                    </div>
+                    <span className="font-bold text-xs">Environmentalist</span>
+                  </div>
+                  <p className="text-3xs text-slate-500 leading-tight">
+                    Scientific sensors, criteria telemetry, alert rules
+                  </p>
+                </button>
+              </div>
+            </div>
+
             <div>
               <label htmlFor="name" className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1.5">
                 Full Name

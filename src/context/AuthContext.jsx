@@ -87,13 +87,26 @@ export function AuthProvider({ children }) {
 
       if (matched && matched.user) {
         setUser(matched.user);
+      } else if (token === 'citizen_fallback_session_token') {
+        setUser({
+          _id: 'user_citizen_201',
+          id: 'user_citizen_201',
+          name: 'Priya Sharma (Parent & Citizen)',
+          email: 'citizen@aerosense.air',
+          role: 'citizen',
+          isActive: true,
+          avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=200&q=80',
+          favoriteCities: ['delhi', 'chennai'],
+          recentCities: [{ slug: 'delhi', visitedAt: new Date().toISOString() }],
+          settings: { temperatureUnit: 'C', defaultDashboardView: 'citizen' }
+        });
       } else if (token === 'demo_fallback_session_token') {
         setUser({
           _id: 'user_demo_101',
           id: 'user_demo_101',
           name: 'Dr. Aarav Sharma',
           email: 'demo@aerosense.air',
-          role: 'user',
+          role: 'environmentalist',
           isActive: true,
           avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80',
           favoriteCities: ['delhi', 'mumbai', 'bengaluru'],
@@ -151,14 +164,34 @@ export function AuthProvider({ children }) {
         return { success: true, user: localAccount.user };
       }
 
-      // 2. Demo account fallback
+      // 2. Citizen demo account fallback
+      if (cleanEmail === 'citizen@aerosense.air' && password === 'password123') {
+        const citizenUser = {
+          _id: 'user_citizen_201',
+          id: 'user_citizen_201',
+          name: 'Priya Sharma (Parent & Citizen)',
+          email: 'citizen@aerosense.air',
+          role: 'citizen',
+          isActive: true,
+          avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=200&q=80',
+          favoriteCities: ['delhi', 'chennai'],
+          recentCities: [{ slug: 'delhi', visitedAt: new Date().toISOString() }],
+          settings: { temperatureUnit: 'C', defaultDashboardView: 'citizen' }
+        };
+        localStorage.setItem('aerosense_token', 'citizen_fallback_session_token');
+        localStorage.setItem(CURRENT_USER_KEY, JSON.stringify(citizenUser));
+        setUser(citizenUser);
+        return { success: true, user: citizenUser };
+      }
+
+      // 3. Environmentalist demo account fallback
       if (cleanEmail === 'demo@aerosense.air' && password === 'password123') {
         const demoUser = {
           _id: 'user_demo_101',
           id: 'user_demo_101',
           name: 'Dr. Aarav Sharma',
           email: 'demo@aerosense.air',
-          role: 'user',
+          role: 'environmentalist',
           isActive: true,
           avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80',
           favoriteCities: ['delhi', 'mumbai', 'bengaluru'],
@@ -171,7 +204,7 @@ export function AuthProvider({ children }) {
         return { success: true, user: demoUser };
       }
 
-      // 3. Admin account fallback
+      // 4. Admin account fallback
       if (cleanEmail === 'admin@aerosense.air' && password === 'AdminPass2026!') {
         const adminUser = {
           _id: 'user_admin_001',
@@ -197,13 +230,14 @@ export function AuthProvider({ children }) {
     }
   };
 
-  const register = async (name, email, password) => {
+  const register = async (name, email, password, role = 'citizen') => {
     setAuthError(null);
     const cleanName = name?.trim() || 'AeroSense User';
     const cleanEmail = email?.trim().toLowerCase();
+    const safeRole = role === 'environmentalist' ? 'environmentalist' : 'citizen';
 
     try {
-      const res = await registerApi({ name: cleanName, email: cleanEmail, password });
+      const res = await registerApi({ name: cleanName, email: cleanEmail, password, role: safeRole });
       if (res.success && res.user) {
         setUser(res.user);
         localStorage.setItem(CURRENT_USER_KEY, JSON.stringify(res.user));
@@ -218,12 +252,15 @@ export function AuthProvider({ children }) {
         id: `user_${Date.now()}`,
         name: cleanName,
         email: cleanEmail,
-        role: 'user',
+        role: safeRole,
         isActive: true,
         avatar: '',
         favoriteCities: ['delhi', 'mumbai'],
         recentCities: [],
-        settings: { temperatureUnit: 'C', defaultDashboardView: 'detailed' }
+        settings: {
+          temperatureUnit: 'C',
+          defaultDashboardView: safeRole === 'citizen' ? 'citizen' : 'detailed'
+        }
       };
       localStorage.setItem('aerosense_token', `session_${cleanEmail}_${Date.now()}`);
       localStorage.setItem(CURRENT_USER_KEY, JSON.stringify(fallbackUser));

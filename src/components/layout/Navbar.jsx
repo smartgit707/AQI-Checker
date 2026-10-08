@@ -238,9 +238,17 @@ export default function Navbar({ onSelectCity, selectedCity }) {
                         <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider">{t('nav.signedInAs', 'Signed in as')}</p>
                         <p className="text-sm font-bold text-slate-900 truncate mt-0.5">{user?.name}</p>
                         <p className="text-xs text-slate-500 truncate">{user?.email}</p>
-                        {user?.role === 'admin' && (
+                        {user?.role === 'admin' ? (
                           <span className="inline-block mt-1 px-2 py-0.5 rounded text-2xs font-bold bg-purple-100 text-purple-800">
                             System Administrator
+                          </span>
+                        ) : user?.role === 'citizen' ? (
+                          <span className="inline-block mt-1 px-2 py-0.5 rounded text-2xs font-bold bg-emerald-100 text-emerald-800">
+                            🏡 Citizen & Household
+                          </span>
+                        ) : (
+                          <span className="inline-block mt-1 px-2 py-0.5 rounded text-2xs font-bold bg-teal-100 text-teal-800">
+                            🔬 Environmental Researcher
                           </span>
                         )}
                       </div>
@@ -258,12 +266,21 @@ export default function Navbar({ onSelectCity, selectedCity }) {
                         )}
 
                         <Link
-                          to="/dashboard"
+                          to={user?.role === 'citizen' ? '/citizen-dashboard' : '/dashboard'}
                           onClick={() => setUserDropdownOpen(false)}
                           className="flex items-center gap-2.5 px-4 py-2 text-xs font-medium text-slate-700 hover:bg-emerald-50 hover:text-emerald-700 transition-colors"
                         >
-                          <LayoutDashboard className="w-4 h-4 text-emerald-600" />
-                          <span>Scientific Dashboard</span>
+                          {user?.role === 'citizen' ? (
+                            <>
+                              <Home className="w-4 h-4 text-emerald-600" />
+                              <span>{t('nav.citizenDashboard', 'Citizen & Family Dashboard')}</span>
+                            </>
+                          ) : (
+                            <>
+                              <LayoutDashboard className="w-4 h-4 text-emerald-600" />
+                              <span>{t('nav.scientificDashboard', 'Scientific Dashboard')}</span>
+                            </>
+                          )}
                         </Link>
 
                         <Link

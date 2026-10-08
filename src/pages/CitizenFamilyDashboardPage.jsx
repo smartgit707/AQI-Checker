@@ -372,7 +372,7 @@ export default function CitizenFamilyDashboardPage() {
             <div className="space-y-2">
               <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-semibold uppercase tracking-wider">
                 <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
-                {t('citizen.title', 'Family Air Quality & Lifestyle Advisory')}
+                {user?.role === 'citizen' ? '🏡 Verified Citizen & Household Advisory Suite' : t('citizen.title', 'Family Air Quality & Lifestyle Advisory')}
               </div>
               <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
                 {currentLang === 'hi'
