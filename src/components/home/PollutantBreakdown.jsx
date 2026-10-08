@@ -1,8 +1,11 @@
 import React from 'react';
 import { TrendingUp, TrendingDown, Minus, Info } from 'lucide-react';
 import SectionHeader from '../common/SectionHeader';
+import { useLanguage } from '../../context/LanguageContext';
 
 export default function PollutantBreakdown({ pollutants, cityName }) {
+  const { t, currentLang } = useLanguage();
+
   const getPollutantStatusBadge = (status) => {
     switch (status) {
       case 'Good':
@@ -33,9 +36,9 @@ export default function PollutantBreakdown({ pollutants, cityName }) {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         <SectionHeader
-          badge="Chemical & Particulate Analysis"
-          title={`Critical Pollutant Matrix — ${cityName}`}
-          subtitle="Real-time multi-pollutant concentrations measured against 24-hour CPCB National Ambient Air Quality Standards."
+          badge={t('pollutants.badge', 'Chemical & Particulate Analysis')}
+          title={`${t('pollutants.title', 'Critical Pollutant Matrix')} — ${cityName}`}
+          subtitle={t('pollutants.subtitle', 'Real-time multi-pollutant concentrations measured against 24-hour CPCB National Ambient Air Quality Standards.')}
         />
 
         {/* 6 Grid Pollutant Cards */}
@@ -58,7 +61,7 @@ export default function PollutantBreakdown({ pollutants, cityName }) {
                           {item.code}
                         </span>
                         <span className={`px-2.5 py-0.5 rounded-full text-[11px] font-bold border ${getPollutantStatusBadge(item.status)}`}>
-                          {item.status}
+                          {t(`aqi.${(item.status || '').toLowerCase()}`, item.status)}
                         </span>
                       </div>
                       <h4 className="text-xs font-semibold text-slate-500 mt-1">
@@ -90,8 +93,10 @@ export default function PollutantBreakdown({ pollutants, cityName }) {
                   {/* Standard Limit Comparison Bar */}
                   <div className="space-y-1.5 mb-4">
                     <div className="flex items-center justify-between text-[11px] font-medium text-slate-500">
-                      <span>Threshold: {item.limit} {item.unit}</span>
-                      <span className="font-semibold text-slate-700">{percentageOfLimit}% of safe limit</span>
+                      <span>{currentLang === 'hi' ? 'मानक सीमा' : 'Threshold'}: {item.limit} {item.unit}</span>
+                      <span className="font-semibold text-slate-700">
+                        {percentageOfLimit}% {currentLang === 'hi' ? 'सुरक्षित सीमा का' : 'of safe limit'}
+                      </span>
                     </div>
                     <div className="w-full bg-slate-100 rounded-full h-2 overflow-hidden">
                       <div 
@@ -119,9 +124,15 @@ export default function PollutantBreakdown({ pollutants, cityName }) {
         <div className="mt-8 p-4 rounded-2xl bg-emerald-50/60 border border-emerald-200/60 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-emerald-900">
           <div className="flex items-center gap-2">
             <span className="w-2 h-2 rounded-full bg-emerald-600"></span>
-            <span>All monitored parameters adhere to the revised Central Pollution Control Board (CPCB) continuous ambient monitoring criteria.</span>
+            <span>
+              {currentLang === 'hi'
+                ? 'सभी मापे गए पैरामीटर केंद्रीय प्रदूषण नियंत्रण बोर्ड (CPCB) के निरंतर परिवेशी निगरानी मानदंडों का पालन करते हैं।'
+                : 'All monitored parameters adhere to the revised Central Pollution Control Board (CPCB) continuous ambient monitoring criteria.'}
+            </span>
           </div>
-          <span className="font-semibold text-emerald-700 whitespace-nowrap">Updated continuous 24h weighted average</span>
+          <span className="font-semibold text-emerald-700 whitespace-nowrap">
+            {currentLang === 'hi' ? '24 घंटे का निरंतर भारित औसत' : 'Updated continuous 24h weighted average'}
+          </span>
         </div>
 
       </div>

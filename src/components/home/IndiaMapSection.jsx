@@ -14,8 +14,10 @@ import InteractiveIndiaLeafletMap from './InteractiveIndiaLeafletMap';
 import { getMapAirQuality } from '../../services/api';
 import { CITIES_DATA, TOP_POLLUTED, CLEANEST_CITIES } from '../../data/mockData';
 import { getAQILevel, AQI_LEVELS } from '../../design-system/aqiTokens';
+import { useLanguage } from '../../context/LanguageContext';
 
 export default function IndiaMapSection({ onSelectCity, selectedCity }) {
+  const { t, currentLang } = useLanguage();
   const [activeFilter, setActiveFilter] = useState('all'); // all, unhealthy, good
   const [stations, setStations] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -74,9 +76,9 @@ export default function IndiaMapSection({ onSelectCity, selectedCity }) {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         <SectionHeader
-          badge="Geospatial Telemetry"
-          title="Air Quality Across India"
-          subtitle="Continuous spatial interpolation and telemetry stations monitoring ambient atmospheric pollution across states."
+          badge={t('map.badge', 'Geospatial Telemetry')}
+          title={t('map.title', 'Air Quality Across India')}
+          subtitle={t('map.subtitle', 'Continuous spatial interpolation and telemetry stations monitoring ambient atmospheric pollution across states.')}
         />
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
@@ -87,32 +89,34 @@ export default function IndiaMapSection({ onSelectCity, selectedCity }) {
             {/* Map Controls Header */}
             <div className="flex flex-wrap items-center justify-between gap-4 pb-4 border-b border-slate-100">
               <div className="flex items-center gap-2">
-                <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">Filter Stations:</span>
+                <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">
+                  {t('map.filterStations', 'Filter Stations:')}
+                </span>
                 <div className="inline-flex p-1 bg-slate-100 rounded-xl text-xs font-semibold">
                   <button
                     onClick={() => setActiveFilter('all')}
                     className={`px-3 py-1 rounded-lg transition-all ${activeFilter === 'all' ? 'bg-white text-slate-900 shadow-xs' : 'text-slate-600 hover:text-slate-900'}`}
                   >
-                    All Monitored ({stations.length})
+                    {t('map.allMonitored', 'All Monitored')} ({stations.length})
                   </button>
                   <button
                     onClick={() => setActiveFilter('unhealthy')}
                     className={`px-3 py-1 rounded-lg transition-all ${activeFilter === 'unhealthy' ? 'bg-white text-rose-700 shadow-xs' : 'text-slate-600 hover:text-slate-900'}`}
                   >
-                    Critical (&gt;150)
+                    {t('map.critical', 'Critical (>150)')}
                   </button>
                   <button
                     onClick={() => setActiveFilter('good')}
                     className={`px-3 py-1 rounded-lg transition-all ${activeFilter === 'good' ? 'bg-white text-emerald-700 shadow-xs' : 'text-slate-600 hover:text-slate-900'}`}
                   >
-                    Clean Air (≤50)
+                    {t('map.cleanAir', 'Clean Air (≤50)')}
                   </button>
                 </div>
               </div>
 
               <div className="text-xs text-slate-500 flex items-center gap-1.5">
                 <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                <span>{isLiveMap ? 'Live CAMS Model Interpolation' : 'Demonstration Telemetry'}</span>
+                <span>{isLiveMap ? t('map.liveModel', 'Live CAMS Model Interpolation') : t('map.demoTelemetry', 'Demonstration Telemetry')}</span>
               </div>
             </div>
 
@@ -132,14 +136,16 @@ export default function IndiaMapSection({ onSelectCity, selectedCity }) {
             {/* Standard NAQI Legend Scale Bar */}
             <div className="mt-4 pt-4 border-t border-slate-100">
               <span className="text-xs font-bold text-slate-500 uppercase tracking-wider block mb-2">
-                CPCB National AQI Index Scale
+                {t('map.scaleBar', 'CPCB National AQI Index Scale')}
               </span>
               <div className="grid grid-cols-2 sm:grid-cols-6 gap-2">
                 {AQI_LEVELS.map((lvl) => (
                   <div key={lvl.category} className="p-2 rounded-xl bg-slate-50 border border-slate-100 text-center">
                     <div className="flex items-center justify-center gap-1.5 mb-1">
                       <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: lvl.color }}></span>
-                      <span className="text-xs font-bold text-slate-800">{lvl.category}</span>
+                      <span className="text-xs font-bold text-slate-800">
+                        {t(`aqi.${lvl.category.toLowerCase()}`, lvl.category)}
+                      </span>
                     </div>
                     <span className="text-[11px] font-semibold text-slate-500">
                       {lvl.min} – {lvl.max}
@@ -159,10 +165,10 @@ export default function IndiaMapSection({ onSelectCity, selectedCity }) {
               <div className="flex items-center justify-between mb-4">
                 <h3 className="text-sm font-bold uppercase tracking-wider text-slate-800 font-display flex items-center gap-2">
                   <ShieldAlert className="w-4 h-4 text-rose-600" />
-                  <span>High Pollution Index</span>
+                  <span>{currentLang === 'hi' ? 'उच्च जोखिम वाले शहर' : 'Elevated Pollution Zones'}</span>
                 </h3>
                 <span className="text-[11px] font-semibold text-rose-700 bg-rose-50 px-2.5 py-0.5 rounded-full border border-rose-200">
-                  Critical
+                  {currentLang === 'hi' ? 'गंभीर' : 'Critical'}
                 </span>
               </div>
 
@@ -204,10 +210,10 @@ export default function IndiaMapSection({ onSelectCity, selectedCity }) {
               <div className="flex items-center justify-between mb-4">
                 <h3 className="text-sm font-bold uppercase tracking-wider text-slate-800 font-display flex items-center gap-2">
                   <Sparkles className="w-4 h-4 text-emerald-600" />
-                  <span>Cleanest Air Enclaves</span>
+                  <span>{currentLang === 'hi' ? 'सर्वाधिक स्वच्छ हवा वाले शहर' : 'Cleanest Air Enclaves'}</span>
                 </h3>
                 <span className="text-[11px] font-semibold text-emerald-700 bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-200">
-                  Optimal
+                  {currentLang === 'hi' ? 'उत्तम स्थिति' : 'Optimal'}
                 </span>
               </div>
 

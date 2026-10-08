@@ -5,16 +5,19 @@ import SectionHeader from '../common/SectionHeader';
 import OptimizedImage from '../common/OptimizedImage';
 import { CITIES_DATA } from '../../data/mockData';
 import { getAQILevel } from '../../design-system/aqiTokens';
+import { useLanguage } from '../../context/LanguageContext';
 
 export default function VisualCityExplorer({ onSelectCity, activeCityId }) {
+  const { t, currentLang } = useLanguage();
+
   return (
     <section id="city-explorer" className="py-16 sm:py-20 bg-white border-b border-slate-200/80">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         <SectionHeader
-          badge="Urban Landscape Telemetry"
-          title="Explore India’s Cities"
-          subtitle="Real-time air indices contextualized with iconic architectural landscapes and regional microclimates."
+          badge={t('explorer.badge', 'Urban Landscape Telemetry')}
+          title={t('explorer.title', 'Explore India’s Cities')}
+          subtitle={t('explorer.subtitle', 'Real-time air indices contextualized with iconic architectural landscapes and regional microclimates.')}
         />
 
         {/* Responsive Grid with Image Storytelling */}
@@ -76,21 +79,23 @@ export default function VisualCityExplorer({ onSelectCity, activeCityId }) {
                     {/* Status & Dominant Pollutant */}
                     <div className="flex items-center justify-between text-xs mb-3">
                       <span className="font-semibold text-slate-600">
-                        Status: <strong style={{ color: level.color }}>{level.category}</strong>
+                        {currentLang === 'hi' ? 'स्थिति' : 'Status'}: <strong style={{ color: level.color }}>
+                          {t(`aqi.${(level.category || '').toLowerCase()}`, level.category)}
+                        </strong>
                       </span>
                       <span className="text-slate-500 font-medium">
-                        Primary: <strong>{city.dominantPollutant}</strong>
+                        {currentLang === 'hi' ? 'प्रमुख' : 'Primary'}: <strong>{city.dominantPollutant}</strong>
                       </span>
                     </div>
 
                     {/* Meteorological mini chips */}
                     <div className="grid grid-cols-2 gap-2 text-[11px] font-medium text-slate-500 pt-2 border-t border-slate-100">
                       <div className="bg-slate-50 rounded-xl p-2 text-center">
-                        <span className="block text-slate-400 text-[10px]">Temperature</span>
+                        <span className="block text-slate-400 text-[10px]">{t('hero.temperature', 'Temperature')}</span>
                         <span className="font-bold text-slate-800">{city.temperature}</span>
                       </div>
                       <div className="bg-slate-50 rounded-xl p-2 text-center">
-                        <span className="block text-slate-400 text-[10px]">24h Shift</span>
+                        <span className="block text-slate-400 text-[10px]">{t('hero.trend24h', '24h Shift')}</span>
                         <span className={`font-bold ${(city.trend || '').startsWith('+') ? 'text-rose-600' : 'text-emerald-600'}`}>
                           {city.trend || '-2%'}
                         </span>
@@ -100,7 +105,9 @@ export default function VisualCityExplorer({ onSelectCity, activeCityId }) {
 
                   {/* View Details Prompt */}
                   <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-xs font-semibold">
-                    <span className="text-slate-500">Telemetry Station</span>
+                    <span className="text-slate-500">
+                      {currentLang === 'hi' ? 'निगरानी स्टेशन' : 'Telemetry Station'}
+                    </span>
                     <Link
                       to={`/city/${city.id || city.slug}`}
                       onClick={(e) => {
@@ -108,7 +115,7 @@ export default function VisualCityExplorer({ onSelectCity, activeCityId }) {
                       }}
                       className="inline-flex items-center gap-1.5 text-emerald-700 hover:text-emerald-950 font-bold bg-emerald-50 hover:bg-emerald-100/80 px-2.5 py-1 rounded-lg border border-emerald-200/80 transition-colors shadow-xs"
                     >
-                      <span>Full Profile</span>
+                      <span>{t('hero.fullProfile', 'Full Profile')}</span>
                       <span>→</span>
                     </Link>
                   </div>

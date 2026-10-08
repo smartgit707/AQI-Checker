@@ -3,6 +3,7 @@ import { HeartPulse, Activity, ShieldCheck, AlertCircle, ArrowRight, X, CheckCir
 import SectionHeader from '../common/SectionHeader';
 import OptimizedImage from '../common/OptimizedImage';
 import { IMAGES } from '../../data/images';
+import { useLanguage } from '../../context/LanguageContext';
 
 const PROTOCOL_DETAILS = {
   outdoor: {
@@ -84,6 +85,7 @@ const PROTOCOL_DETAILS = {
 };
 
 export default function HealthSection() {
+  const { t, currentLang } = useLanguage();
   const [selectedProtocol, setSelectedProtocol] = useState(null);
 
   const protocolData = selectedProtocol ? PROTOCOL_DETAILS[selectedProtocol.id] || null : null;
@@ -93,9 +95,9 @@ export default function HealthSection() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         <SectionHeader
-          badge="Protective Guidance"
-          title="How Does Air Quality Affect You?"
-          subtitle="Actionable, scientifically grounded guidelines for physical exercise, indoor living, and protecting sensitive family members."
+          badge={t('health.badge', 'Evidence-Based Protocols')}
+          title={t('health.title', 'Personalized Health Actions')}
+          subtitle={t('health.subtitle', 'Actionable, scientifically grounded guidelines for physical exercise, indoor living, and protecting sensitive family members.')}
         />
 
         {/* 4 Cards Grid with Images & Contextual Health Guidance */}
@@ -138,9 +140,9 @@ export default function HealthSection() {
                 </div>
 
                 <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-xs font-semibold text-slate-500">
-                  <span>Advisory Protocol</span>
+                  <span>{currentLang === 'hi' ? 'स्वास्थ्य सुरक्षा नियम' : 'Advisory Protocol'}</span>
                   <span className="text-emerald-600 font-bold group-hover:translate-x-1 transition-transform flex items-center gap-1">
-                    Read Protocol <ArrowRight className="w-3.5 h-3.5" />
+                    {currentLang === 'hi' ? 'विस्तार से पढ़ें' : 'Read Protocol'} <ArrowRight className="w-3.5 h-3.5" />
                   </span>
                 </div>
               </div>

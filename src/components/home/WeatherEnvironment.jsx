@@ -14,8 +14,10 @@ import SectionHeader from '../common/SectionHeader';
 import OptimizedImage from '../common/OptimizedImage';
 import { IMAGES } from '../../data/images';
 import { getAQILevel } from '../../design-system/aqiTokens';
+import { useLanguage } from '../../context/LanguageContext';
 
 export default function WeatherEnvironment({ city = {} }) {
+  const { t, currentLang } = useLanguage();
   const safeAqi = typeof city.aqi === 'number' && !isNaN(city.aqi) ? city.aqi : (Number(city.aqi) || 50);
   const level = getAQILevel(safeAqi) || {};
   const windStr = typeof city.wind === 'string' && city.wind.trim()
@@ -30,9 +32,9 @@ export default function WeatherEnvironment({ city = {} }) {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         <SectionHeader
-          badge="Synoptic Climatology"
-          title={`Weather & Atmospheric Dispersion — ${city.name}`}
-          subtitle="How thermal turbulence, planetary boundary layer dynamics, and relative humidity drive local pollution accumulation."
+          badge={t('weather.badge', 'Synoptic Climatology')}
+          title={`${t('weather.title', 'Weather & Atmospheric Dispersion')} — ${city.name}`}
+          subtitle={t('weather.subtitle', 'How thermal turbulence, planetary boundary layer dynamics, and relative humidity drive local pollution accumulation.')}
         />
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
@@ -87,55 +89,69 @@ export default function WeatherEnvironment({ city = {} }) {
 
             <div className="p-5 rounded-3xl bg-white border border-slate-200/80 shadow-card flex flex-col justify-between">
               <div className="flex items-center justify-between text-slate-500 mb-4">
-                <span className="text-xs font-bold uppercase tracking-wider">Relative Humidity</span>
+                <span className="text-xs font-bold uppercase tracking-wider">
+                  {currentLang === 'hi' ? 'सापेक्षिक आर्द्रता' : 'Relative Humidity'}
+                </span>
                 <Droplets className="w-5 h-5 text-blue-500" />
               </div>
               <div>
                 <span className="text-3xl font-black text-slate-900 font-display block">
                   {city.humidity}
                 </span>
-                <span className="text-xs text-slate-500 mt-1 block">Dew Point: 23°C</span>
+                <span className="text-xs text-slate-500 mt-1 block">
+                  {currentLang === 'hi' ? 'ओस बिंदु: 23°C' : 'Dew Point: 23°C'}
+                </span>
               </div>
               <div className="mt-4 pt-3 border-t border-slate-100 text-[11px] text-slate-400">
-                High humidity causes hygroscopic particle swelling.
+                {currentLang === 'hi' ? 'अधिक आर्द्रता से कणों का संघनन बढ़ता है।' : 'High humidity causes hygroscopic particle swelling.'}
               </div>
             </div>
 
             <div className="p-5 rounded-3xl bg-white border border-slate-200/80 shadow-card flex flex-col justify-between">
               <div className="flex items-center justify-between text-slate-500 mb-4">
-                <span className="text-xs font-bold uppercase tracking-wider">Wind Velocity</span>
+                <span className="text-xs font-bold uppercase tracking-wider">
+                  {currentLang === 'hi' ? 'हवा का वेग' : 'Wind Velocity'}
+                </span>
                 <Wind className="w-5 h-5 text-teal-500" />
               </div>
               <div>
                 <span className="text-3xl font-black text-slate-900 font-display block">
                   {windSpeedVal} <span className="text-base font-semibold">km/h</span>
                 </span>
-                <span className="text-xs text-slate-500 mt-1 block">Direction: {windDirVal}</span>
+                <span className="text-xs text-slate-500 mt-1 block">
+                  {currentLang === 'hi' ? `दिशा: ${windDirVal}` : `Direction: ${windDirVal}`}
+                </span>
               </div>
               <div className="mt-4 pt-3 border-t border-slate-100 text-[11px] text-slate-400">
-                Sufficient airflow preventing stagnation basins.
+                {currentLang === 'hi' ? 'प्रदूषण को बहाकर ले जाने के लिए उपयुक्त वायु प्रवाह।' : 'Sufficient airflow preventing stagnation basins.'}
               </div>
             </div>
 
             <div className="p-5 rounded-3xl bg-white border border-slate-200/80 shadow-card flex flex-col justify-between">
               <div className="flex items-center justify-between text-slate-500 mb-4">
-                <span className="text-xs font-bold uppercase tracking-wider">Barometric Pressure</span>
+                <span className="text-xs font-bold uppercase tracking-wider">
+                  {currentLang === 'hi' ? 'बैरोमीटर वायुदाब' : 'Barometric Pressure'}
+                </span>
                 <Gauge className="w-5 h-5 text-indigo-500" />
               </div>
               <div>
                 <span className="text-3xl font-black text-slate-900 font-display block">
                   {city.pressure}
                 </span>
-                <span className="text-xs text-slate-500 mt-1 block">Mean sea-level altitude</span>
+                <span className="text-xs text-slate-500 mt-1 block">
+                  {currentLang === 'hi' ? 'समुद्र तल स्तर' : 'Mean sea-level altitude'}
+                </span>
               </div>
               <div className="mt-4 pt-3 border-t border-slate-100 text-[11px] text-slate-400">
-                Normal atmospheric pressure system.
+                {currentLang === 'hi' ? 'सामान्य वायुमंडलीय दबाव प्रणाली।' : 'Normal atmospheric pressure system.'}
               </div>
             </div>
 
             <div className="p-5 rounded-3xl bg-white border border-slate-200/80 shadow-card flex flex-col justify-between">
               <div className="flex items-center justify-between text-slate-500 mb-4">
-                <span className="text-xs font-bold uppercase tracking-wider">Visual Transparency</span>
+                <span className="text-xs font-bold uppercase tracking-wider">
+                  {currentLang === 'hi' ? 'दृष्टि पारदर्शिता' : 'Visual Transparency'}
+                </span>
                 <Eye className="w-5 h-5 text-purple-500" />
               </div>
               <div>

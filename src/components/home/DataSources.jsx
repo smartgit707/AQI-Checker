@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { Database, Radio, Cpu, ShieldCheck, RefreshCw } from 'lucide-react';
 import { getDataSources } from '../../services/api';
+import { useLanguage } from '../../context/LanguageContext';
 
 export default function DataSources() {
+  const { t, currentLang } = useLanguage();
   const [sources, setSources] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -65,17 +67,19 @@ export default function DataSources() {
           <div>
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-950/80 border border-emerald-500/30 text-emerald-400 text-xs font-semibold uppercase tracking-wider mb-2">
               <Database className="w-3.5 h-3.5" />
-              <span>Scientific Rigor & Telemetry Ingestion</span>
+              <span>{t('sources.badge', 'Open Telemetry Pipeline')}</span>
             </div>
             <h3 className="text-2xl sm:text-3xl font-bold text-white font-display">
-              Open Environmental Data Infrastructure
+              {t('sources.title', 'Data Sources & Measurement Architecture')}
             </h3>
           </div>
           <div className="mt-3 md:mt-0 text-slate-400 text-xs sm:text-sm max-w-md">
-            <span>Continuous automated telemetry stream aggregated from official government stations, calibrated IoT arrays, and orbital atmospheric sounders.</span>
+            <span>
+              {t('sources.subtitle', 'Continuous automated telemetry stream aggregated from official government stations, calibrated IoT arrays, and orbital atmospheric sounders.')}
+            </span>
             {error && (
               <span className="block text-amber-400 text-xs mt-1">
-                (Offline cache fallback active)
+                {currentLang === 'hi' ? '(ऑफ़लाइन कैश बैकअप सक्रिय)' : '(Offline cache fallback active)'}
               </span>
             )}
           </div>

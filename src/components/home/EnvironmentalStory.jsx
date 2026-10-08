@@ -3,36 +3,38 @@ import { Microscope, CloudDrizzle, Factory, Wind, Sparkles, CheckCircle2 } from 
 import SectionHeader from '../common/SectionHeader';
 import OptimizedImage from '../common/OptimizedImage';
 import { IMAGES } from '../../data/images';
+import { useLanguage } from '../../context/LanguageContext';
 
 export default function EnvironmentalStory() {
+  const { t, currentLang } = useLanguage();
   const pollutantProfiles = [
     {
       code: 'PM2.5',
-      fullName: 'Fine Combustion Particles (≤ 2.5 µm)',
-      impact: 'Roughly 3% the diameter of a human hair. Enters alveolar sacs directly and enters the bloodstream.',
+      fullName: currentLang === 'hi' ? 'सूक्ष्म दहन कण (≤ 2.5 µm)' : 'Fine Combustion Particles (≤ 2.5 µm)',
+      impact: currentLang === 'hi' ? 'मानव बाल के व्यास का लगभग 3%। सीधे फेफड़ों की गहराई और रक्तप्रवाह में प्रवेश करता है।' : 'Roughly 3% the diameter of a human hair. Enters alveolar sacs directly and enters the bloodstream.',
       icon: Microscope,
-      badge: 'High Systemic Risk'
+      badge: currentLang === 'hi' ? 'उच्च जोखिम' : 'High Systemic Risk'
     },
     {
       code: 'PM10',
-      fullName: 'Coarse Dust & Particulates (≤ 10 µm)',
-      impact: 'Derived from road dust, mechanical grinding, and construction. Aggravates upper respiratory passageways.',
+      fullName: currentLang === 'hi' ? 'मोटे धूल कण (≤ 10 µm)' : 'Coarse Dust & Particulates (≤ 10 µm)',
+      impact: currentLang === 'hi' ? 'सड़क की धूल और निर्माण कार्य से उत्पन्न। ऊपरी श्वसन मार्ग में जलन पैदा करता है।' : 'Derived from road dust, mechanical grinding, and construction. Aggravates upper respiratory passageways.',
       icon: Wind,
-      badge: 'Irritant'
+      badge: currentLang === 'hi' ? 'श्वसन जलन' : 'Irritant'
     },
     {
       code: 'NO₂',
-      fullName: 'Nitrogen Dioxide (Traffic Exhaust)',
-      impact: 'Emitted from internal combustion engines. Highly reactive gas contributing to ground ozone and smog.',
+      fullName: currentLang === 'hi' ? 'नाइट्रोजन डाइऑक्साइड (वाहन धुआं)' : 'Nitrogen Dioxide (Traffic Exhaust)',
+      impact: currentLang === 'hi' ? 'इंजनों से उत्सर्जित अत्यधिक प्रतिक्रियाशील गैस जो जमीनी स्तर पर स्मॉग बनाती है।' : 'Emitted from internal combustion engines. Highly reactive gas contributing to ground ozone and smog.',
       icon: Factory,
-      badge: 'Combustion Gas'
+      badge: currentLang === 'hi' ? 'दहन गैस' : 'Combustion Gas'
     },
     {
       code: 'O₃',
-      fullName: 'Tropospheric Ground-Level Ozone',
-      impact: 'Created by sunlight triggering photochemical reactions between NOx and volatile organic compounds.',
+      fullName: currentLang === 'hi' ? 'ट्रोपोस्फेरिक ओजोन' : 'Tropospheric Ground-Level Ozone',
+      impact: currentLang === 'hi' ? 'धूप और रासायनिक गैसों के बीच फोटोकैमिकल प्रतिक्रिया द्वारा निर्मित।' : 'Created by sunlight triggering photochemical reactions between NOx and volatile organic compounds.',
       icon: Sparkles,
-      badge: 'Photochemical'
+      badge: currentLang === 'hi' ? 'फोटोकैमिकल' : 'Photochemical'
     }
   ];
 
@@ -41,9 +43,9 @@ export default function EnvironmentalStory() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         <SectionHeader
-          badge="Atmospheric Science"
-          title="Why Air Quality Matters"
-          subtitle="Understanding the physical dynamics of the air column and how invisible aerosols alter physiological and planetary wellbeing."
+          badge={t('story.badge', 'Atmospheric Science')}
+          title={t('story.title', 'Why Air Quality Matters')}
+          subtitle={t('story.subtitle', 'Understanding the physical dynamics of the air column and how invisible aerosols alter physiological and planetary wellbeing.')}
         />
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
