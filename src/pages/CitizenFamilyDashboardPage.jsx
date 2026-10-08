@@ -42,7 +42,8 @@ import {
   Droplets,
   Eye,
   Check,
-  X
+  X,
+  Navigation
 } from 'lucide-react';
 
 const DEFAULT_FAMILY_MEMBERS = [
@@ -663,6 +664,14 @@ export default function CitizenFamilyDashboardPage() {
                   </div>
                   {commuteAnalysis.advice}
                 </div>
+
+                <Link
+                  to="/clean-commute"
+                  className="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold text-slate-900 bg-emerald-400 hover:bg-emerald-300 transition-colors shadow-sm"
+                >
+                  <Navigation className="w-3.5 h-3.5 text-slate-900" />
+                  <span>{currentLang === 'hi' ? 'पूर्ण 2D स्वच्छ मार्ग नेविगेटर खोलें ➔' : 'Open Full 2D Clean Route Navigator ➔'}</span>
+                </Link>
 
                 <div className="text-3xs text-slate-400 flex items-center gap-1.5 pt-1">
                   <HelpCircle className="w-3.5 h-3.5" />

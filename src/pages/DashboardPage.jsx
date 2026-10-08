@@ -42,7 +42,8 @@ import {
   Loader2,
   Home,
   ToggleLeft,
-  ToggleRight
+  ToggleRight,
+  Navigation
 } from 'lucide-react';
 
 export default function DashboardPage() {
@@ -478,6 +479,30 @@ export default function DashboardPage() {
                 <div className="text-sm text-slate-400 font-medium">None tracked yet</div>
               )}
             </div>
+          </div>
+
+          {/* Clean Commute & Eco-Routing Feature Banner */}
+          <div className="bg-gradient-to-r from-emerald-900 via-teal-900 to-slate-900 rounded-3xl p-6 sm:p-8 text-white shadow-md border border-emerald-700/40 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+            <div className="space-y-2 max-w-2xl">
+              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-2xs font-extrabold uppercase tracking-wider bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+                <Navigation className="w-3.5 h-3.5" />
+                <span>New: Eco-Routing Telemetry</span>
+              </div>
+              <h3 className="text-xl sm:text-2xl font-black text-white font-display">
+                Clean Route & Commute Planner
+              </h3>
+              <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">
+                Compare high-emission highway canyons vs. green parkway corridors in Delhi, Mumbai, Bengaluru & more. Reduce inhaled PM2.5 by up to 50% on your daily commute.
+              </p>
+            </div>
+
+            <Link
+              to="/clean-commute"
+              className="inline-flex items-center gap-2 px-5 py-3 rounded-2xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-extrabold text-xs sm:text-sm transition-all shadow-lg shadow-emerald-500/20 shrink-0"
+            >
+              <span>Launch Route Navigator</span>
+              <ArrowRight className="w-4 h-4" />
+            </Link>
           </div>
 
           {/* Favorite Cities Grid */}

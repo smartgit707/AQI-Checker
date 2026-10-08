@@ -23,7 +23,8 @@ import {
   LogOut,
   Sparkles,
   ShieldAlert,
-  Home
+  Home,
+  Navigation
 } from 'lucide-react';
 
 export default function Navbar({ onSelectCity, selectedCity }) {
@@ -72,6 +73,7 @@ export default function Navbar({ onSelectCity, selectedCity }) {
     { name: 'Analytics', href: '/analytics' },
     { name: 'Compare', href: '/compare' },
     { name: 'Rankings', href: '/rankings' },
+    { name: 'Clean Route', href: '/clean-commute', isNew: true },
   ];
 
   return (
@@ -107,9 +109,14 @@ export default function Navbar({ onSelectCity, selectedCity }) {
               <Link
                 key={link.href}
                 to={link.href}
-                className="px-3.5 py-1.5 rounded-lg text-sm font-semibold text-slate-600 hover:text-slate-900 hover:bg-slate-100/80 dark:hover:bg-slate-800/60 transition-colors"
+                className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-sm font-semibold text-slate-600 hover:text-slate-900 hover:bg-slate-100/80 dark:hover:bg-slate-800/60 transition-colors"
               >
-                {link.name}
+                <span>{link.name}</span>
+                {link.isNew && (
+                  <span className="px-1.5 py-0.5 rounded-full text-[9px] font-extrabold uppercase bg-emerald-100 text-emerald-800 border border-emerald-300">
+                    New
+                  </span>
+                )}
               </Link>
             ))}
 
@@ -156,6 +163,20 @@ export default function Navbar({ onSelectCity, selectedCity }) {
                       <div>
                         <div className="text-xs font-bold text-slate-900">{t('nav.citizenDashboard', 'Citizen & Family')}</div>
                         <div className="text-3xs text-slate-500">{t('nav.citizenSubtitle', '24h Golden Window & advisory')}</div>
+                      </div>
+                    </Link>
+
+                    <Link
+                      to="/clean-commute"
+                      onClick={() => setDashboardMenuOpen(false)}
+                      className="flex items-center gap-3 p-2.5 rounded-xl hover:bg-slate-50 transition-colors"
+                    >
+                      <div className="w-8 h-8 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0">
+                        <Navigation className="w-4 h-4" />
+                      </div>
+                      <div>
+                        <div className="text-xs font-bold text-slate-900">Clean Route Planner</div>
+                        <div className="text-3xs text-slate-500">Eco-commute & inhaled PM2.5</div>
                       </div>
                     </Link>
 

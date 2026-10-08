@@ -17,6 +17,7 @@ const ComparePage = lazy(() => import('./pages/ComparePage.jsx'));
 const RankingsPage = lazy(() => import('./pages/RankingsPage.jsx'));
 const MethodologyPage = lazy(() => import('./pages/MethodologyPage.jsx'));
 const DataSourcesPage = lazy(() => import('./pages/DataSourcesPage.jsx'));
+const CleanCommutePage = lazy(() => import('./pages/CleanCommutePage.jsx'));
 const LoginPage = lazy(() => import('./pages/LoginPage.jsx'));
 const RegisterPage = lazy(() => import('./pages/RegisterPage.jsx'));
 const DashboardPage = lazy(() => import('./pages/DashboardPage.jsx'));
@@ -45,6 +46,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
               <Route path="/rankings" element={<RankingsPage />} />
               <Route path="/methodology" element={<MethodologyPage />} />
               <Route path="/data-sources" element={<DataSourcesPage />} />
+              <Route path="/clean-commute" element={<CleanCommutePage />} />
 
               {/* Authentication Routes */}
               <Route path="/login" element={<LoginPage />} />
