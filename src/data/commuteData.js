@@ -298,6 +298,75 @@ export const COMMUTE_CORRIDORS = [
         [17.4156, 78.4354]
       ]
     }
+  },
+  {
+    id: 'chennai-srm-airport',
+    city: 'Chennai',
+    name: 'SRM Kattankulathur ➔ Chennai Airport (MAA)',
+    origin: {
+      name: 'SRM IST Campus, Kattankulathur',
+      coords: [12.8231, 80.0416],
+    },
+    destination: {
+      name: 'Chennai International Airport (MAA)',
+      coords: [12.9900, 80.1693],
+    },
+    highwayRoute: {
+      name: 'NH32 / GST Road Highway Corridor',
+      description: 'Heavy intercity buses, Perungalathur & Tambaram congestion canyon, high roadside diesel particulate exhaust.',
+      distanceKm: 26.8,
+      durationMin: 52,
+      aqi: 195,
+      category: 'Moderate',
+      color: '#e11d48',
+      pm25: 118,
+      checkpoints: [
+        { name: 'Guduvanchery Junction', aqi: 178, coords: [12.8440, 80.0630] },
+        { name: 'Perungalathur Diesel Bus Choke', aqi: 220, coords: [12.9050, 80.0880] },
+        { name: 'Tambaram Sanatorium Flyover', aqi: 198, coords: [12.9380, 80.1230] },
+        { name: 'Chromepet - Pallavaram Highway', aqi: 184, coords: [12.9680, 80.1450] }
+      ],
+      polyline: [
+        [12.8231, 80.0416],
+        [12.8440, 80.0630],
+        [12.8710, 80.0760],
+        [12.9050, 80.0880],
+        [12.9240, 80.1100],
+        [12.9380, 80.1230],
+        [12.9550, 80.1380],
+        [12.9680, 80.1450],
+        [12.9900, 80.1693]
+      ]
+    },
+    cleanRoute: {
+      name: 'Vandalur Forest & Outer Ring Road (ORR) Greenway',
+      description: 'Dense green tree canopy of Vandalur Zoological Reserve Forest, free-flowing arterial bypass with ~61% lower particulate intake.',
+      distanceKm: 29.5,
+      durationMin: 44,
+      aqi: 88,
+      category: 'Satisfactory',
+      color: '#059669',
+      pm25: 46,
+      exposureReductionPct: 61,
+      checkpoints: [
+        { name: 'SRM Potheri Green Exit', aqi: 95, coords: [12.8310, 80.0520] },
+        { name: 'Vandalur Zoo Biosphere Boundary', aqi: 82, coords: [12.8850, 80.0750] },
+        { name: 'Kishkinta Greenway Bypass', aqi: 86, coords: [12.9250, 80.0950] },
+        { name: 'Pallavaram Radial Lake Corridor', aqi: 89, coords: [12.9580, 80.1580] }
+      ],
+      polyline: [
+        [12.8231, 80.0416],
+        [12.8310, 80.0520],
+        [12.8620, 80.0690],
+        [12.8850, 80.0750],
+        [12.9120, 80.0840],
+        [12.9250, 80.0950],
+        [12.9420, 80.1280],
+        [12.9580, 80.1580],
+        [12.9810, 80.1650],
+        [12.9900, 80.1693]
+      ]
+    }
   }
 ];
 
