@@ -120,12 +120,18 @@ export default function ComparePage() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#f8fafc] text-slate-800">
+    <div className="min-h-screen flex flex-col bg-gradient-to-b from-[#0f172a] via-[#f5f3ff] to-[#e0e7ff]/60 text-slate-800 relative selection:bg-purple-500/20 selection:text-purple-900 overflow-x-hidden">
       
+      {/* Comparative Analytical Ambience */}
+      <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
+        <div className="absolute top-40 right-1/4 w-[600px] h-[600px] bg-purple-400/10 rounded-full blur-[150px]" />
+        <div className="absolute top-2/3 left-10 w-[500px] h-[500px] bg-indigo-400/10 rounded-full blur-[140px]" />
+      </div>
+
       {/* 1. Global Navigation */}
       <Navbar />
 
-      <main className="flex-1">
+      <main className="flex-1 relative z-10">
         
         {/* 2. Comparison Hero */}
         <CompareHero 

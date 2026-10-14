@@ -71,12 +71,18 @@ export default function AnalyticsPage() {
   }, []);
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#f8fafc] text-slate-800">
+    <div className="min-h-screen flex flex-col bg-gradient-to-b from-[#0f172a] via-[#f1f5f9] to-[#e2e8f0]/80 text-slate-800 relative selection:bg-emerald-500/20 selection:text-emerald-900 overflow-x-hidden">
       
+      {/* Subtle Analytical Atmospheric Glow */}
+      <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
+        <div className="absolute top-40 right-1/4 w-[600px] h-[600px] bg-emerald-400/10 rounded-full blur-[140px]" />
+        <div className="absolute top-2/3 left-10 w-[500px] h-[500px] bg-teal-400/10 rounded-full blur-[140px]" />
+      </div>
+
       {/* 1. Global Navigation */}
       <Navbar />
 
-      <main className="flex-1">
+      <main className="flex-1 relative z-10">
         
         {/* 2. Analytics Hero Header */}
         <AnalyticsHero 

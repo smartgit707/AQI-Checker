@@ -1055,17 +1055,17 @@ export default function SmartHomeSimulator3D({ initialOutdoorAqi = 240 }) {
     <div className="space-y-8">
       
       {/* 1. Top Simulator Header & Presets */}
-      <div className="bg-white rounded-3xl p-6 sm:p-8 shadow-card border border-slate-200/90">
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 pb-6 border-b border-slate-100">
+      <div className="bg-slate-900/85 backdrop-blur-xl rounded-3xl p-6 sm:p-8 shadow-2xl border border-slate-800/90 text-slate-100">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 pb-6 border-b border-slate-800/80">
           <div>
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-emerald-50 text-emerald-800 border border-emerald-200/70 mb-2">
-              <Sparkles className="w-3.5 h-3.5 text-emerald-600" />
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-emerald-950/80 text-emerald-300 border border-emerald-500/30 mb-2">
+              <Sparkles className="w-3.5 h-3.5 text-emerald-400" />
               <span>{currentLang === 'hi' ? '3D स्मार्ट होम सिम्युलेटर' : '3D WebGL Multi-Room Fluid Simulator'}</span>
             </div>
-            <h2 className="text-xl sm:text-3xl font-black text-slate-900 font-display">
+            <h2 className="text-xl sm:text-3xl font-black text-white font-display">
               {currentLang === 'hi' ? 'स्मार्ट होम वायु शोधक 3D सिम्युलेटर' : '3D Smart Home & HEPA Air Purifier Simulator'}
             </h2>
-            <p className="text-xs sm:text-sm text-slate-500 mt-1 max-w-2xl">
+            <p className="text-xs sm:text-sm text-slate-400 mt-1 max-w-2xl">
               {currentLang === 'hi'
                 ? 'मास्टर बेडरूम, लिविंग रूम या स्टूडियो ऑफिस में स्विच करें और देखें कि एयर प्यूरीफायर विभिन्न परिस्थितियों में हवा को कैसे शुद्ध करता है।'
                 : 'Switch between Master Bedroom, Living Room, and Studio Office in real-time. Experience dynamic 3D furniture swaps, window infiltration, and HEPA exhaust airflow physics.'}
@@ -1074,7 +1074,7 @@ export default function SmartHomeSimulator3D({ initialOutdoorAqi = 240 }) {
 
           {/* Quick Realtime Telemetry Stats Pill */}
           <div className="flex items-center gap-3">
-            <div className="p-3.5 rounded-2xl bg-slate-50 border border-slate-200 text-center min-w-[120px] shadow-2xs">
+            <div className="p-3.5 rounded-2xl bg-slate-950/80 border border-slate-800 text-center min-w-[120px] shadow-lg">
               <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">
                 {currentLang === 'hi' ? 'इनडोर AQI' : 'Indoor AQI'}
               </span>
@@ -1084,12 +1084,12 @@ export default function SmartHomeSimulator3D({ initialOutdoorAqi = 240 }) {
               >
                 {Math.round(indoorAqi)}
               </span>
-              <span className="text-[11px] font-bold text-slate-600">
+              <span className="text-[11px] font-bold text-slate-300">
                 {indoorLevel.category}
               </span>
             </div>
 
-            <div className="p-3.5 rounded-2xl bg-slate-50 border border-slate-200 text-center min-w-[120px] shadow-2xs">
+            <div className="p-3.5 rounded-2xl bg-slate-950/80 border border-slate-800 text-center min-w-[120px] shadow-lg">
               <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">
                 {currentLang === 'hi' ? 'आउटडोर AQI' : 'Outdoor City AQI'}
               </span>
@@ -1099,7 +1099,7 @@ export default function SmartHomeSimulator3D({ initialOutdoorAqi = 240 }) {
               >
                 {outdoorAqi}
               </span>
-              <span className="text-[11px] font-bold text-slate-600">
+              <span className="text-[11px] font-bold text-slate-300">
                 {outdoorLevel.category}
               </span>
             </div>
@@ -1109,11 +1109,11 @@ export default function SmartHomeSimulator3D({ initialOutdoorAqi = 240 }) {
         {/* Room Presets Tabs (Bedroom / Living / Studio Office) */}
         <div className="pt-6">
           <div className="flex items-center justify-between mb-3">
-            <label className="text-xs font-bold text-slate-600 uppercase tracking-wider flex items-center gap-2">
-              <Home className="w-4 h-4 text-emerald-600" />
+            <label className="text-xs font-bold text-slate-300 uppercase tracking-wider flex items-center gap-2">
+              <Home className="w-4 h-4 text-emerald-400" />
               <span>{currentLang === 'hi' ? 'कमरा चुनें (3D दृश्य बदलें):' : 'Select Room Preset (3D Layout Swaps Instantly):'}</span>
             </label>
-            <span className="text-xs font-semibold text-emerald-700 bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-200">
+            <span className="text-xs font-semibold text-emerald-300 bg-emerald-950/80 px-2.5 py-0.5 rounded-full border border-emerald-800/80">
               Active: {selectedRoom.name}
             </span>
           </div>
@@ -1128,21 +1128,21 @@ export default function SmartHomeSimulator3D({ initialOutdoorAqi = 240 }) {
                   onClick={() => setSelectedRoom(room)}
                   className={`p-4 rounded-2xl text-left border transition-all duration-200 cursor-pointer ${
                     isSelected
-                      ? 'border-emerald-500 bg-emerald-50/70 shadow-sm ring-2 ring-emerald-500/30'
-                      : 'border-slate-200 hover:border-slate-300 hover:bg-slate-50/50 bg-white'
+                      ? 'border-emerald-500 bg-emerald-950/60 shadow-lg shadow-emerald-950/50 ring-2 ring-emerald-500/30 text-white'
+                      : 'border-slate-800 hover:border-slate-700 bg-slate-950/70 hover:bg-slate-900/80 text-slate-300'
                   }`}
                 >
                   <div className="flex items-center justify-between mb-1.5">
                     <span className="text-2xl">{room.icon}</span>
-                    <span className={`text-[11px] font-bold px-2 py-0.5 rounded-md ${isSelected ? 'bg-emerald-200/60 text-emerald-800' : 'bg-slate-100 text-slate-500'}`}>
+                    <span className={`text-[11px] font-bold px-2 py-0.5 rounded-md ${isSelected ? 'bg-emerald-900/80 text-emerald-200' : 'bg-slate-900 text-slate-400'}`}>
                       {room.areaSqFt} sq ft • {room.volumeM3} m³
                     </span>
                   </div>
-                  <div className="text-sm font-black text-slate-900 flex items-center gap-1.5">
+                  <div className="text-sm font-black text-white flex items-center gap-1.5">
                     <span>{room.name}</span>
-                    {isSelected && <CheckCircle2 className="w-4 h-4 text-emerald-600" />}
+                    {isSelected && <CheckCircle2 className="w-4 h-4 text-emerald-400" />}
                   </div>
-                  <p className="text-xs text-slate-500 mt-1 line-clamp-2 leading-relaxed">
+                  <p className="text-xs text-slate-400 mt-1 line-clamp-2 leading-relaxed">
                     {room.description}
                   </p>
                 </button>
@@ -1152,33 +1152,33 @@ export default function SmartHomeSimulator3D({ initialOutdoorAqi = 240 }) {
         </div>
 
         {/* 1-Click Scenario Simulation Shortcuts */}
-        <div className="mt-5 pt-4 border-t border-slate-100 flex flex-wrap items-center gap-2.5">
-          <span className="text-xs font-bold text-slate-500 uppercase flex items-center gap-1">
-            <Zap className="w-3.5 h-3.5 text-amber-500" />
+        <div className="mt-5 pt-4 border-t border-slate-800/80 flex flex-wrap items-center gap-2.5">
+          <span className="text-xs font-bold text-slate-400 uppercase flex items-center gap-1">
+            <Zap className="w-3.5 h-3.5 text-amber-400" />
             <span>Quick Scenarios:</span>
           </span>
           <button
             type="button"
             onClick={() => applyScenario('smog')}
-            className="px-3 py-1.5 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-800 border border-rose-200 text-xs font-bold transition-colors cursor-pointer flex items-center gap-1.5"
+            className="px-3 py-1.5 rounded-xl bg-rose-950/60 hover:bg-rose-900/60 text-rose-300 border border-rose-800/60 text-xs font-bold transition-colors cursor-pointer flex items-center gap-1.5"
           >
-            <Flame className="w-3.5 h-3.5 text-rose-600" />
+            <Flame className="w-3.5 h-3.5 text-rose-400" />
             <span>Delhi Smog Influx (Window Open)</span>
           </button>
           <button
             type="button"
             onClick={() => applyScenario('turbo')}
-            className="px-3 py-1.5 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200 text-xs font-bold transition-colors cursor-pointer flex items-center gap-1.5"
+            className="px-3 py-1.5 rounded-xl bg-emerald-950/60 hover:bg-emerald-900/60 text-emerald-300 border border-emerald-800/60 text-xs font-bold transition-colors cursor-pointer flex items-center gap-1.5"
           >
-            <Wind className="w-3.5 h-3.5 text-emerald-600" />
+            <Wind className="w-3.5 h-3.5 text-emerald-400" />
             <span>Turbo Purification Cycle</span>
           </button>
           <button
             type="button"
             onClick={() => applyScenario('night')}
-            className="px-3 py-1.5 rounded-xl bg-indigo-50 hover:bg-indigo-100 text-indigo-800 border border-indigo-200 text-xs font-bold transition-colors cursor-pointer flex items-center gap-1.5"
+            className="px-3 py-1.5 rounded-xl bg-indigo-950/60 hover:bg-indigo-900/60 text-indigo-300 border border-indigo-800/60 text-xs font-bold transition-colors cursor-pointer flex items-center gap-1.5"
           >
-            <Moon className="w-3.5 h-3.5 text-indigo-600" />
+            <Moon className="w-3.5 h-3.5 text-indigo-400" />
             <span>Quiet Nighttime Sleep</span>
           </button>
         </div>
@@ -1188,12 +1188,12 @@ export default function SmartHomeSimulator3D({ initialOutdoorAqi = 240 }) {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
         
         {/* Left: 3D Canvas Container (8 cols) */}
-        <div className="lg:col-span-8 bg-white rounded-3xl p-6 sm:p-8 shadow-card border border-slate-200/90 space-y-4">
+        <div className="lg:col-span-8 bg-slate-900/85 backdrop-blur-xl rounded-3xl p-6 sm:p-8 shadow-2xl border border-slate-800/90 space-y-4">
           
-          <div className="flex flex-wrap items-center justify-between gap-4 pb-2 border-b border-slate-100">
+          <div className="flex flex-wrap items-center justify-between gap-4 pb-2 border-b border-slate-800/80">
             <div className="flex items-center gap-2">
               <span className="text-lg">{selectedRoom.icon}</span>
-              <h3 className="text-sm font-bold text-slate-800 uppercase tracking-wider">
+              <h3 className="text-sm font-bold text-white uppercase tracking-wider">
                 {selectedRoom.name} 3D Microclimate View
               </h3>
             </div>
@@ -1205,8 +1205,8 @@ export default function SmartHomeSimulator3D({ initialOutdoorAqi = 240 }) {
                 onClick={() => setAutoRotate(!autoRotate)}
                 className={`px-3 py-1.5 rounded-xl text-xs font-semibold flex items-center gap-1.5 border transition-all cursor-pointer ${
                   autoRotate
-                    ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
-                    : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-50'
+                    ? 'bg-emerald-950/80 text-emerald-300 border-emerald-700/80'
+                    : 'bg-slate-950/80 text-slate-300 border-slate-800 hover:bg-slate-900'
                 }`}
               >
                 <RotateCw className={`w-3.5 h-3.5 ${autoRotate ? 'animate-spin' : ''}`} style={{ animationDuration: '6s' }} />
@@ -1216,7 +1216,7 @@ export default function SmartHomeSimulator3D({ initialOutdoorAqi = 240 }) {
               <button
                 type="button"
                 onClick={handleResetCamera}
-                className="px-3 py-1.5 rounded-xl text-slate-600 hover:text-slate-900 bg-white hover:bg-slate-50 border border-slate-200 text-xs font-semibold flex items-center gap-1.5 transition-colors cursor-pointer"
+                className="px-3 py-1.5 rounded-xl text-slate-300 hover:text-white bg-slate-950/80 hover:bg-slate-900 border border-slate-800 text-xs font-semibold flex items-center gap-1.5 transition-colors cursor-pointer"
                 title="Reset Camera View"
               >
                 <Maximize2 className="w-3.5 h-3.5" />
@@ -1226,23 +1226,23 @@ export default function SmartHomeSimulator3D({ initialOutdoorAqi = 240 }) {
           </div>
 
           {/* WebGL Canvas Mount Container */}
-          <div className="relative w-full h-[500px] sm:h-[560px] rounded-2xl overflow-hidden bg-gradient-to-b from-slate-900 to-slate-950 border border-slate-800 shadow-inner">
+          <div className="relative w-full h-[500px] sm:h-[560px] rounded-2xl overflow-hidden bg-gradient-to-b from-slate-950 to-black border border-slate-800 shadow-2xl">
             <div ref={mountRef} className="w-full h-full cursor-grab active:cursor-grabbing" />
 
             {/* Floating Top In-Canvas HUD */}
             <div className="absolute top-4 left-4 z-20 pointer-events-none flex flex-col gap-2">
-              <div className="pointer-events-auto px-3.5 py-1.5 rounded-xl bg-slate-900/85 backdrop-blur-md border border-slate-700/80 text-white text-xs flex items-center gap-2 shadow-lg">
+              <div className="pointer-events-auto px-3.5 py-1.5 rounded-xl bg-slate-950/90 backdrop-blur-md border border-slate-700 text-white text-xs flex items-center gap-2 shadow-xl">
                 <span className="w-3 h-3 rounded-full animate-pulse" style={{ backgroundColor: indoorLevel.color }}></span>
                 <span className="font-bold">{indoorLevel.category} ({Math.round(indoorAqi)} AQI)</span>
               </div>
 
               {windowOpen ? (
-                <div className="pointer-events-auto px-3 py-1.5 rounded-xl bg-rose-950/85 backdrop-blur-md border border-rose-700/80 text-rose-300 text-xs font-bold flex items-center gap-2 animate-pulse shadow-lg">
+                <div className="pointer-events-auto px-3 py-1.5 rounded-xl bg-rose-950/90 backdrop-blur-md border border-rose-600/80 text-rose-300 text-xs font-bold flex items-center gap-2 animate-pulse shadow-xl">
                   <AlertTriangle className="w-4 h-4 text-rose-400" />
                   <span>Window Open: Smog Inflowing</span>
                 </div>
               ) : (
-                <div className="pointer-events-auto px-3 py-1.5 rounded-xl bg-emerald-950/80 backdrop-blur-md border border-emerald-700/80 text-emerald-300 text-xs font-semibold flex items-center gap-2 shadow-lg">
+                <div className="pointer-events-auto px-3 py-1.5 rounded-xl bg-emerald-950/90 backdrop-blur-md border border-emerald-600/80 text-emerald-300 text-xs font-semibold flex items-center gap-2 shadow-xl">
                   <ShieldCheck className="w-4 h-4 text-emerald-400" />
                   <span>Window Sealed: Air Bubble Protected</span>
                 </div>
@@ -1251,14 +1251,14 @@ export default function SmartHomeSimulator3D({ initialOutdoorAqi = 240 }) {
 
             {/* Floating Top Right Room Tag */}
             <div className="absolute top-4 right-4 z-20 pointer-events-none">
-              <div className="pointer-events-auto px-3 py-1.5 rounded-xl bg-slate-900/85 backdrop-blur-md border border-slate-700 text-slate-200 text-xs font-bold flex items-center gap-2">
+              <div className="pointer-events-auto px-3 py-1.5 rounded-xl bg-slate-950/90 backdrop-blur-md border border-slate-700 text-slate-200 text-xs font-bold flex items-center gap-2">
                 <span>{selectedRoom.icon} {selectedRoom.name}</span>
               </div>
             </div>
 
             {/* Floating Bottom Telemetry Bar */}
             <div className="absolute bottom-4 left-4 right-4 z-20 pointer-events-none flex flex-wrap items-center justify-between gap-3">
-              <div className="pointer-events-auto bg-slate-900/90 backdrop-blur-md px-4 py-2.5 rounded-2xl border border-slate-700 text-white text-xs flex items-center gap-4 shadow-xl">
+              <div className="pointer-events-auto bg-slate-950/90 backdrop-blur-md px-4 py-2.5 rounded-2xl border border-slate-700 text-white text-xs flex items-center gap-4 shadow-xl">
                 <div>
                   <span className="text-[10px] text-slate-400 block uppercase font-bold">Purifier CADR</span>
                   <span className="font-extrabold text-emerald-400">{activePurifier.cadr} m³/h ({ach} ACH)</span>
@@ -1273,7 +1273,7 @@ export default function SmartHomeSimulator3D({ initialOutdoorAqi = 240 }) {
                 </div>
               </div>
 
-              <div className="pointer-events-auto bg-slate-900/90 backdrop-blur-md px-3.5 py-2 rounded-xl border border-slate-700 text-[11px] text-slate-300 font-medium">
+              <div className="pointer-events-auto bg-slate-950/90 backdrop-blur-md px-3.5 py-2 rounded-xl border border-slate-700 text-[11px] text-slate-300 font-medium">
                 <span>🖱️ Click & Drag to Orbit • Scroll to Zoom</span>
               </div>
             </div>
@@ -1281,21 +1281,21 @@ export default function SmartHomeSimulator3D({ initialOutdoorAqi = 240 }) {
 
           {/* Room Setup Information */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2">
-            <div className="p-3.5 rounded-2xl bg-emerald-50/70 border border-emerald-200/80 text-xs">
-              <span className="font-bold text-emerald-950 block mb-1">🛡️ True HEPA H13 Air Purifier</span>
-              <p className="text-emerald-800">
+            <div className="p-3.5 rounded-2xl bg-slate-950/60 border border-slate-800 text-xs">
+              <span className="font-bold text-emerald-300 block mb-1">🛡️ True HEPA H13 Air Purifier</span>
+              <p className="text-slate-400">
                 Active in 3D scene with top LED ring and upward clean air exhaust stream.
               </p>
             </div>
-            <div className="p-3.5 rounded-2xl bg-blue-50/70 border border-blue-200/80 text-xs">
-              <span className="font-bold text-blue-950 block mb-1">🌿 Natural Air-Purifying Plants</span>
-              <p className="text-blue-800">
+            <div className="p-3.5 rounded-2xl bg-slate-950/60 border border-slate-800 text-xs">
+              <span className="font-bold text-blue-300 block mb-1">🌿 Natural Air-Purifying Plants</span>
+              <p className="text-slate-400">
                 {hasPlants ? 'Snake plant & Areca Palm visible in room, filtering VOCs.' : 'Plants hidden. Toggle plant switch on the right to add them.'}
               </p>
             </div>
-            <div className="p-3.5 rounded-2xl bg-amber-50/70 border border-amber-200/80 text-xs">
-              <span className="font-bold text-amber-950 block mb-1">🪟 Balcony Window Dynamic</span>
-              <p className="text-amber-800">
+            <div className="p-3.5 rounded-2xl bg-slate-950/60 border border-slate-800 text-xs">
+              <span className="font-bold text-amber-300 block mb-1">🪟 Balcony Window Dynamic</span>
+              <p className="text-slate-400">
                 {windowOpen ? 'Window is OPEN: Outside smog streams in actively!' : 'Window is SEALED: Infiltration is strictly minimized.'}
               </p>
             </div>
@@ -1307,13 +1307,13 @@ export default function SmartHomeSimulator3D({ initialOutdoorAqi = 240 }) {
         <div className="lg:col-span-4 space-y-6">
           
           {/* Purifier Fan Speed Selector */}
-          <div className="bg-white rounded-3xl p-6 shadow-card border border-slate-200/90 space-y-4">
+          <div className="bg-slate-900/85 backdrop-blur-xl rounded-3xl p-6 shadow-2xl border border-slate-800/90 space-y-4">
             <div className="flex items-center justify-between">
-              <h4 className="text-sm font-bold text-slate-800 uppercase tracking-wider flex items-center gap-2">
-                <Wind className="w-4 h-4 text-emerald-600" />
+              <h4 className="text-sm font-bold text-white uppercase tracking-wider flex items-center gap-2">
+                <Wind className="w-4 h-4 text-emerald-400" />
                 <span>{currentLang === 'hi' ? 'वायु शोधक पंखा गति' : 'Purifier Fan Speed'}</span>
               </h4>
-              <span className="text-xs font-bold text-emerald-700 bg-emerald-50 px-2.5 py-0.5 rounded-md border border-emerald-200">
+              <span className="text-xs font-bold text-emerald-300 bg-emerald-950/80 px-2.5 py-0.5 rounded-md border border-emerald-800">
                 {activePurifier.powerWatts} Watts
               </span>
             </div>
@@ -1328,15 +1328,15 @@ export default function SmartHomeSimulator3D({ initialOutdoorAqi = 240 }) {
                     onClick={() => setPurifierSpeed(spd.id)}
                     className={`p-3 rounded-2xl text-left border transition-all cursor-pointer ${
                       isSelected
-                        ? 'border-emerald-500 bg-emerald-50/80 text-emerald-950 font-bold shadow-xs ring-2 ring-emerald-500/25'
-                        : 'border-slate-200 hover:border-slate-300 text-slate-700 bg-white hover:bg-slate-50'
+                        ? 'border-emerald-500 bg-emerald-950/70 text-white font-bold shadow-lg ring-2 ring-emerald-500/30'
+                        : 'border-slate-800 hover:border-slate-700 text-slate-300 bg-slate-950/70 hover:bg-slate-900/80'
                     }`}
                   >
                     <div className="flex items-center justify-between mb-1">
                       <span className="text-xs font-bold">{spd.label}</span>
-                      {spd.id !== 'off' && <span className="text-2xs text-slate-400">{spd.noiseDb} dB</span>}
+                      {spd.id !== 'off' && <span className="text-2xs text-slate-500">{spd.noiseDb} dB</span>}
                     </div>
-                    <div className="text-[11px] text-slate-500">
+                    <div className="text-[11px] text-slate-400">
                       {spd.cadr > 0 ? `${spd.cadr} m³/h CADR` : 'Zero CADR'}
                     </div>
                   </button>
@@ -1346,29 +1346,29 @@ export default function SmartHomeSimulator3D({ initialOutdoorAqi = 240 }) {
           </div>
 
           {/* Environmental Controls (Window & Outdoor AQI) */}
-          <div className="bg-white rounded-3xl p-6 shadow-card border border-slate-200/90 space-y-5">
-            <h4 className="text-sm font-bold text-slate-800 uppercase tracking-wider flex items-center gap-2">
-              <Sliders className="w-4 h-4 text-emerald-600" />
+          <div className="bg-slate-900/85 backdrop-blur-xl rounded-3xl p-6 shadow-2xl border border-slate-800/90 space-y-5">
+            <h4 className="text-sm font-bold text-white uppercase tracking-wider flex items-center gap-2">
+              <Sliders className="w-4 h-4 text-emerald-400" />
               <span>{currentLang === 'hi' ? 'पर्यावरण नियंत्रण' : 'Environment & Aperture'}</span>
             </h4>
 
             {/* Window Open / Close Toggle */}
-            <div className="flex items-center justify-between p-3.5 rounded-2xl bg-slate-50 border border-slate-200/80">
+            <div className="flex items-center justify-between p-3.5 rounded-2xl bg-slate-950/70 border border-slate-800">
               <div>
-                <span className="text-xs font-bold text-slate-800 block">
+                <span className="text-xs font-bold text-white block">
                   {currentLang === 'hi' ? 'खिड़की की स्थिति' : 'Balcony Window Status'}
                 </span>
-                <span className="text-[11px] text-slate-500">
+                <span className="text-[11px] text-slate-400">
                   {windowOpen ? 'OPEN (Smog inflowing in 3D)' : 'SEALED (Protected air bubble)'}
                 </span>
               </div>
               <button
                 type="button"
                 onClick={() => setWindowOpen(!windowOpen)}
-                className={`px-4 py-2 rounded-xl text-xs font-extrabold transition-all cursor-pointer shadow-xs ${
+                className={`px-4 py-2 rounded-xl text-xs font-extrabold transition-all cursor-pointer shadow-md ${
                   windowOpen
-                    ? 'bg-rose-600 hover:bg-rose-700 text-white ring-2 ring-rose-400/30'
-                    : 'bg-emerald-600 hover:bg-emerald-700 text-white ring-2 ring-emerald-400/30'
+                    ? 'bg-rose-600 hover:bg-rose-500 text-white ring-2 ring-rose-400/40'
+                    : 'bg-emerald-600 hover:bg-emerald-500 text-white ring-2 ring-emerald-400/40'
                 }`}
               >
                 {windowOpen ? 'OPEN' : 'SEALED'}
@@ -1378,11 +1378,11 @@ export default function SmartHomeSimulator3D({ initialOutdoorAqi = 240 }) {
             {/* Outdoor AQI Slider */}
             <div>
               <div className="flex items-center justify-between mb-2">
-                <label className="text-xs font-bold text-slate-700 uppercase tracking-wider">
+                <label className="text-xs font-bold text-slate-300 uppercase tracking-wider">
                   {currentLang === 'hi' ? 'बाहरी शहर AQI' : 'Outdoor City Pollution'}
                 </label>
                 <span 
-                  className="text-xs font-extrabold px-2.5 py-0.5 rounded-md shadow-2xs"
+                  className="text-xs font-extrabold px-2.5 py-0.5 rounded-md shadow-md"
                   style={{ backgroundColor: outdoorLevel.bgColor, color: outdoorLevel.textColor }}
                 >
                   {outdoorAqi} AQI
@@ -1395,9 +1395,9 @@ export default function SmartHomeSimulator3D({ initialOutdoorAqi = 240 }) {
                 step={10}
                 value={outdoorAqi}
                 onChange={(e) => setOutdoorAqi(Number(e.target.value))}
-                className="w-full accent-emerald-600 cursor-pointer h-2 bg-slate-200 rounded-lg"
+                className="w-full accent-emerald-500 cursor-pointer h-2 bg-slate-800 rounded-lg"
               />
-              <div className="flex justify-between text-[10px] font-semibold text-slate-400 mt-1">
+              <div className="flex justify-between text-[10px] font-semibold text-slate-500 mt-1">
                 <span>Clean (20)</span>
                 <span>Moderate (100)</span>
                 <span>Very Poor (250)</span>
@@ -1406,14 +1406,14 @@ export default function SmartHomeSimulator3D({ initialOutdoorAqi = 240 }) {
             </div>
 
             {/* Indoor Air-Purifying Plants Toggle */}
-            <div className="flex items-center justify-between p-3.5 rounded-2xl bg-slate-50 border border-slate-200/80">
+            <div className="flex items-center justify-between p-3.5 rounded-2xl bg-slate-950/70 border border-slate-800">
               <div className="flex items-center gap-2">
-                <Leaf className="w-4 h-4 text-emerald-600" />
+                <Leaf className="w-4 h-4 text-emerald-400" />
                 <div>
-                  <span className="text-xs font-bold text-slate-800 block">
+                  <span className="text-xs font-bold text-white block">
                     {currentLang === 'hi' ? 'संसेविया / अरेका पाम पौधे' : 'Snake & Areca Palm Plants'}
                   </span>
-                  <span className="text-[10px] text-slate-400">
+                  <span className="text-[10px] text-slate-500">
                     {hasPlants ? 'Visible in 3D corners' : 'Hidden from 3D room'}
                   </span>
                 </div>
@@ -1423,8 +1423,8 @@ export default function SmartHomeSimulator3D({ initialOutdoorAqi = 240 }) {
                 onClick={() => setHasPlants(!hasPlants)}
                 className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
                   hasPlants 
-                    ? 'bg-emerald-100 hover:bg-emerald-200 text-emerald-900 border border-emerald-300' 
-                    : 'bg-slate-200 hover:bg-slate-300 text-slate-700 border border-slate-300'
+                    ? 'bg-emerald-950/80 hover:bg-emerald-900 text-emerald-300 border border-emerald-700' 
+                    : 'bg-slate-800 hover:bg-slate-700 text-slate-400 border border-slate-700'
                 }`}
               >
                 {hasPlants ? 'Added (+5%)' : 'None'}
@@ -1432,19 +1432,19 @@ export default function SmartHomeSimulator3D({ initialOutdoorAqi = 240 }) {
             </div>
 
             {/* Simulation Speed Buttons */}
-            <div className="pt-2 border-t border-slate-100 flex items-center justify-between">
-              <span className="text-xs font-bold text-slate-500 uppercase flex items-center gap-1.5">
-                <Clock className="w-3.5 h-3.5 text-slate-400" />
+            <div className="pt-2 border-t border-slate-800/80 flex items-center justify-between">
+              <span className="text-xs font-bold text-slate-400 uppercase flex items-center gap-1.5">
+                <Clock className="w-3.5 h-3.5 text-slate-500" />
                 <span>Sim Speed:</span>
               </span>
-              <div className="inline-flex p-1 bg-slate-100 rounded-xl text-xs font-bold">
+              <div className="inline-flex p-1 bg-slate-950 rounded-xl text-xs font-bold border border-slate-800">
                 {[1, 2, 5].map((spd) => (
                   <button
                     key={spd}
                     type="button"
                     onClick={() => setSimSpeed(spd)}
                     className={`px-3 py-1 rounded-lg transition-all cursor-pointer ${
-                      simSpeed === spd ? 'bg-white text-emerald-800 shadow-xs font-extrabold' : 'text-slate-500 hover:text-slate-800'
+                      simSpeed === spd ? 'bg-emerald-600 text-white shadow-xs font-extrabold' : 'text-slate-400 hover:text-white'
                     }`}
                   >
                     {spd}x

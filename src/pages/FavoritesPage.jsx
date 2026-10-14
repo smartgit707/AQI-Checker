@@ -175,12 +175,19 @@ export default function FavoritesPage() {
   }).slice(0, 6);
 
   return (
-    <div className="min-h-screen bg-slate-50 flex flex-col justify-between">
+    <div className="min-h-screen bg-gradient-to-br from-[#fff1f2]/40 via-[#f8fafc] to-[#fdf4ff]/40 flex flex-col justify-between relative selection:bg-rose-500/20 selection:text-rose-900 overflow-x-hidden">
+      
+      {/* Rose & Magenta Ambient Heart Glow */}
+      <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
+        <div className="absolute top-10 right-10 w-[550px] h-[550px] bg-rose-400/10 rounded-full blur-[150px]" />
+        <div className="absolute top-2/3 left-0 w-[500px] h-[500px] bg-pink-400/10 rounded-full blur-[140px]" />
+      </div>
+
       <Navbar />
-      <main className="flex-1 py-10 px-4 sm:px-6 lg:px-8">
+      <main className="flex-1 py-10 px-4 sm:px-6 lg:px-8 relative z-10">
         <div className="max-w-7xl mx-auto space-y-8">
         {/* Header */}
-        <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/80 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-6">
+        <div className="bg-white/95 backdrop-blur-md rounded-3xl p-6 sm:p-8 border border-rose-100/80 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-6">
           <div className="space-y-1">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-rose-50 border border-rose-200 text-rose-800 text-xs font-semibold uppercase tracking-wider">
               <Heart className="w-3.5 h-3.5 text-rose-600 fill-rose-600" />

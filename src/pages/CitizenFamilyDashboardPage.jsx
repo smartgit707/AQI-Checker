@@ -318,14 +318,21 @@ export default function CitizenFamilyDashboardPage() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 flex flex-col justify-between">
-      <Navbar />
+    <div className="min-h-screen bg-gradient-to-br from-[#fefce8]/60 via-[#fff7ed]/50 to-[#fdf2f8]/60 flex flex-col justify-between relative selection:bg-amber-500/20 selection:text-amber-900 overflow-x-hidden">
+      {/* Warm Ambient Wellness Aura */}
+      <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
+        <div className="absolute -top-20 left-10 w-[550px] h-[550px] bg-amber-200/25 rounded-full blur-[140px]" />
+        <div className="absolute top-1/3 right-10 w-[600px] h-[600px] bg-rose-200/20 rounded-full blur-[150px]" />
+        <div className="absolute bottom-20 left-1/4 w-[600px] h-[600px] bg-violet-200/20 rounded-full blur-[140px]" />
+      </div>
 
-      <main className="flex-1 py-8 px-4 sm:px-6 lg:px-8">
+      <Navbar variant="light" />
+
+      <main className="flex-1 py-8 px-4 sm:px-6 lg:px-8 relative z-10">
         <div className="max-w-7xl mx-auto space-y-8">
 
           {/* Persona Switcher Bar */}
-          <div className="bg-white rounded-2xl p-2.5 border border-slate-200 shadow-2xs flex flex-wrap items-center justify-between gap-3">
+          <div className="bg-white/90 backdrop-blur-md rounded-2xl p-2.5 border border-amber-100/90 shadow-sm flex flex-wrap items-center justify-between gap-3">
             <div className="flex items-center gap-1.5 overflow-x-auto py-1">
               <Link
                 to="/citizen-dashboard"

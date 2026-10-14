@@ -19,17 +19,24 @@ export default function CleanCommutePage() {
   const { t, currentLang } = useLanguage();
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#f8fafc] text-slate-800">
+    <div className="min-h-screen flex flex-col bg-gradient-to-br from-[#ebfef5] via-[#f0fdf4] to-[#e0f7fa] text-slate-800 relative selection:bg-emerald-500/20 selection:text-emerald-900 overflow-x-hidden">
       
-      {/* 1. Global Navigation */}
-      <Navbar />
+      {/* Fresh Greenway Ambient Light Radiance */}
+      <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
+        <div className="absolute top-0 right-10 w-[600px] h-[600px] bg-emerald-400/15 rounded-full blur-[140px]" />
+        <div className="absolute top-1/2 left-0 w-[500px] h-[500px] bg-teal-300/15 rounded-full blur-[140px]" />
+        <div className="absolute bottom-0 right-1/3 w-[600px] h-[600px] bg-sky-300/15 rounded-full blur-[150px]" />
+      </div>
 
-      <main className="flex-1 py-10 sm:py-14">
+      {/* 1. Global Navigation */}
+      <Navbar variant="light" />
+
+      <main className="flex-1 py-10 sm:py-14 relative z-10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
           
           {/* Page Hero Header */}
           <div className="text-center max-w-3xl mx-auto space-y-4">
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-bold bg-emerald-100/80 text-emerald-800 border border-emerald-300 shadow-2xs">
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-bold bg-emerald-100 text-emerald-900 border border-emerald-300/80 shadow-2xs">
               <Navigation className="w-3.5 h-3.5 text-emerald-700" />
               <span>{currentLang === 'hi' ? 'स्मार्ट कम्यूट टेलीमेट्री' : 'Urban Eco-Routing Telemetry'}</span>
             </div>
@@ -49,7 +56,7 @@ export default function CleanCommutePage() {
           <CleanRoutePlanner />
 
           {/* Commuter Health Guidance & Actionable Recommendations */}
-          <div className="bg-white rounded-3xl p-6 sm:p-10 shadow-card border border-slate-200/90 mt-12">
+          <div className="bg-white/90 backdrop-blur-md rounded-3xl p-6 sm:p-10 shadow-card border border-emerald-100/90 mt-12">
             <h3 className="text-xl font-extrabold text-slate-900 font-display mb-6 flex items-center gap-2">
               <ShieldCheck className="w-5 h-5 text-emerald-600" />
               <span>{currentLang === 'hi' ? 'दैनिक यात्रियों के लिए स्वास्थ्य सावधानियाँ' : 'Commuter Health & Defense Protocol'}</span>
@@ -57,8 +64,8 @@ export default function CleanCommutePage() {
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               
-              <div className="p-5 rounded-2xl bg-slate-50 border border-slate-200/80 space-y-2">
-                <div className="w-8 h-8 rounded-xl bg-emerald-100 text-emerald-800 flex items-center justify-center font-bold text-sm">
+              <div className="p-5 rounded-2xl bg-emerald-50/50 border border-emerald-200/70 space-y-2">
+                <div className="w-8 h-8 rounded-xl bg-emerald-200 text-emerald-900 flex items-center justify-center font-bold text-sm">
                   1
                 </div>
                 <h4 className="text-sm font-bold text-slate-900">
@@ -71,8 +78,8 @@ export default function CleanCommutePage() {
                 </p>
               </div>
 
-              <div className="p-5 rounded-2xl bg-slate-50 border border-slate-200/80 space-y-2">
-                <div className="w-8 h-8 rounded-xl bg-blue-100 text-blue-800 flex items-center justify-center font-bold text-sm">
+              <div className="p-5 rounded-2xl bg-sky-50/50 border border-sky-200/70 space-y-2">
+                <div className="w-8 h-8 rounded-xl bg-sky-200 text-sky-900 flex items-center justify-center font-bold text-sm">
                   2
                 </div>
                 <h4 className="text-sm font-bold text-slate-900">
@@ -85,8 +92,8 @@ export default function CleanCommutePage() {
                 </p>
               </div>
 
-              <div className="p-5 rounded-2xl bg-slate-50 border border-slate-200/80 space-y-2">
-                <div className="w-8 h-8 rounded-xl bg-amber-100 text-amber-800 flex items-center justify-center font-bold text-sm">
+              <div className="p-5 rounded-2xl bg-amber-50/50 border border-amber-200/70 space-y-2">
+                <div className="w-8 h-8 rounded-xl bg-amber-200 text-amber-900 flex items-center justify-center font-bold text-sm">
                   3
                 </div>
                 <h4 className="text-sm font-bold text-slate-900">
@@ -110,7 +117,7 @@ export default function CleanCommutePage() {
               </div>
               <Link
                 to="/citizen-dashboard"
-                className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold text-white bg-slate-900 hover:bg-slate-800 transition-colors shrink-0"
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold text-white bg-emerald-700 hover:bg-emerald-800 transition-colors shrink-0 shadow-md shadow-emerald-950/20"
               >
                 <span>{currentLang === 'hi' ? 'नागरिक डैशबोर्ड खोलें' : 'Open Citizen Dashboard'}</span>
                 <ArrowRight className="w-3.5 h-3.5" />

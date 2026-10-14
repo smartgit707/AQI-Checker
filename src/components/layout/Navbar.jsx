@@ -29,7 +29,8 @@ import {
   Box
 } from 'lucide-react';
 
-export default function Navbar({ onSelectCity, selectedCity }) {
+export default function Navbar({ onSelectCity, selectedCity, variant = 'light' }) {
+  const isDark = variant === 'dark';
   const { user, isAuthenticated, logout } = useAuth();
   const { t } = useLanguage();
   const navigate = useNavigate();
@@ -82,9 +83,13 @@ export default function Navbar({ onSelectCity, selectedCity }) {
   return (
     <header 
       className={`sticky top-0 z-50 transition-all duration-300 ${
-        isScrolled 
-          ? 'bg-white/95 dark:bg-slate-900/95 backdrop-blur-md shadow-sm border-b border-slate-200/80 dark:border-slate-800 py-3' 
-          : 'bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm border-b border-slate-100 dark:border-slate-800/80 py-3.5'
+        isDark
+          ? (isScrolled 
+              ? 'bg-[#0a0e1a]/95 backdrop-blur-md shadow-md border-b border-slate-800/90 py-3 text-white' 
+              : 'bg-[#0a0e1a]/85 backdrop-blur-sm border-b border-slate-800/60 py-3.5 text-white')
+          : (isScrolled 
+              ? 'bg-white/95 dark:bg-slate-900/95 backdrop-blur-md shadow-sm border-b border-slate-200/80 dark:border-slate-800 py-3' 
+              : 'bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm border-b border-slate-100 dark:border-slate-800/80 py-3.5')
       }`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -96,11 +101,11 @@ export default function Navbar({ onSelectCity, selectedCity }) {
               <Wind className="w-4.5 h-4.5 text-emerald-100" />
             </div>
             <div>
-              <span className="text-lg sm:text-xl font-extrabold tracking-tight text-slate-900 font-display flex items-center gap-1">
+              <span className={`text-lg sm:text-xl font-extrabold tracking-tight font-display flex items-center gap-1 ${isDark ? 'text-white' : 'text-slate-900'}`}>
                 AeroSense
                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
               </span>
-              <span className="block text-[9px] uppercase tracking-wider font-semibold text-slate-500 -mt-0.5">
+              <span className={`block text-[9px] uppercase tracking-wider font-semibold -mt-0.5 ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
                 Environmental Intelligence
               </span>
             </div>
@@ -112,7 +117,11 @@ export default function Navbar({ onSelectCity, selectedCity }) {
               <Link
                 key={link.href}
                 to={link.href}
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-semibold text-slate-600 hover:text-slate-900 hover:bg-slate-100/80 dark:hover:bg-slate-800/60 transition-colors"
+                className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-semibold transition-colors ${
+                  isDark
+                    ? 'text-slate-300 hover:text-white hover:bg-slate-800/80'
+                    : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100/80 dark:hover:bg-slate-800/60'
+                }`}
               >
                 <span>{link.name}</span>
                 {link.isNew && (
@@ -136,7 +145,11 @@ export default function Navbar({ onSelectCity, selectedCity }) {
             {!isAuthenticated && (
               <Link
                 to="/methodology"
-                className="px-3.5 py-1.5 rounded-lg text-sm font-semibold text-slate-600 hover:text-slate-900 hover:bg-slate-100/80 dark:hover:bg-slate-800/60 transition-colors"
+                className={`px-3.5 py-1.5 rounded-lg text-sm font-semibold transition-colors ${
+                  isDark
+                    ? 'text-slate-300 hover:text-white hover:bg-slate-800/80'
+                    : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100/80 dark:hover:bg-slate-800/60'
+                }`}
               >
                 {t('nav.methodology', 'Methodology')}
               </Link>
@@ -150,11 +163,11 @@ export default function Navbar({ onSelectCity, selectedCity }) {
                   onClick={() => setDashboardMenuOpen(!dashboardMenuOpen)}
                   className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-sm font-semibold transition-all ${
                     dashboardMenuOpen
-                      ? 'bg-emerald-50 text-emerald-800 border border-emerald-200 shadow-2xs'
-                      : 'text-slate-700 hover:text-emerald-700 hover:bg-slate-100/80 dark:hover:bg-slate-800/60'
+                      ? (isDark ? 'bg-slate-800 text-emerald-400 border border-slate-700' : 'bg-emerald-50 text-emerald-800 border border-emerald-200 shadow-2xs')
+                      : (isDark ? 'text-slate-300 hover:text-white hover:bg-slate-800/80' : 'text-slate-700 hover:text-emerald-700 hover:bg-slate-100/80 dark:hover:bg-slate-800/60')
                   }`}
                 >
-                  <LayoutDashboard className="w-4 h-4 text-emerald-600" />
+                  <LayoutDashboard className="w-4 h-4 text-emerald-500" />
                   <span>{t('nav.dashboards', 'Dashboards')}</span>
                   <ChevronDown className={`w-3.5 h-3.5 text-slate-400 transition-transform ${dashboardMenuOpen ? 'rotate-180' : ''}`} />
                 </button>

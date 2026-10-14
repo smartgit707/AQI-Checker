@@ -34,10 +34,17 @@ export default function MethodologyPage() {
   ];
 
   return (
-    <div className="min-h-screen bg-slate-50 flex flex-col justify-between">
+    <div className="min-h-screen bg-gradient-to-b from-[#f8fafc] via-[#f1f5f9] to-[#e2e8f0]/60 flex flex-col justify-between relative selection:bg-emerald-500/20 selection:text-emerald-900 overflow-x-hidden">
+      
+      {/* Scientific Research Ambient Aura */}
+      <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
+        <div className="absolute top-10 right-10 w-[600px] h-[600px] bg-emerald-400/10 rounded-full blur-[150px]" />
+        <div className="absolute top-2/3 left-0 w-[500px] h-[500px] bg-teal-400/10 rounded-full blur-[140px]" />
+      </div>
+
       <Navbar />
 
-      <main className="flex-1 py-12 px-4 sm:px-6 lg:px-8 max-w-5xl mx-auto w-full">
+      <main className="flex-1 py-12 px-4 sm:px-6 lg:px-8 max-w-5xl mx-auto w-full relative z-10">
         {/* Navigation Breadcrumb */}
         <div className="mb-6">
           <Link

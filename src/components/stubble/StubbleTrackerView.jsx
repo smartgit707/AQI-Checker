@@ -39,17 +39,17 @@ export default function StubbleTrackerView() {
     <div className="space-y-8">
       
       {/* 1. Header Overview & Live Satellite Stats Bar */}
-      <div className="bg-white rounded-3xl p-6 sm:p-8 shadow-card border border-slate-200/90">
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 pb-6 border-b border-slate-100">
+      <div className="bg-slate-900/85 backdrop-blur-xl rounded-3xl p-6 sm:p-8 shadow-2xl border border-slate-800/90 text-slate-100">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 pb-6 border-b border-slate-800/80">
           <div>
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-rose-50 text-rose-700 border border-rose-200/70 mb-2">
-              <Satellite className="w-3.5 h-3.5" />
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-rose-950/80 text-rose-300 border border-rose-500/30 mb-2">
+              <Satellite className="w-3.5 h-3.5 text-rose-400" />
               <span>{currentLang === 'hi' ? 'नासा व इसरो उपग्रह टेलीमेट्री' : 'NASA VIIRS & ISRO Satellite Telemetry'}</span>
             </div>
-            <h2 className="text-xl sm:text-3xl font-black text-slate-900 font-display">
+            <h2 className="text-xl sm:text-3xl font-black text-white font-display">
               {currentLang === 'hi' ? 'पराली दहन एवं वायु प्रवाह उपग्रह ट्रैकर' : 'Stubble Burning & Farm Fire Satellite Telemetry'}
             </h2>
-            <p className="text-xs sm:text-sm text-slate-500 mt-1 max-w-2xl">
+            <p className="text-xs sm:text-sm text-slate-400 mt-1 max-w-2xl">
               {currentLang === 'hi'
                 ? 'पंजाब, हरियाणा और पश्चिमी उत्तर प्रदेश में सक्रिय खेत की आग के थर्मल हॉटस्पॉट और भारत-गंगा के मैदान में धुएं के फैलाव की वास्तविक समय मैपिंग।'
                 : 'Real-time thermal anomaly clusters across Punjab, Haryana, and Western UP with seasonal north-westerly wind vector streamlines.'}
@@ -57,7 +57,7 @@ export default function StubbleTrackerView() {
           </div>
 
           {/* Sync Time Pill */}
-          <div className="flex items-center gap-2 self-start md:self-auto bg-slate-50 border border-slate-200/80 px-3.5 py-2 rounded-2xl text-xs font-semibold text-slate-600">
+          <div className="flex items-center gap-2 self-start md:self-auto bg-slate-950/80 border border-slate-800 px-3.5 py-2 rounded-2xl text-xs font-semibold text-slate-300">
             <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
             <span>{currentLang === 'hi' ? 'अंतिम उपग्रह पास:' : 'Last Pass:'} {SATELLITE_TELEMETRY_META.lastPass}</span>
           </div>
@@ -67,65 +67,65 @@ export default function StubbleTrackerView() {
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 pt-6">
           
           {/* Card 1: Total 24h Fires */}
-          <div className="p-4 rounded-2xl bg-rose-50/60 border border-rose-200/70">
+          <div className="p-4 rounded-2xl bg-rose-950/40 border border-rose-800/60">
             <div className="flex items-center justify-between mb-2">
-              <span className="text-xs font-bold uppercase tracking-wider text-rose-700">
+              <span className="text-xs font-bold uppercase tracking-wider text-rose-400">
                 {currentLang === 'hi' ? '24 घंटे में सक्रिय आग' : 'Active Fires (24h)'}
               </span>
-              <Flame className="w-4 h-4 text-rose-600 fill-rose-600" />
+              <Flame className="w-4 h-4 text-rose-500 fill-rose-500" />
             </div>
-            <div className="text-2xl sm:text-3xl font-black font-display text-rose-900">
+            <div className="text-2xl sm:text-3xl font-black font-display text-rose-300">
               {SATELLITE_TELEMETRY_META.totalActiveFires24h.toLocaleString()}
             </div>
-            <div className="text-[11px] text-rose-700/80 mt-1">
+            <div className="text-[11px] text-rose-400/80 mt-1">
               {currentLang === 'hi' ? 'FIRMS थर्मल डिटेक्शन' : 'VIIRS 375m Detection'}
             </div>
           </div>
 
           {/* Card 2: Punjab Share */}
-          <div className="p-4 rounded-2xl bg-amber-50/60 border border-amber-200/70">
+          <div className="p-4 rounded-2xl bg-amber-950/40 border border-amber-800/60">
             <div className="flex items-center justify-between mb-2">
-              <span className="text-xs font-bold uppercase tracking-wider text-amber-800">
+              <span className="text-xs font-bold uppercase tracking-wider text-amber-400">
                 {currentLang === 'hi' ? 'पंजाब हॉटस्पॉट' : 'Punjab Hotspots'}
               </span>
-              <span className="text-xs font-bold text-amber-700">68.6%</span>
+              <span className="text-xs font-bold text-amber-300">68.6%</span>
             </div>
-            <div className="text-2xl sm:text-3xl font-black font-display text-amber-900">
+            <div className="text-2xl sm:text-3xl font-black font-display text-amber-300">
               {SATELLITE_TELEMETRY_META.punjabFires.toLocaleString()}
             </div>
-            <div className="text-[11px] text-amber-700/80 mt-1">
+            <div className="text-[11px] text-amber-400/80 mt-1">
               Sangrur & Firozpur clusters
             </div>
           </div>
 
           {/* Card 3: Haryana & UP */}
-          <div className="p-4 rounded-2xl bg-blue-50/60 border border-blue-200/70">
+          <div className="p-4 rounded-2xl bg-blue-950/40 border border-blue-800/60">
             <div className="flex items-center justify-between mb-2">
-              <span className="text-xs font-bold uppercase tracking-wider text-blue-800">
+              <span className="text-xs font-bold uppercase tracking-wider text-blue-400">
                 {currentLang === 'hi' ? 'हरियाणा व प. उप्र' : 'Haryana & West UP'}
               </span>
-              <span className="text-xs font-bold text-blue-700">31.4%</span>
+              <span className="text-xs font-bold text-blue-300">31.4%</span>
             </div>
-            <div className="text-2xl sm:text-3xl font-black font-display text-blue-900">
+            <div className="text-2xl sm:text-3xl font-black font-display text-blue-300">
               {(SATELLITE_TELEMETRY_META.haryanaFires + SATELLITE_TELEMETRY_META.upFires).toLocaleString()}
             </div>
-            <div className="text-[11px] text-blue-700/80 mt-1">
+            <div className="text-[11px] text-blue-400/80 mt-1">
               Karnal, Kaithal & Meerut
             </div>
           </div>
 
           {/* Card 4: Stubble Share in NCR PM2.5 */}
-          <div className="p-4 rounded-2xl bg-purple-50/60 border border-purple-200/70">
+          <div className="p-4 rounded-2xl bg-purple-950/40 border border-purple-800/60">
             <div className="flex items-center justify-between mb-2">
-              <span className="text-xs font-bold uppercase tracking-wider text-purple-800">
+              <span className="text-xs font-bold uppercase tracking-wider text-purple-400">
                 {currentLang === 'hi' ? 'दिल्ली PM2.5 में हिस्सा' : 'Delhi PM2.5 Share'}
               </span>
-              <Wind className="w-4 h-4 text-purple-600" />
+              <Wind className="w-4 h-4 text-purple-400" />
             </div>
-            <div className="text-2xl sm:text-3xl font-black font-display text-purple-900">
+            <div className="text-2xl sm:text-3xl font-black font-display text-purple-300">
               {SATELLITE_TELEMETRY_META.stubbleShareInDelhiPM25}
             </div>
-            <div className="text-[11px] text-purple-700/80 mt-1">
+            <div className="text-[11px] text-purple-400/80 mt-1">
               SAFAR / IITM Model Source Split
             </div>
           </div>
@@ -137,7 +137,7 @@ export default function StubbleTrackerView() {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
         
         {/* Left Map (8 cols) */}
-        <div className="lg:col-span-8 bg-white rounded-3xl p-6 sm:p-8 shadow-card border border-slate-200/90 space-y-4">
+        <div className="lg:col-span-8 bg-slate-900/85 backdrop-blur-xl rounded-3xl p-6 sm:p-8 shadow-2xl border border-slate-800/90 space-y-4 text-slate-100">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <Flame className="w-4 h-4 text-rose-600" />
@@ -228,23 +228,23 @@ export default function StubbleTrackerView() {
           </div>
 
           {/* Downwind Smog Inflow Status */}
-          <div className="bg-white rounded-3xl p-6 shadow-card border border-slate-200/90 space-y-4">
-            <h4 className="text-sm font-bold text-slate-800 uppercase tracking-wider flex items-center gap-2">
-              <ShieldAlert className="w-4 h-4 text-purple-600" />
+          <div className="bg-slate-900/85 backdrop-blur-xl rounded-3xl p-6 shadow-2xl border border-slate-800/90 space-y-4 text-slate-100">
+            <h4 className="text-sm font-bold text-white uppercase tracking-wider flex items-center gap-2">
+              <ShieldAlert className="w-4 h-4 text-purple-400" />
               <span>{currentLang === 'hi' ? 'हवा के रुख में प्रभावित शहर' : 'Downwind Plume Impact'}</span>
             </h4>
             <div className="space-y-2.5">
               {IMPACTED_DOWNWIND_CITIES.slice(0, 4).map((city) => (
-                <div key={city.name} className="p-3 rounded-2xl bg-slate-50 border border-slate-100 flex items-center justify-between">
+                <div key={city.name} className="p-3 rounded-2xl bg-slate-950/70 border border-slate-800 flex items-center justify-between">
                   <div>
-                    <div className="text-xs font-bold text-slate-900">{city.name}</div>
-                    <div className="text-[11px] text-slate-500">{city.dominantAerosol}</div>
+                    <div className="text-xs font-bold text-white">{city.name}</div>
+                    <div className="text-[11px] text-slate-400">{city.dominantAerosol}</div>
                   </div>
                   <div className="text-right">
-                    <span className="text-sm font-mono font-extrabold text-rose-700">
+                    <span className="text-sm font-mono font-extrabold text-rose-400">
                       {city.currentAqi} AQI
                     </span>
-                    <span className="block text-[10px] font-bold text-purple-700">
+                    <span className="block text-[10px] font-bold text-purple-400">
                       +{city.stubbleSharePct}% Stubble
                     </span>
                   </div>
@@ -258,17 +258,17 @@ export default function StubbleTrackerView() {
       </div>
 
       {/* 3. Daily Farm Fire vs Downwind AQI Correlation Graph */}
-      <div className="bg-white rounded-3xl p-6 sm:p-8 shadow-card border border-slate-200/90 space-y-6">
+      <div className="bg-slate-900/85 backdrop-blur-xl rounded-3xl p-6 sm:p-8 shadow-2xl border border-slate-800/90 space-y-6 text-slate-100">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-amber-50 text-amber-800 border border-amber-200/70 mb-2">
-              <TrendingUp className="w-3.5 h-3.5" />
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-amber-950/80 text-amber-300 border border-amber-600/30 mb-2">
+              <TrendingUp className="w-3.5 h-3.5 text-amber-400" />
               <span>{currentLang === 'hi' ? 'कारण-और-प्रभाव विश्लेषण' : 'Cause & Effect Correlation Telemetry'}</span>
             </div>
-            <h3 className="text-xl sm:text-2xl font-black text-slate-900 font-display">
+            <h3 className="text-xl sm:text-2xl font-black text-white font-display">
               {currentLang === 'hi' ? 'खेत की आग बनाम दिल्ली-कानपुर AQI का सहसंबंध' : 'Daily Farm Fires vs. Downwind Delhi & Kanpur AQI Spikes'}
             </h3>
-            <p className="text-xs sm:text-sm text-slate-500 mt-0.5">
+            <p className="text-xs sm:text-sm text-slate-400 mt-0.5">
               {currentLang === 'hi'
                 ? 'अक्टूबर के मध्य में जब फसल कटाई के बाद पराली जलाने की घटनाएं 2,000/दिन तक पहुंचती हैं, दिल्ली का AQI 380+ तक उछल जाता है।'
                 : 'Notice how Delhi and Kanpur air quality spikes in direct lockstep as daily farm fires surge across northern agricultural belts.'}
@@ -276,12 +276,12 @@ export default function StubbleTrackerView() {
           </div>
 
           {/* Metric Selector Pills */}
-          <div className="inline-flex p-1 bg-slate-100 rounded-xl text-xs font-bold">
+          <div className="inline-flex p-1 bg-slate-950 rounded-xl text-xs font-bold border border-slate-800">
             <button
               type="button"
               onClick={() => setSelectedMetric('both')}
               className={`px-3 py-1.5 rounded-lg transition-all ${
-                selectedMetric === 'both' ? 'bg-white text-slate-900 shadow-xs' : 'text-slate-600'
+                selectedMetric === 'both' ? 'bg-slate-800 text-white shadow-xs font-extrabold' : 'text-slate-400 hover:text-slate-200'
               }`}
             >
               Both Fires & AQI
@@ -290,7 +290,7 @@ export default function StubbleTrackerView() {
               type="button"
               onClick={() => setSelectedMetric('fires')}
               className={`px-3 py-1.5 rounded-lg transition-all ${
-                selectedMetric === 'fires' ? 'bg-white text-rose-700 shadow-xs' : 'text-slate-600'
+                selectedMetric === 'fires' ? 'bg-rose-600 text-white shadow-xs font-extrabold' : 'text-slate-400 hover:text-slate-200'
               }`}
             >
               Fires Only
@@ -299,7 +299,7 @@ export default function StubbleTrackerView() {
               type="button"
               onClick={() => setSelectedMetric('aqi')}
               className={`px-3 py-1.5 rounded-lg transition-all ${
-                selectedMetric === 'aqi' ? 'bg-white text-purple-700 shadow-xs' : 'text-slate-600'
+                selectedMetric === 'aqi' ? 'bg-purple-600 text-white shadow-xs font-extrabold' : 'text-slate-400 hover:text-slate-200'
               }`}
             >
               AQI Only
@@ -310,7 +310,7 @@ export default function StubbleTrackerView() {
         {/* Custom Responsive SVG Chart */}
         <div className="pt-4">
           <div className="relative w-full overflow-x-auto">
-            <div className="min-w-[680px] h-64 sm:h-72 flex items-end justify-between gap-3 px-2 pb-8 pt-4 border-b border-slate-200">
+            <div className="min-w-[680px] h-64 sm:h-72 flex items-end justify-between gap-3 px-2 pb-8 pt-4 border-b border-slate-800">
               
               {CORRELATION_TIMELINE.map((item, idx) => {
                 const maxFires = 2200;
@@ -322,7 +322,7 @@ export default function StubbleTrackerView() {
                   <div key={item.date} className="flex-1 flex flex-col items-center h-full justify-end group relative">
                     
                     {/* Hover Floating Data Card */}
-                    <div className="absolute -top-16 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none bg-slate-900 text-white p-2 rounded-xl text-[10px] z-30 shadow-xl whitespace-nowrap">
+                    <div className="absolute -top-16 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none bg-black/90 backdrop-blur-md border border-slate-700 text-white p-2 rounded-xl text-[10px] z-30 shadow-xl whitespace-nowrap">
                       <div className="font-bold">{item.date}</div>
                       <div className="text-rose-400">🔥 Fires: {item.fireCount}</div>
                       <div className="text-purple-300">🌫️ Delhi AQI: {item.delhiAqi}</div>
@@ -338,8 +338,8 @@ export default function StubbleTrackerView() {
                           style={{ height: `${fireHeightPct}%` }}
                           className={`w-3 sm:w-4 rounded-t-md transition-all duration-300 ${
                             isPeak
-                              ? 'bg-rose-600 ring-2 ring-rose-400/50 shadow-md'
-                              : 'bg-rose-400 hover:bg-rose-500'
+                              ? 'bg-rose-500 ring-2 ring-rose-400/50 shadow-lg shadow-rose-950/60'
+                              : 'bg-rose-600/80 hover:bg-rose-500'
                           }`}
                         />
                       )}
@@ -350,8 +350,8 @@ export default function StubbleTrackerView() {
                           style={{ height: `${aqiHeightPct}%` }}
                           className={`w-3 sm:w-4 rounded-t-md transition-all duration-300 ${
                             isPeak
-                              ? 'bg-purple-700 ring-2 ring-purple-400/50'
-                              : 'bg-purple-500 hover:bg-purple-600'
+                              ? 'bg-purple-600 ring-2 ring-purple-400/50 shadow-lg shadow-purple-950/60'
+                              : 'bg-purple-700/80 hover:bg-purple-500'
                           }`}
                         />
                       )}
@@ -359,7 +359,7 @@ export default function StubbleTrackerView() {
                     </div>
 
                     {/* Date Label on Axis */}
-                    <span className="text-[10px] font-bold text-slate-500 mt-2 block whitespace-nowrap">
+                    <span className="text-[10px] font-bold text-slate-400 mt-2 block whitespace-nowrap">
                       {item.date}
                     </span>
                   </div>
@@ -370,16 +370,16 @@ export default function StubbleTrackerView() {
           </div>
 
           {/* Chart Legend */}
-          <div className="flex flex-wrap items-center justify-center gap-6 pt-4 text-xs font-semibold text-slate-600">
+          <div className="flex flex-wrap items-center justify-center gap-6 pt-4 text-xs font-semibold text-slate-400">
             <div className="flex items-center gap-2">
               <span className="w-3 h-3 rounded-sm bg-rose-500"></span>
-              <span>Active Farm Fires Count (VIIRS / MODIS)</span>
+              <span className="text-slate-300">Active Farm Fires Count (VIIRS / MODIS)</span>
             </div>
             <div className="flex items-center gap-2">
               <span className="w-3 h-3 rounded-sm bg-purple-600"></span>
-              <span>Downwind Delhi NCR Ambient AQI</span>
+              <span className="text-slate-300">Downwind Delhi NCR Ambient AQI</span>
             </div>
-            <div className="text-slate-400">
+            <div className="text-slate-500">
               *Peak harvest surge: Oct 16 (~2,150 fires & AQI 382)
             </div>
           </div>

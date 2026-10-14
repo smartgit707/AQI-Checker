@@ -253,13 +253,20 @@ export default function DashboardPage() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 flex flex-col justify-between">
+    <div className="min-h-screen bg-gradient-to-b from-[#f1f5f9] via-[#f8fafc] to-[#e2e8f0]/70 flex flex-col justify-between relative selection:bg-emerald-500/20 selection:text-emerald-900 overflow-x-hidden">
+      
+      {/* Flagship Metropolitan Telemetry Ambiance */}
+      <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
+        <div className="absolute top-0 right-1/4 w-[700px] h-[700px] bg-emerald-400/10 rounded-full blur-[160px]" />
+        <div className="absolute top-1/2 -left-20 w-[600px] h-[600px] bg-sky-400/10 rounded-full blur-[150px]" />
+      </div>
+
       <Navbar />
-      <main className="flex-1 py-10 px-4 sm:px-6 lg:px-8">
+      <main className="flex-1 py-10 px-4 sm:px-6 lg:px-8 relative z-10">
         <div className="max-w-7xl mx-auto space-y-8">
           
           {/* Persona Switcher Bar */}
-          <div className="bg-white rounded-2xl p-2.5 border border-slate-200 shadow-2xs flex flex-wrap items-center justify-between gap-3">
+          <div className="bg-white/95 backdrop-blur-md rounded-2xl p-2.5 border border-slate-200/90 shadow-xs flex flex-wrap items-center justify-between gap-3">
             <div className="flex items-center gap-1.5 overflow-x-auto py-1">
               <Link
                 to="/dashboard"
