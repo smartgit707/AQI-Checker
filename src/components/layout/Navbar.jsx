@@ -25,7 +25,8 @@ import {
   ShieldAlert,
   Home,
   Navigation,
-  Flame
+  Flame,
+  Box
 } from 'lucide-react';
 
 export default function Navbar({ onSelectCity, selectedCity }) {
@@ -73,9 +74,9 @@ export default function Navbar({ onSelectCity, selectedCity }) {
   const navLinks = [
     { name: 'Analytics', href: '/analytics' },
     { name: 'Compare', href: '/compare' },
-    { name: 'Rankings', href: '/rankings' },
     { name: 'Clean Route', href: '/clean-commute', isNew: true },
     { name: 'Stubble Fires', href: '/stubble-tracker', isFire: true },
+    { name: '3D Purifier', href: '/purifier-simulator', is3D: true },
   ];
 
   return (
@@ -124,6 +125,11 @@ export default function Navbar({ onSelectCity, selectedCity }) {
                     🔥 Live
                   </span>
                 )}
+                {link.is3D && (
+                  <span className="px-1.5 py-0.5 rounded-full text-[9px] font-extrabold uppercase bg-cyan-100 text-cyan-800 border border-cyan-300">
+                    3D
+                  </span>
+                )}
               </Link>
             ))}
 
@@ -170,6 +176,20 @@ export default function Navbar({ onSelectCity, selectedCity }) {
                       <div>
                         <div className="text-xs font-bold text-slate-900">{t('nav.citizenDashboard', 'Citizen & Family')}</div>
                         <div className="text-3xs text-slate-500">{t('nav.citizenSubtitle', '24h Golden Window & advisory')}</div>
+                      </div>
+                    </Link>
+
+                    <Link
+                      to="/purifier-simulator"
+                      onClick={() => setDashboardMenuOpen(false)}
+                      className="flex items-center gap-3 p-2.5 rounded-xl hover:bg-cyan-50/60 transition-colors"
+                    >
+                      <div className="w-8 h-8 rounded-lg bg-cyan-50 text-cyan-600 flex items-center justify-center shrink-0">
+                        <Box className="w-4 h-4" />
+                      </div>
+                      <div>
+                        <div className="text-xs font-bold text-slate-900">3D Purifier Simulator</div>
+                        <div className="text-3xs text-cyan-600 font-semibold">Interactive 3D apartment CADR</div>
                       </div>
                     </Link>
 

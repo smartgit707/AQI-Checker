@@ -19,6 +19,7 @@ const MethodologyPage = lazy(() => import('./pages/MethodologyPage.jsx'));
 const DataSourcesPage = lazy(() => import('./pages/DataSourcesPage.jsx'));
 const CleanCommutePage = lazy(() => import('./pages/CleanCommutePage.jsx'));
 const StubbleTrackerPage = lazy(() => import('./pages/StubbleTrackerPage.jsx'));
+const PurifierSimulatorPage = lazy(() => import('./pages/PurifierSimulatorPage.jsx'));
 const LoginPage = lazy(() => import('./pages/LoginPage.jsx'));
 const RegisterPage = lazy(() => import('./pages/RegisterPage.jsx'));
 const DashboardPage = lazy(() => import('./pages/DashboardPage.jsx'));
@@ -49,6 +50,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
               <Route path="/data-sources" element={<DataSourcesPage />} />
               <Route path="/clean-commute" element={<CleanCommutePage />} />
               <Route path="/stubble-tracker" element={<StubbleTrackerPage />} />
+              <Route path="/purifier-simulator" element={<PurifierSimulatorPage />} />
 
               {/* Authentication Routes */}
               <Route path="/login" element={<LoginPage />} />
