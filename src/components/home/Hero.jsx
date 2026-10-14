@@ -1,5 +1,5 @@
 import React from 'react';
-import { Compass, ShieldCheck, Activity, ChevronRight, Wind, ArrowRight } from 'lucide-react';
+import { Compass, ShieldCheck, Activity, ChevronRight, Wind, ArrowRight, Sparkles } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import LocationSearch from '../common/LocationSearch';
 import OptimizedImage from '../common/OptimizedImage';
@@ -8,7 +8,7 @@ import { IMAGES } from '../../data/images';
 import { getAQILevel } from '../../design-system/aqiTokens';
 import { useLanguage } from '../../context/LanguageContext';
 
-export default function Hero({ onSelectCity, currentCity }) {
+export default function Hero({ onSelectCity, currentCity, onReplayIntro }) {
   const city = currentCity || {};
   const currentLevel = getAQILevel(city.aqi ?? 50) || {};
   const { t } = useLanguage();
@@ -27,14 +27,26 @@ export default function Hero({ onSelectCity, currentCity }) {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
-        {/* Top Editorial Badge */}
-        <div className="flex justify-center mb-6">
+        {/* Top Editorial Badge & Cinematic 3D Intro Replay Button */}
+        <div className="flex flex-wrap items-center justify-center gap-3 mb-6">
           <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/90 dark:bg-slate-900/90 border border-slate-200/90 dark:border-slate-800 shadow-2xs text-xs font-medium text-slate-700">
             <span className="flex h-2 w-2 rounded-full bg-emerald-500 animate-ping" />
             <span className="font-semibold text-emerald-800">{t('hero.badgeNetwork', 'CPCB & Sensor Network')}</span>
             <span className="text-slate-300 dark:text-slate-600">•</span>
             <span>{t('hero.badgeLive', 'Real-time Pan-India Ambient Air Monitoring')}</span>
           </div>
+
+          {onReplayIntro && (
+            <button
+              onClick={onReplayIntro}
+              type="button"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-900 text-white hover:bg-emerald-600 dark:bg-slate-800 dark:hover:bg-emerald-600 text-xs font-semibold shadow-xs transition-all hover:scale-105 active:scale-95 group cursor-pointer"
+              title="Experience the Cinematic 3D Intro"
+            >
+              <Sparkles className="w-3.5 h-3.5 text-emerald-400 group-hover:text-white transition-colors" />
+              <span>3D Cinematic Intro</span>
+            </button>
+          )}
         </div>
 
         {/* Hero Headline & Subtitle */}

@@ -13,6 +13,7 @@ import PollutionInsights from './components/home/PollutionInsights';
 import DataSources from './components/home/DataSources';
 import ErrorBoundary from './components/common/ErrorBoundary';
 import AiAssistantWidget from './components/common/AiAssistantWidget';
+import Cinematic3DIntro from './components/intro/Cinematic3DIntro';
 import { getLatestAirQuality } from './services/api';
 import { CITIES_DATA } from './data/mockData';
 
@@ -113,6 +114,15 @@ function sanitizeActiveCityView(selectedCity, liveEnvData) {
 }
 
 export default function App() {
+  // World-class Cinematic 3D Intro State (persists per session so it only plays once on entry, or upon user replay)
+  const [showIntro, setShowIntro] = useState(() => {
+    try {
+      return !sessionStorage.getItem('aeris_intro_seen');
+    } catch (e) {
+      return false;
+    }
+  });
+
   // Default active monitored city is Chennai
   const [selectedCity, setSelectedCity] = useState(CITIES_DATA[0]);
   const [liveEnvData, setLiveEnvData] = useState(null);
@@ -165,15 +175,27 @@ export default function App() {
 
   return (
     <div className="min-h-screen flex flex-col bg-[#f8fafc] text-slate-800">
+      {/* 0. World-Class Cinematic 3D Intro Experience */}
+      {showIntro && (
+        <Cinematic3DIntro
+          onComplete={() => {
+            setShowIntro(false);
+          }}
+        />
+      )}
       
       {/* 1. Global Navigation */}
       <Navbar onSelectCity={handleSelectCity} selectedCity={activeCityView} />
 
       <main className="flex-1">
-        {/* 2. Hero Section with Real Telemetry Snapshot & Search */}
+        {/* 2. Hero Section with Real Telemetry Snapshot, Search & 3D Intro Replay */}
         <div id="overview">
           <ErrorBoundary inline sectionName="Hero Overview">
-            <Hero onSelectCity={handleSelectCity} currentCity={activeCityView} />
+            <Hero
+              onSelectCity={handleSelectCity}
+              currentCity={activeCityView}
+              onReplayIntro={() => setShowIntro(true)}
+            />
           </ErrorBoundary>
         </div>
 
