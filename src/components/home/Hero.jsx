@@ -56,6 +56,15 @@ export default function Hero({ onSelectCity, currentCity, onReplayIntro }) {
             <span className="w-1.5 h-1.5 rounded-full bg-purple-400 animate-pulse"></span>
             <span>🛰️ Who Polluted My Air?</span>
           </Link>
+
+          <Link
+            to="/monument-decay"
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-amber-950/90 text-amber-200 hover:bg-amber-900 border border-amber-500/50 text-xs font-semibold shadow-xs transition-all hover:scale-105 active:scale-95 group cursor-pointer"
+            title="3D Taj Mahal & Monument Acid Decay Simulator"
+          >
+            <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse"></span>
+            <span>🏛️ 3D Heritage Acid Decay</span>
+          </Link>
         </div>
 
         {/* Hero Headline & Subtitle */}
