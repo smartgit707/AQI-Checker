@@ -78,6 +78,7 @@ export default function Navbar({ onSelectCity, selectedCity, variant = 'light' }
     { name: 'Clean Route', href: '/clean-commute', isNew: true },
     { name: 'Stubble Fires', href: '/stubble-tracker', isFire: true },
     { name: '3D Purifier', href: '/purifier-simulator', is3D: true },
+    { name: 'Air Tracer', href: '/forensic-tracer', isTracer: true },
   ];
 
   return (
@@ -137,6 +138,11 @@ export default function Navbar({ onSelectCity, selectedCity, variant = 'light' }
                 {link.is3D && (
                   <span className="px-1.5 py-0.5 rounded-full text-[9px] font-extrabold uppercase bg-cyan-100 text-cyan-800 border border-cyan-300">
                     3D
+                  </span>
+                )}
+                {link.isTracer && (
+                  <span className="px-1.5 py-0.5 rounded-full text-[9px] font-extrabold uppercase bg-purple-100 text-purple-800 border border-purple-300">
+                    🛰️ 48h
                   </span>
                 )}
               </Link>

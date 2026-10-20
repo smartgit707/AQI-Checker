@@ -47,6 +47,15 @@ export default function Hero({ onSelectCity, currentCity, onReplayIntro }) {
               <span>3D Cinematic Intro</span>
             </button>
           )}
+
+          <Link
+            to="/forensic-tracer"
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-purple-950/90 text-purple-200 hover:bg-purple-900 border border-purple-500/50 text-xs font-semibold shadow-xs transition-all hover:scale-105 active:scale-95 group cursor-pointer"
+            title="Trace Who Polluted Your Air Over Past 48 Hours"
+          >
+            <span className="w-1.5 h-1.5 rounded-full bg-purple-400 animate-pulse"></span>
+            <span>🛰️ Who Polluted My Air?</span>
+          </Link>
         </div>
 
         {/* Hero Headline & Subtitle */}
