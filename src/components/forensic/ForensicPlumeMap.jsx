@@ -21,23 +21,39 @@ import {
   Radio, 
   AlertTriangle, 
   ShieldCheck, 
-  Eye,
-  Sliders,
   Compass,
-  Zap
+  Map as MapIcon,
+  Globe
 } from 'lucide-react';
+
+// Fix Leaflet's default marker icon paths in bundled environments
+delete L.Icon.Default.prototype._getIconUrl;
+L.Icon.Default.mergeOptions({
+  iconRetinaUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png',
+  iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
+  shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
+});
 
 /**
  * Controller to ensure map tiles immediately calculate full size on mount & city change
  */
 function MapController({ center, zoom }) {
   const map = useMap();
+
   useEffect(() => {
-    map.invalidateSize();
-    if (center) {
+    // Invalidate size on mount after layout finishes rendering
+    const timer = setTimeout(() => {
+      map.invalidateSize();
+    }, 150);
+    return () => clearTimeout(timer);
+  }, [map]);
+
+  useEffect(() => {
+    if (center && Array.isArray(center) && center.length === 2) {
       map.flyTo(center, zoom || 7, { duration: 1.2 });
     }
   }, [map, center, zoom]);
+
   return null;
 }
 
@@ -45,29 +61,28 @@ function MapController({ center, zoom }) {
  * Helper to construct custom HTML glowing icons for culprits
  */
 function createCustomIcon(type, share) {
-  let bgClass = 'bg-rose-500';
+  let bgClass = '#f43f5e'; // rose-500
   let emoji = '🔥';
   if (type === 'industrial') {
-    bgClass = 'bg-purple-600';
+    bgClass = '#9333ea'; // purple-600
     emoji = '🏭';
   } else if (type === 'vehicular') {
-    bgClass = 'bg-blue-600';
+    bgClass = '#2563eb'; // blue-600
     emoji = '🚛';
   } else if (type === 'brick_kiln') {
-    bgClass = 'bg-amber-600';
+    bgClass = '#d97706'; // amber-600
     emoji = '🧱';
   } else if (type === 'dust') {
-    bgClass = 'bg-yellow-600';
+    bgClass = '#ca8a04'; // yellow-600
     emoji = '💨';
   }
 
   const html = `
-    <div class="relative flex items-center justify-center cursor-pointer group">
-      <span class="absolute w-8 h-8 rounded-full ${bgClass} opacity-40 animate-ping"></span>
-      <div class="relative w-8 h-8 rounded-full ${bgClass} text-white font-bold text-xs flex items-center justify-center shadow-lg border-2 border-white/80 transition-transform group-hover:scale-125">
-        <span class="text-sm">${emoji}</span>
+    <div style="display:flex;align-items:center;justify-content:center;position:relative;cursor:pointer;">
+      <div style="width:34px;height:34px;border-radius:9999px;background-color:${bgClass};color:#ffffff;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 14px rgba(0,0,0,0.6);border:2px solid #ffffff;">
+        <span style="font-size:16px;">${emoji}</span>
       </div>
-      <span class="absolute -bottom-5 px-1.5 py-0.5 rounded-md bg-slate-900/90 text-[10px] font-bold text-white border border-slate-700 whitespace-nowrap shadow-md">
+      <span style="position:absolute;bottom:-18px;background:#0f172a;color:#ffffff;font-size:10px;font-weight:800;padding:1px 6px;border-radius:4px;border:1px solid #334155;white-space:nowrap;box-shadow:0 2px 6px rgba(0,0,0,0.5);">
         ${share}
       </span>
     </div>
@@ -75,10 +90,10 @@ function createCustomIcon(type, share) {
 
   return L.divIcon({
     html,
-    className: 'custom-culprit-marker',
-    iconSize: [32, 32],
-    iconAnchor: [16, 16],
-    popupAnchor: [0, -18]
+    className: 'bg-transparent border-0',
+    iconSize: [34, 34],
+    iconAnchor: [17, 17],
+    popupAnchor: [0, -20]
   });
 }
 
@@ -87,26 +102,21 @@ function createCustomIcon(type, share) {
  */
 function createAirParcelIcon(altitudeM, aqi) {
   const html = `
-    <div class="relative flex items-center justify-center">
-      <span class="absolute w-12 h-12 rounded-full bg-cyan-400 opacity-60 animate-ping"></span>
-      <div class="relative w-10 h-10 rounded-2xl bg-gradient-to-tr from-cyan-600 via-sky-500 to-teal-400 text-white flex items-center justify-center shadow-2xl border-2 border-white scale-110">
-        <svg class="w-5 h-5 animate-spin" style="animation-duration: 4s;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <circle cx="12" cy="12" r="10" stroke-dasharray="16 8"></circle>
-          <path d="M12 2v4M12 18v4M2 12h4M18 12h4"></path>
-        </svg>
+    <div style="display:flex;align-items:center;justify-content:center;position:relative;">
+      <div style="width:38px;height:38px;border-radius:12px;background:linear-gradient(135deg, #06b6d4, #0284c7);color:#ffffff;display:flex;align-items:center;justify-content:center;box-shadow:0 0 18px rgba(6,182,212,0.9);border:2px solid #ffffff;">
+        <span style="font-size:18px;">🛰️</span>
       </div>
-      <div class="absolute -top-7 px-2 py-0.5 rounded-full bg-slate-950/95 text-[10px] font-mono font-bold text-cyan-300 border border-cyan-500/80 shadow-lg whitespace-nowrap flex items-center gap-1">
-        <span class="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse"></span>
-        <span>${altitudeM}m | AQI ${aqi}</span>
+      <div style="position:absolute;top:-24px;background:#030712;color:#38bdf8;font-size:10px;font-family:monospace;font-weight:800;padding:2px 8px;border-radius:9999px;border:1px solid #0284c7;white-space:nowrap;box-shadow:0 4px 12px rgba(0,0,0,0.8);">
+        ${altitudeM}m | AQI ${aqi}
       </div>
     </div>
   `;
 
   return L.divIcon({
     html,
-    className: 'air-parcel-probe',
-    iconSize: [40, 40],
-    iconAnchor: [20, 20]
+    className: 'bg-transparent border-0',
+    iconSize: [38, 38],
+    iconAnchor: [19, 19]
   });
 }
 
@@ -119,17 +129,18 @@ export default function ForensicPlumeMap({
   const [showCulprits, setShowCulprits] = useState(true);
   const [showWaypoints, setShowWaypoints] = useState(true);
   const [showRibbonHalo, setShowRibbonHalo] = useState(true);
+  const [mapTileStyle, setMapTileStyle] = useState('osm'); // 'osm' (OpenStreetMap) or 'satellite' (Esri World Imagery)
 
   const trajectoryCoords = useMemo(() => {
     return (city?.trajectory || []).map(step => step.coords);
   }, [city]);
 
   const activeWaypoint = city?.trajectory?.[activeStepIndex] || city?.trajectory?.[0];
-  const originWaypoint = city?.trajectory?.[city.trajectory.length - 1];
+  const originWaypoint = city?.trajectory?.[(city?.trajectory?.length || 1) - 1];
   const destinationWaypoint = city?.trajectory?.[0];
 
   return (
-    <div className="relative w-full h-[520px] sm:h-[620px] rounded-3xl overflow-hidden shadow-2xl border border-slate-800 bg-[#070b13]">
+    <div className="relative w-full h-[520px] sm:h-[620px] rounded-3xl overflow-hidden shadow-2xl border border-slate-700 bg-slate-900">
       
       {/* Top Floating Controls HUD */}
       <div className="absolute top-4 left-4 z-[400] flex flex-wrap items-center gap-2 pointer-events-auto">
@@ -143,9 +154,9 @@ export default function ForensicPlumeMap({
         {/* Quick Layer Filter Toggles */}
         <button
           onClick={() => setShowCulprits(!showCulprits)}
-          className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all border backdrop-blur-md shadow-md flex items-center gap-1.5 ${
+          className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all border backdrop-blur-md shadow-md flex items-center gap-1.5 cursor-pointer ${
             showCulprits 
-              ? 'bg-rose-950/80 text-rose-300 border-rose-500/50' 
+              ? 'bg-rose-950/90 text-rose-300 border-rose-500/60 ring-1 ring-rose-500/30' 
               : 'bg-slate-900/80 text-slate-400 border-slate-800 hover:text-slate-200'
           }`}
         >
@@ -155,14 +166,33 @@ export default function ForensicPlumeMap({
 
         <button
           onClick={() => setShowWaypoints(!showWaypoints)}
-          className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all border backdrop-blur-md shadow-md flex items-center gap-1.5 ${
+          className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all border backdrop-blur-md shadow-md flex items-center gap-1.5 cursor-pointer ${
             showWaypoints 
-              ? 'bg-sky-950/80 text-sky-300 border-sky-500/50' 
+              ? 'bg-sky-950/90 text-sky-300 border-sky-500/60 ring-1 ring-sky-500/30' 
               : 'bg-slate-900/80 text-slate-400 border-slate-800 hover:text-slate-200'
           }`}
         >
           <Compass className="w-3 h-3 text-sky-400" />
           <span>Waypoints & Altitude</span>
+        </button>
+
+        {/* Satellite vs Street Map Switcher */}
+        <button
+          onClick={() => setMapTileStyle(mapTileStyle === 'osm' ? 'satellite' : 'osm')}
+          className="px-3 py-1.5 rounded-xl text-xs font-bold transition-all border bg-slate-950/90 text-amber-300 border-amber-500/50 hover:bg-slate-900 shadow-md flex items-center gap-1.5 cursor-pointer"
+          title="Toggle between Satellite and Street Map"
+        >
+          {mapTileStyle === 'osm' ? (
+            <>
+              <Globe className="w-3 h-3 text-amber-400" />
+              <span>Satellite Imagery</span>
+            </>
+          ) : (
+            <>
+              <MapIcon className="w-3 h-3 text-cyan-400" />
+              <span>Street Map</span>
+            </>
+          )}
         </button>
       </div>
 
@@ -177,28 +207,41 @@ export default function ForensicPlumeMap({
         center={city?.centerCoords || [28.6139, 77.2090]}
         zoom={city?.defaultZoom || 7}
         minZoom={5}
-        maxZoom={12}
+        maxZoom={15}
         scrollWheelZoom={false}
         className="w-full h-full z-10"
-        style={{ height: '100%', width: '100%' }}
+        style={{ height: '100%', width: '100%', minHeight: '520px' }}
+        whenReady={(mapInstance) => {
+          setTimeout(() => {
+            mapInstance.target.invalidateSize();
+          }, 150);
+        }}
       >
         <MapController center={city?.centerCoords} zoom={city?.defaultZoom} />
 
-        {/* High-Contrast Clean CartoDB Dark Base Layer for Forensic Satellite Look */}
-        <TileLayer
-          attribution='&copy; <a href="https://carto.com/" target="_blank">CARTO</a>'
-          url="https://{s}.basemaps.cartocdn.com/rastertiles/dark_all/{z}/{x}/{y}{r}.png"
-          maxZoom={19}
-        />
+        {/* 100% Free, Reliable Base Map (Zero API Key & No 403 blocks) */}
+        {mapTileStyle === 'satellite' ? (
+          <TileLayer
+            attribution='&copy; <a href="https://www.esri.com/" target="_blank">Esri World Imagery</a>'
+            url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
+            maxZoom={18}
+          />
+        ) : (
+          <TileLayer
+            attribution='&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a> contributors'
+            url="https://tile.openstreetmap.org/{z}/{x}/{y}.png"
+            maxZoom={19}
+          />
+        )}
 
         {/* 1. Atmospheric Backward Trajectory Ribbon Outer Haze Glow */}
         {showRibbonHalo && trajectoryCoords.length > 1 && (
           <Polyline
             positions={trajectoryCoords}
             pathOptions={{
-              color: '#38bdf8',
+              color: '#0284c7',
               weight: 16,
-              opacity: 0.22,
+              opacity: 0.35,
               lineCap: 'round',
               lineJoin: 'round'
             }}
@@ -210,7 +253,7 @@ export default function ForensicPlumeMap({
           <Polyline
             positions={trajectoryCoords}
             pathOptions={{
-              color: '#f43f5e',
+              color: '#e11d48',
               weight: 4.5,
               opacity: 0.95,
               dashArray: '10, 10'
@@ -218,14 +261,14 @@ export default function ForensicPlumeMap({
           >
             <Tooltip sticky>
               <div className="text-xs p-1 font-mono">
-                <div className="font-bold text-rose-400 flex items-center gap-1">
+                <div className="font-bold text-rose-600 flex items-center gap-1">
                   <Wind className="w-3 h-3" />
                   <span>48-Hour Kinematic Backward Air Parcel Stream</span>
                 </div>
-                <div className="text-slate-300 mt-1">
+                <div className="text-slate-800 mt-1">
                   Origin: <strong>{city?.forensicDossier?.originLocation}</strong>
                 </div>
-                <div className="text-[11px] text-cyan-300">
+                <div className="text-[11px] text-sky-700">
                   Total Travel: {city?.forensicDossier?.transitDistanceKm} km over 48 hours
                 </div>
               </div>
@@ -239,16 +282,16 @@ export default function ForensicPlumeMap({
             center={destinationWaypoint.coords}
             radius={14}
             pathOptions={{
-              color: '#ef4444',
+              color: '#ffffff',
               fillColor: '#ef4444',
-              fillOpacity: 0.9,
-              weight: 3
+              fillOpacity: 1.0,
+              weight: 3.5
             }}
           >
             <Tooltip permanent direction="top" offset={[0, -12]}>
-              <div className="text-xs font-bold text-rose-600 flex items-center gap-1">
+              <div className="text-xs font-bold text-rose-700 flex items-center gap-1 bg-white px-2 py-0.5 rounded shadow">
                 <span>RECEPTOR: {city?.name}</span>
-                <span className="text-[10px] px-1 rounded bg-rose-100 text-rose-800">AQI {city?.currentAqi}</span>
+                <span className="text-[10px] px-1 rounded bg-rose-100 text-rose-800 font-bold">AQI {city?.currentAqi}</span>
               </div>
             </Tooltip>
             <Popup>
@@ -269,14 +312,14 @@ export default function ForensicPlumeMap({
             center={originWaypoint.coords}
             radius={12}
             pathOptions={{
-              color: '#10b981',
-              fillColor: '#059669',
-              fillOpacity: 0.9,
+              color: '#ffffff',
+              fillColor: '#10b981',
+              fillOpacity: 1.0,
               weight: 3
             }}
           >
             <Tooltip permanent direction="bottom" offset={[0, 12]}>
-              <div className="text-xs font-bold text-emerald-600 flex items-center gap-1">
+              <div className="text-xs font-bold text-emerald-800 flex items-center gap-1 bg-white px-2 py-0.5 rounded shadow">
                 <span>ORIGIN (T-48h)</span>
                 <span className="text-[10px] px-1 rounded bg-emerald-100 text-emerald-800">{originWaypoint.altitudeM}m Alt</span>
               </div>
@@ -295,24 +338,24 @@ export default function ForensicPlumeMap({
 
         {/* 5. Waypoints along the Trajectory with Altitude & Time Callouts */}
         {showWaypoints && (city?.trajectory || []).map((step, idx) => {
-          if (idx === 0 || idx === city.trajectory.length - 1) return null; // handled separately
+          if (idx === 0 || idx === (city.trajectory.length - 1)) return null;
           return (
             <CircleMarker
               key={step.step}
               center={step.coords}
               radius={6}
               pathOptions={{
-                color: '#38bdf8',
+                color: '#ffffff',
                 fillColor: '#0284c7',
-                fillOpacity: 0.9,
+                fillOpacity: 1.0,
                 weight: 2
               }}
             >
               <Tooltip direction="right" offset={[8, 0]}>
                 <div className="text-[11px] font-mono p-1">
-                  <div className="font-bold text-sky-400">{step.timeLabel}</div>
-                  <div className="text-slate-200">{step.locationName}</div>
-                  <div className="text-slate-400">Altitude: {step.altitudeM}m | Wind: {step.speedKmh} km/h</div>
+                  <div className="font-bold text-sky-700">{step.timeLabel}</div>
+                  <div className="text-slate-800">{step.locationName}</div>
+                  <div className="text-slate-600">Altitude: {step.altitudeM}m | Wind: {step.speedKmh} km/h</div>
                 </div>
               </Tooltip>
             </CircleMarker>
@@ -321,7 +364,6 @@ export default function ForensicPlumeMap({
 
         {/* 6. Intercepted Culprit Emission Hotspots (Fires, Power Plants, Highways) */}
         {showCulprits && (city?.interceptedSources || []).map((culprit) => {
-          const isSelected = selectedCulprit?.id === culprit.id;
           return (
             <Marker
               key={culprit.id}
@@ -364,7 +406,7 @@ export default function ForensicPlumeMap({
           >
             <Tooltip permanent direction="top" offset={[0, -22]}>
               <div className="text-[11px] font-mono font-bold text-cyan-400 bg-slate-950 px-2 py-0.5 rounded border border-cyan-500 shadow-md">
-                ACTIVE POSITION: {activeWaypoint.timeLabel}
+                ACTIVE: {activeWaypoint.timeLabel}
               </div>
             </Tooltip>
           </Marker>
